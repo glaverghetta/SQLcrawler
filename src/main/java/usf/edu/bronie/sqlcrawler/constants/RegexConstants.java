@@ -14,6 +14,8 @@ public class RegexConstants {
             "create database", "alter database", "create table", "alter table", "drop table",
             "create index", "drop index", "order by", "group by", "desc", "asc", "join", "where"};
 
+    public static final String SPECIFIC_KEYWORD = "order by";
+
     public static final String PREPARED_STATEMENT_KEYWORD = "?";
 
 

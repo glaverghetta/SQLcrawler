@@ -2,7 +2,6 @@ package usf.edu.bronie.sqlcrawler;
 
 import usf.edu.bronie.sqlcrawler.analyze.CodeAnalyzer;
 import usf.edu.bronie.sqlcrawler.analyze.CodeStatistics;
-import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.model.SQLTypeDTO;
 import usf.edu.bronie.sqlcrawler.model.SearchData;
 import usf.edu.bronie.sqlcrawler.provider.SearchCodeProvider;
@@ -24,7 +23,9 @@ public class CrawlerMain {
             SearchData searchData = scp.receiveNextData();
             if (searchData != null) {
                 SQLTypeDTO sqlType = codeAnalyzer.analyzeCode(searchData.getCode());
-                codeStatistics.collectData(sqlType, searchData.getProjectName());
+                if (sqlType != null) {
+                    codeStatistics.collectData(sqlType, searchData.getProjectName());
+                }
             }
         }
 

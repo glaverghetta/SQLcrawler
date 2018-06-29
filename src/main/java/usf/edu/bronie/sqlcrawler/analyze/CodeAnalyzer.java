@@ -56,9 +56,29 @@ public class CodeAnalyzer {
             }
         }
 
+        boolean hasKeyword = false;
+        stringLitMatcher = mStringLitPattern.matcher(code);
+        while (stringLitMatcher.find()) {
+            String keyword = stringLitMatcher.group();
+            if (isSQLCode(keyword) && hasSpecificKeyword(keyword)) {
+                hasKeyword = true;
+                break;
+            }
+        }
+
+        if (!hasKeyword) return null;
+
         SQLType sqlType = getSQLType(isStringConcat, isPreparedStatement, isHardcoded);
 
         return new SQLTypeDTO(sqlType, orderByConcat);
+    }
+
+    private boolean hasSpecificKeyword(String keyword) {
+        if (StringUtils.containsIgnoreCase(keyword, RegexConstants.SPECIFIC_KEYWORD)) {
+            return true;
+        }
+
+        return false;
     }
 
     private SQLType getSQLType(boolean isStringConcat, boolean isPreparedStatement, boolean isHardcoded) {

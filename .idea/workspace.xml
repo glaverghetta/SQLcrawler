@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b563e04-2a7e-411d-bd18-6a7ab852e566" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/CodeStatData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SQLTypeDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -23,70 +17,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="CrawlerMain.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CrawlerMain.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="26" column="39" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
+            <state relative-caret-position="255">
+              <caret line="17" column="18" lean-forward="true" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UrlConstants.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CodeStatistics.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CodeStatData.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/CodeStatData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="29" column="33" selection-start-line="29" selection-start-column="33" selection-end-line="29" selection-end-column="33" />
-              <folding>
-                <element signature="e#268#269#0" expanded="true" />
-                <element signature="e#294#295#0" expanded="true" />
-                <element signature="e#339#340#0" expanded="true" />
-                <element signature="e#367#368#0" expanded="true" />
-                <element signature="e#408#409#0" expanded="true" />
-                <element signature="e#433#434#0" expanded="true" />
-                <element signature="e#490#491#0" expanded="true" />
-                <element signature="e#531#532#0" expanded="true" />
-                <element signature="e#582#583#0" expanded="true" />
-                <element signature="e#619#620#0" expanded="true" />
-                <element signature="e#655#656#0" expanded="true" />
-                <element signature="e#689#690#0" expanded="true" />
-                <element signature="e#722#723#0" expanded="true" />
-                <element signature="e#772#773#0" expanded="true" />
-                <element signature="e#821#822#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RegexConstants.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -94,33 +32,10 @@
       <file leaf-file-name="CodeAnalyzer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-94">
-              <caret line="14" column="25" lean-forward="true" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+            <state relative-caret-position="270">
+              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SQLType.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SQLType.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="11" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SQLTypeDTO.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SQLTypeDTO.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
-              <folding>
-                <element signature="e#355#356#0" expanded="true" />
-                <element signature="e#395#396#0" expanded="true" />
-                <element signature="e#434#435#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -145,7 +60,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="groupby" />
       </map>
     </option>
   </component>
@@ -167,13 +82,13 @@
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SearchData.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/provider/SearchCodeProvider.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SQLTypeDTO.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/CodeStatData.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" />
       </list>
     </option>
   </component>
@@ -424,7 +339,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40659000" />
+    <option name="totallyTimeSpent" value="41139000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -454,17 +369,38 @@
       <window_info id="Designer" order="2" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2639485" />
       <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3290653" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39948782" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="bottom" id="DB Execution Console" order="7" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2639485" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.3290653" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3290653" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3290653" />
+      <window_info id="DB Browser" order="2" />
+      <window_info id="Designer" order="2" />
+      <window_info id="UI Designer" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39948782" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.3290653" />
+      <window_info anchor="right" id="Maven Projects" order="3" />
+      <window_info id="Favorites" order="2" side_tool="true" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -472,6 +408,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add group by search" />
+    <option name="LAST_COMMIT_MESSAGE" value="add group by search" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -579,6 +519,36 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SQLTypeDTO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="11" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+          <folding>
+            <element signature="e#347#348#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="76" column="24" lean-forward="true" selection-start-line="76" selection-start-column="24" selection-end-line="76" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -898,6 +868,7 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatDTO.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SQLType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -910,10 +881,15 @@
         <state relative-caret-position="195">
           <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
           <folding>
-            <element signature="e#355#356#0" expanded="true" />
-            <element signature="e#395#396#0" expanded="true" />
-            <element signature="e#434#435#0" expanded="true" />
+            <element signature="e#347#348#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
@@ -924,22 +900,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatDTO.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/CodeStatData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
+        <state relative-caret-position="147">
           <caret line="29" column="33" selection-start-line="29" selection-start-column="33" selection-end-line="29" selection-end-column="33" />
           <folding>
-            <element signature="e#268#269#0" expanded="true" />
-            <element signature="e#294#295#0" expanded="true" />
-            <element signature="e#339#340#0" expanded="true" />
-            <element signature="e#367#368#0" expanded="true" />
-            <element signature="e#408#409#0" expanded="true" />
-            <element signature="e#433#434#0" expanded="true" />
-            <element signature="e#490#491#0" expanded="true" />
-            <element signature="e#531#532#0" expanded="true" />
             <element signature="e#582#583#0" expanded="true" />
             <element signature="e#619#620#0" expanded="true" />
             <element signature="e#655#656#0" expanded="true" />
@@ -953,18 +918,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="39" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
+        <state relative-caret-position="-618">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -973,18 +928,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-94">
-          <caret line="14" column="25" lean-forward="true" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+        <state relative-caret-position="270">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="255">
+          <caret line="17" column="18" lean-forward="true" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
