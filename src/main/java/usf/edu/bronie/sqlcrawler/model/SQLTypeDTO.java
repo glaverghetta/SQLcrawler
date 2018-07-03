@@ -6,9 +6,12 @@ public class SQLTypeDTO {
 
     private boolean mIsOrderByConcat;
 
-    public SQLTypeDTO(SQLType SQLType, boolean isOrderByConcat) {
+    private boolean mIsLikePrep;
+
+    public SQLTypeDTO(SQLType SQLType, boolean isOrderByConcat, boolean isLikePrep) {
         mSQLType = SQLType;
         mIsOrderByConcat = isOrderByConcat;
+        mIsLikePrep = isLikePrep;
     }
 
     public SQLType getSQLType() {
@@ -17,5 +20,9 @@ public class SQLTypeDTO {
 
     public boolean isOrderByConcat() {
         return mIsOrderByConcat;
+    }
+
+    public boolean isLikePrep() {
+        return mIsLikePrep;
     }
 }

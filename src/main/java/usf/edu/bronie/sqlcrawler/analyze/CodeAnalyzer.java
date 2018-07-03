@@ -12,15 +12,19 @@ public class CodeAnalyzer {
 
     private Pattern mStringLitWithVarPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR);
 
-    private Pattern mStringLitWithOrderByPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_ORDER_BY,
+    private Pattern mStringLitWithLikePattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_LIKE,
             Pattern.CASE_INSENSITIVE);
 
     private Pattern mStringLitPattern = Pattern.compile(RegexConstants.STRING_LITERAL);
 
+    private Pattern mStringLikePrepPattern = Pattern.compile(RegexConstants.STRING_LITERAL_PREP_STATE_LIKE,
+            Pattern.CASE_INSENSITIVE);
+
     private Pattern mAppendPattern = Pattern.compile(RegexConstants.APPEND);
 
     public SQLTypeDTO analyzeCode(String code) {
-        boolean orderByConcat = isOrderByConcat(code);
+        boolean likeConcat = isLikeConcat(code);
+        boolean isLikePrepStatement = false;
 
         boolean isStringConcat = false;
         boolean isPreparedStatement = false;
@@ -62,7 +66,11 @@ public class CodeAnalyzer {
             String keyword = stringLitMatcher.group();
             if (isSQLCode(keyword) && hasSpecificKeyword(keyword)) {
                 hasKeyword = true;
-                break;
+                Matcher matcher = mStringLikePrepPattern.matcher(keyword);
+                if (matcher.find()) {
+                    isLikePrepStatement = true;
+                    break;
+                }
             }
         }
 
@@ -70,7 +78,7 @@ public class CodeAnalyzer {
 
         SQLType sqlType = getSQLType(isStringConcat, isPreparedStatement, isHardcoded);
 
-        return new SQLTypeDTO(sqlType, orderByConcat);
+        return new SQLTypeDTO(sqlType, likeConcat, isLikePrepStatement);
     }
 
     private boolean hasSpecificKeyword(String keyword) {
@@ -95,8 +103,8 @@ public class CodeAnalyzer {
         return SQLType.NONE;
     }
 
-    private boolean isOrderByConcat(String code) {
-        Matcher stringLitWithOrderByMatcher = mStringLitWithOrderByPattern.matcher(code);
+    private boolean isLikeConcat(String code) {
+        Matcher stringLitWithOrderByMatcher = mStringLitWithLikePattern.matcher(code);
         while (stringLitWithOrderByMatcher.find()) {
             String keyword = stringLitWithOrderByMatcher.group();
             if (isSQLCode(keyword)) {

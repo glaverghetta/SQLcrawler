@@ -25,6 +25,8 @@ public class CrawlerMain {
                 SQLTypeDTO sqlType = codeAnalyzer.analyzeCode(searchData.getCode());
                 if (sqlType != null) {
                     codeStatistics.collectData(sqlType, searchData.getProjectName());
+                } else {
+                    System.out.println("Skipping code");
                 }
             }
         }
