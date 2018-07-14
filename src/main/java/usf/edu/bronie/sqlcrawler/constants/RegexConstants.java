@@ -4,7 +4,7 @@ public class RegexConstants {
 
     public static final String STRING_LITERAL_CONCAT_WITH_VAR = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?=( )*(\\r\\n\\|\\r\\|\\n)*( )*\\+( )*(\\r\\n\\|\\r\\|\\n)*( )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+    public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%|'%| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
     public static final String STRING_LITERAL_PREP_STATE_LIKE = "LIKE(\\r\\n|\\r|\\n|\\t| )*\\?(\\r\\n|\\r|\\n|\\t| )*";
 

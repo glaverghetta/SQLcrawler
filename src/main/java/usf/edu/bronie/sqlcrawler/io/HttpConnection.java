@@ -20,7 +20,7 @@ public class HttpConnection {
 
             return result.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Skipping url: " + url + "with reason: " + e.getMessage());
         }
         return null;
     }
