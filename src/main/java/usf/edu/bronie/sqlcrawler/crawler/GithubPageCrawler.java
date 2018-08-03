@@ -22,25 +22,25 @@ public class GithubPageCrawler {
 
         GithubFileSpec.GithubFileSpecBuilder githubFileSpecBuilder = new GithubFileSpec.GithubFileSpecBuilder();
 
-        Matcher starCountMatcher = mStarCountPattern.matcher(page);
-        if (starCountMatcher.find()) {
-            githubFileSpecBuilder.setStarCount(starCountMatcher.group());
-        }
-
-        Matcher forkCountMatcher = mForkCountPattern.matcher(page);
-        if (forkCountMatcher.find()) {
-            githubFileSpecBuilder.setForkCount(forkCountMatcher.group());
-        }
-
-        Matcher watchCountMatcher = mWatchCountPattern.matcher(page);
-        if (watchCountMatcher.find()) {
-            githubFileSpecBuilder.setWatchCount(watchCountMatcher.group());
-        }
-
-        Matcher commitDateMatcher = mCommitDatePattern.matcher(page);
-        if (commitDateMatcher.find()) {
-            githubFileSpecBuilder.setCommitDate(commitDateMatcher.group());
-        }
+//        Matcher starCountMatcher = mStarCountPattern.matcher(page);
+//        if (starCountMatcher.find()) {
+//            githubFileSpecBuilder.setStarCount(starCountMatcher.group());
+//        }
+//
+//        Matcher forkCountMatcher = mForkCountPattern.matcher(page);
+//        if (forkCountMatcher.find()) {
+//            githubFileSpecBuilder.setForkCount(forkCountMatcher.group());
+//        }
+//
+//        Matcher watchCountMatcher = mWatchCountPattern.matcher(page);
+//        if (watchCountMatcher.find()) {
+//            githubFileSpecBuilder.setWatchCount(watchCountMatcher.group());
+//        }
+//
+//        Matcher commitDateMatcher = mCommitDatePattern.matcher(page);
+//        if (commitDateMatcher.find()) {
+//            githubFileSpecBuilder.setCommitDate(commitDateMatcher.group());
+//        }
 
         return githubFileSpecBuilder.createGithubFileSpec();
     }

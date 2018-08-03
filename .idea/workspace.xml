@@ -2,28 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b563e04-2a7e-411d-bd18-6a7ab852e566" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/GroupByCodeAnalyzer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/LikeCodeAnalyzer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/OrderByCodeAnalyzer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/SQLCodeAnalyzer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/CodeAnalyticsDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/DBConnection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/CodeAnalysisManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitDataPathManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GitDataDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubProjectCrawler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitProjectAnalysisManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/chromedriver" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/JavaCodeParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/utils/UrlUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/utils/UrlUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/CrawlerMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/CrawlerMain.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/analyze/JavaCodeParser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/constants/RegexConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/constants/RegexConstants.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/model/GithubFileSpec$GithubFileSpecBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/model/GithubFileSpec$GithubFileSpecBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/utils/UrlUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/usf/edu/bronie/sqlcrawler/utils/UrlUtils.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -37,11 +33,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="GithubPageCrawler.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.java">
+      <file leaf-file-name="GithubProjectCrawler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubProjectCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="34" lean-forward="true" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
+            <state relative-caret-position="328">
+              <caret line="37" column="88" selection-start-line="37" selection-start-column="88" selection-end-line="37" selection-end-column="88" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -49,45 +45,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LikeCodeAnalyzer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/LikeCodeAnalyzer.java">
+      <file leaf-file-name="UrlConstants.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="19" column="45" lean-forward="true" selection-start-line="19" selection-start-column="45" selection-end-line="19" selection-end-column="45" />
+            <state relative-caret-position="180">
+              <caret line="12" column="46" selection-start-line="12" selection-start-column="28" selection-end-line="12" selection-end-column="46" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CodeOptimizer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java">
+      <file leaf-file-name="GitProjectAnalysisManager.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitProjectAnalysisManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CrawlerMain.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="24" column="43" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
+            <state relative-caret-position="243">
+              <caret line="70" column="8" lean-forward="true" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GitDataPathManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitDataPathManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="44" column="13" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="49" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1197#1198#0" expanded="true" />
-                <element signature="e#1239#1240#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -96,8 +69,8 @@
       <file leaf-file-name="RegexConstants.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="23" column="57" selection-start-line="23" selection-start-column="57" selection-end-line="23" selection-end-column="57" />
+            <state relative-caret-position="284">
+              <caret line="51" column="82" lean-forward="true" selection-start-line="51" selection-start-column="82" selection-end-line="51" selection-end-column="82" />
             </state>
           </provider>
         </entry>
@@ -132,7 +105,6 @@
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/parser/JavaCodeParser.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/parser/constants/CredentialConstants.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/CredentialConstants.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/HttpConnection.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SearchCodeResult.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/Results.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analizer/CodeStatistics.java" />
@@ -145,24 +117,28 @@
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubData.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/RootGitObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/provider/GithubProvider.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/GithubPageCrawler.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GitDataDTO.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/DBConnection.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitDataPathManager.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/utils/UrlUtils.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeAnalyzer.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/SQLCodeAnalyzer.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/OrderByCodeAnalyzer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/GroupByCodeAnalyzer.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/LikeCodeAnalyzer.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/CodeAnalyticsDao.java" />
-        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/utils/UrlUtils.java" />
         <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/HttpConnection.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubProjectCrawler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitProjectAnalysisManager.java" />
       </list>
     </option>
   </component>
@@ -182,9 +158,9 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="22" />
-    <option name="width" value="1440" />
+    <option name="width" value="1398" />
     <option name="height" value="878" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -231,61 +207,14 @@
               <item name="Sqlcrawler" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="analyze" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Sqlcrawler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="constants" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Sqlcrawler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="io" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Sqlcrawler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="manager" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Sqlcrawler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="provider" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Sqlcrawler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="sqlcrawler" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -300,7 +229,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="usf.edu.bronie.sqlcrawler.crawler" />
       <recent name="usf.edu.bronie.sqlcrawler.analyze" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -414,12 +347,16 @@
       <workItem from="1530669313843" duration="2279000" />
       <workItem from="1531756166703" duration="1424000" />
       <workItem from="1531857445146" duration="314000" />
-      <workItem from="1531860777552" duration="10206000" />
+      <workItem from="1531860777552" duration="13757000" />
+      <workItem from="1532555327883" duration="288000" />
+      <workItem from="1532555830800" duration="191000" />
+      <workItem from="1532704217039" duration="521000" />
+      <workItem from="1533052734138" duration="29388000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51330000" />
+    <option name="totallyTimeSpent" value="85269000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -431,8 +368,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1440" height="878" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="22" width="1398" height="878" extended-state="0" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3290653" />
@@ -443,17 +379,17 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32882413" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32882413" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3290653" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3277849" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.3277849" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25751072" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28023598" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.38668373" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.38668373" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -465,6 +401,16 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
@@ -472,16 +418,34 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java</url>
-          <line>6</line>
+          <condition expression="isDateAve == false" language="JAVA" />
+          <url>file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubProjectCrawler.java</url>
+          <line>66</line>
           <properties />
-          <option name="timeStamp" value="37" />
+          <option name="timeStamp" value="54" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="38" />
+      <option name="time" value="55" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
+    <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>isDateAve == false</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>commitDateMatcher.find() == false</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>b == false</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
     <expressions id="setValue">
       <expression>
         <expression-string>&quot;https://searchcode.com/codesearch/raw/40482803/&quot;</expression-string>
@@ -496,98 +460,53 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>code</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>rawUrl</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>fileSpecByUrl</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>githubUrl</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>sql</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>starCountMatcher.group(0)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>starCountMatcher.group(1)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>starCountMatcher.group()</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
         <expression-string>page</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>driver.getPageSource()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>document</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>url</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>commitDateMatcher.group()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>forkFromMatcher.group()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>fileSpec.getCommitDate()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>fileSpec</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>code</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/provider/SearchCodeProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="31" selection-start-line="31" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/Results.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/SQLCodeAnalyzer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="49" selection-start-line="49" selection-end-line="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="17" column="50" selection-start-line="17" selection-start-column="50" selection-end-line="17" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -633,18 +552,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/JavaCodeParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#228#229#0" expanded="true" />
-            <element signature="e#273#274#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/JavaCodeParser.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -716,13 +624,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="42" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/provider/SearchCodeProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -737,13 +638,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/HttpConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="16" column="24" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubData.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -751,18 +645,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/JavaCodeParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#228#229#0" expanded="true" />
-            <element signature="e#273#274#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/JavaCodeParser.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/SearchData.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="435">
@@ -781,59 +664,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/utils/UrlUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeStatistics.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="30" column="30" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GitDataDTO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-          <folding>
-            <element signature="e#330#331#0" expanded="true" />
-            <element signature="e#362#363#0" expanded="true" />
-            <element signature="e#392#393#0" expanded="true" />
-            <element signature="e#419#420#0" expanded="true" />
-            <element signature="e#478#479#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitDataPathManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="44" column="13" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1197#1198#0" expanded="true" />
-            <element signature="e#1239#1240#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="29" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="29" />
-          <folding>
-            <element signature="e#688#689#0" expanded="true" />
-            <element signature="e#722#723#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -845,13 +681,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/CodeAnalysisManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/SQLCodeAnalyzer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="233">
@@ -859,13 +688,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="23" column="57" selection-start-line="23" selection-start-column="57" selection-end-line="23" selection-end-column="57" />
         </state>
       </provider>
     </entry>
@@ -903,23 +725,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/LikeCodeAnalyzer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="19" column="45" lean-forward="true" selection-start-line="19" selection-start-column="45" selection-end-line="19" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="24" column="43" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/ca/mcgill/sable/soot/3.0.0-SNAPSHOT/soot-3.0.0-20180416.152636-309.jar!/soot/Main.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1234">
@@ -927,24 +732,178 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/ca/mcgill/sable/soot/3.0.0-SNAPSHOT/soot-3.0.0-20180416.152636-309.jar!/soot/jimple/toolkits/scalar/ConstantPropagatorAndFolder.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="47" column="42" selection-start-line="47" selection-start-column="42" selection-end-line="47" selection-end-column="42" />
+        <state relative-caret-position="90">
+          <caret line="35" column="40" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubPageCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="34" lean-forward="true" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
+        <state relative-caret-position="267">
+          <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/LikeCodeAnalyzer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="19" column="45" selection-start-line="19" selection-start-column="45" selection-end-line="19" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/CodeAnalysisManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GitDataDTO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="23" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="23" />
+          <folding>
+            <element signature="e#330#331#0" expanded="true" />
+            <element signature="e#362#363#0" expanded="true" />
+            <element signature="e#392#393#0" expanded="true" />
+            <element signature="e#419#420#0" expanded="true" />
+            <element signature="e#450#451#0" expanded="true" />
+            <element signature="e#478#479#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/analyze/CodeOptimizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/model/GithubFileSpec.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="31" lean-forward="true" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+          <folding>
+            <element signature="e#845#846#0" expanded="true" />
+            <element signature="e#879#880#0" expanded="true" />
+            <element signature="e#1357#1358#0" expanded="true" />
+            <element signature="e#1392#1393#0" expanded="true" />
+            <element signature="e#1430#1431#0" expanded="true" />
+            <element signature="e#1465#1466#0" expanded="true" />
+            <element signature="e#1509#1510#0" expanded="true" />
+            <element signature="e#1550#1551#0" expanded="true" />
+            <element signature="e#1589#1590#0" expanded="true" />
+            <element signature="e#1625#1626#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.0/commons-lang3-3.0.jar!/org/apache/commons/lang3/math/NumberUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="293" column="56" lean-forward="true" selection-start-line="293" selection-start-column="56" selection-end-line="293" selection-end-column="56" />
+          <folding>
+            <element signature="e#9745#9746#0" expanded="true" />
+            <element signature="e#9808#9809#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitDataPathManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="17" column="4" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="66" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/src.zip!/java/lang/Integer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="613" column="22" selection-start-line="613" selection-start-column="22" selection-end-line="613" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/utils/UrlUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/src.zip!/java/net/URLConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="377">
+          <caret line="430" column="17" selection-start-line="430" selection-start-column="17" selection-end-line="430" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="49" column="21" selection-start-line="49" selection-start-column="21" selection-end-line="49" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/io/HttpConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/crawler/GithubProjectCrawler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="37" column="88" selection-start-line="37" selection-start-column="88" selection-end-line="37" selection-end-column="88" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/UrlConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="46" selection-start-line="12" selection-start-column="28" selection-end-line="12" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/constants/RegexConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="51" column="82" lean-forward="true" selection-start-line="51" selection-start-column="82" selection-end-line="51" selection-end-column="82" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/usf/edu/bronie/sqlcrawler/manager/GitProjectAnalysisManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="70" column="8" lean-forward="true" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

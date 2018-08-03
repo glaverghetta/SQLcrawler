@@ -23,6 +23,8 @@ public class RegexConstants {
 
     public static final String GROUP_BY_KEYWORD = "group by";
 
+    public static final String LIKE_KEYWORD = "like";
+
     // SQL Keywords
     public static final String[] SQL_KEYWORDS = {"select", "update", "delete", "insert into",
             "create database", "alter database", "create table", "alter table", "drop table",
@@ -39,5 +41,17 @@ public class RegexConstants {
 
     public static final String GITHUB_FORK_PATTERN = "\\d+(?= user(s|) forked this repository)";
 
+    public static final String GITHUB_FORK_FROM_PATTERN = "(?<=forked from <a href=\\\").+?(?=\\\">)";
+
     public static final String GITHUB_COMMIT_TIME_PATTERN = "\\d+(?=</relative-time>)";
+
+    public static final String GITHUB_PROJECT_COMMIT_TIME_PATTERN = "(?<=datetime=\\\")\\d+(?=.*?relative-time>)";
+
+    public static final String GITHUB_TOTAL_COMMIT_PATTERN = "\\d+(?= </span> commit(s|))";
+
+    public static final String GITHUB_TOTAL_BRANCH_PATTERN = "\\d+(?= </span> branch(es|))";
+
+    public static final String GITHUB_TOTAL_RELEASE_PATTERN = "\\d+(?= </span> release(s|))";
+
+    public static final String GITHUB_TOTAL_CONT_PATTERN = "\\d+(?= </span> contributor(s|))";
 }

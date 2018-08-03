@@ -2,8 +2,6 @@ package usf.edu.bronie.sqlcrawler.utils;
 
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +15,13 @@ public class UrlUtils {
         StringBuilder sb = new StringBuilder("https://github.com/");
         sb.append(repoName).append("/blob/");
         sb.append(getBranch(ref)).append("/").append(path);
+        return sb.toString().replaceAll(" ", "%20");
+    }
+
+    public static String createGithubProjectUrl(String repoName, String ref) {
+        StringBuilder sb = new StringBuilder("https://github.com/");
+        sb.append(repoName).append("/tree/");
+        sb.append(getBranch(ref));
         return sb.toString().replaceAll(" ", "%20");
     }
 
