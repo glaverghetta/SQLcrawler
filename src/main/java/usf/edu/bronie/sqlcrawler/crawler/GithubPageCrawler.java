@@ -1,47 +1,41 @@
 package usf.edu.bronie.sqlcrawler.crawler;
 
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
-import usf.edu.bronie.sqlcrawler.io.HttpConnection;
-import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
+import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GithubPageCrawler {
+    private Pattern mCommitDatePattern = Pattern.compile(RegexConstants.GITHUB_PROJECT_COMMIT_TIME_PATTERN);
 
-    private Pattern mStarCountPattern = Pattern.compile(RegexConstants.GITHUB_STAR_PATTERN);
+    private WebDriver mChromeDriver;
 
-    private Pattern mForkCountPattern = Pattern.compile(RegexConstants.GITHUB_FORK_PATTERN);
+    public GithubPageCrawler() {
+        mChromeDriver = new ChromeDriver();
+        new WebDriverWait(mChromeDriver, UrlConstants.GITHUB_REQ_TIMEOUT).until(
+                webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+    }
 
-    private Pattern mWatchCountPattern = Pattern.compile(RegexConstants.GITHUB_WATCH_PATTERN);
+    public void loadUrl(String url) {
+        mChromeDriver.get(url);
+    }
 
-    private Pattern mCommitDatePattern = Pattern.compile(RegexConstants.GITHUB_COMMIT_TIME_PATTERN);
+    public String getFileCommitDate() {
+        String page = mChromeDriver.getPageSource();
+        if (page == null) return null;
 
-    public GithubFileSpec getFileSpecByUrl(String url) {
-        String page = HttpConnection.get(url);
+        String date = null;
 
-        GithubFileSpec.GithubFileSpecBuilder githubFileSpecBuilder = new GithubFileSpec.GithubFileSpecBuilder();
+        Matcher commitDateMatcher = mCommitDatePattern.matcher(page);
+        if (commitDateMatcher.find()) {
+            date = commitDateMatcher.group();
+        }
 
-//        Matcher starCountMatcher = mStarCountPattern.matcher(page);
-//        if (starCountMatcher.find()) {
-//            githubFileSpecBuilder.setStarCount(starCountMatcher.group());
-//        }
-//
-//        Matcher forkCountMatcher = mForkCountPattern.matcher(page);
-//        if (forkCountMatcher.find()) {
-//            githubFileSpecBuilder.setForkCount(forkCountMatcher.group());
-//        }
-//
-//        Matcher watchCountMatcher = mWatchCountPattern.matcher(page);
-//        if (watchCountMatcher.find()) {
-//            githubFileSpecBuilder.setWatchCount(watchCountMatcher.group());
-//        }
-//
-//        Matcher commitDateMatcher = mCommitDatePattern.matcher(page);
-//        if (commitDateMatcher.find()) {
-//            githubFileSpecBuilder.setCommitDate(commitDateMatcher.group());
-//        }
-
-        return githubFileSpecBuilder.createGithubFileSpec();
+        return date;
     }
 }

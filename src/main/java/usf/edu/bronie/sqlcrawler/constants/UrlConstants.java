@@ -10,5 +10,5 @@ public class UrlConstants {
 
     public static final int GDRIVE_PAGE = 0;
 
-    public static final int GITHUB_REQ_TIMEOUT = 3; // In seconds
+    public static final int GITHUB_REQ_TIMEOUT = 3000; // In milliseconds
 }

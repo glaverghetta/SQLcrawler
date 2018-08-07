@@ -1,6 +1,6 @@
 package usf.edu.bronie.sqlcrawler;
 
-import usf.edu.bronie.sqlcrawler.manager.GitProjectAnalysisManager;
+import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
 
 import java.sql.SQLException;
 
@@ -9,7 +9,7 @@ public class CrawlerMain {
         setupEnv();
 
         try {
-            new GitProjectAnalysisManager().analyzeProjects();
+            new CodeAnalysisManager().analyzeCode();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package usf.edu.bronie.sqlcrawler.analyze;
 import org.apache.commons.lang3.StringUtils;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
+import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +19,7 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
             Pattern.CASE_INSENSITIVE);
 
     public SQLType analyzeCode(String code) {
-        if (!hasSpecificKeyword(code)) return SQLType.NONE;
+        if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.LIKE_KEYWORD)) return SQLType.NONE;
 
         if (isLikeConcat(code)) {
             return SQLType.STRING_CONCAT;
@@ -31,8 +32,8 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
         return SQLType.HARDCODED;
     }
 
-    private boolean hasSpecificKeyword(String keyword) {
-        if (StringUtils.containsIgnoreCase(keyword, RegexConstants.ORDER_BY_KEYWORD)) {
+    private boolean containsLike(String keyword) {
+        if (StringUtils.containsIgnoreCase(keyword, RegexConstants.LIKE_KEYWORD)) {
             return true;
         }
 
@@ -43,7 +44,7 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
         Matcher stringLitWithOrderByMatcher = mStringLitWithLikePattern.matcher(code);
         while (stringLitWithOrderByMatcher.find()) {
             String keyword = stringLitWithOrderByMatcher.group();
-            if (isSQLCode(keyword)) {
+            if (RegexUtils.isSQLCode(keyword)) {
                 return true;
             }
         }
@@ -54,22 +55,11 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
         Matcher stringLitMatcher = mStringLitPattern.matcher(code);
         while (stringLitMatcher.find()) {
             String keyword = stringLitMatcher.group();
-            if (isSQLCode(keyword) && hasSpecificKeyword(keyword)) {
+            if (RegexUtils.isSQLCode(keyword) && containsLike(keyword)) {
                 Matcher matcher = mStringLikePrepPattern.matcher(keyword);
                 if (matcher.find()) {
                     return true;
                 }
-            }
-        }
-        return false;
-    }
-
-    private boolean isSQLCode(String group) {
-        if (group == null) return false;
-
-        for (String s : RegexConstants.SQL_KEYWORDS) {
-            if (StringUtils.containsIgnoreCase(group, s)) {
-                return true;
             }
         }
         return false;

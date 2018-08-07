@@ -3,6 +3,7 @@ package usf.edu.bronie.sqlcrawler.analyze;
 import org.apache.commons.lang3.StringUtils;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
+import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +16,10 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mAppendPattern = Pattern.compile(RegexConstants.APPEND);
 
+    private Pattern mStringFormatPattern = Pattern.compile(RegexConstants.STRING_FORMAT);
+
+    private Pattern mJPAPreparedStatementPattern = Pattern.compile(RegexConstants.PREPARED_STATEMENT_KEYWORD_JPA);
+
     public SQLType analyzeCode(String code) {
         boolean isStringConcat = false;
         boolean isPreparedStatement = false;
@@ -23,7 +28,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         Matcher stringLitWithVarMatcher = mStringLitWithVarPattern.matcher(code);
         while(stringLitWithVarMatcher.find()) {
             String keyword = stringLitWithVarMatcher.group();
-            if (isSQLCode(keyword)) {
+            if (RegexUtils.isSQLCode(keyword)) {
                 isStringConcat = true;
                 break;
             }
@@ -39,11 +44,13 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         Matcher stringLitMatcher = mStringLitPattern.matcher(code);
         while(stringLitMatcher.find()) {
             String keyword = stringLitMatcher.group();
-            if (isSQLCode(keyword)) {
+            if (RegexUtils.isSQLCode(keyword)) {
                 if (hasPreparedStatement(keyword)) {
                     isPreparedStatement= true;
                     isHardcoded = false;
                     break;
+                } else if (mStringFormatPattern.matcher(keyword).find()) {
+                    isStringConcat = true;
                 } else {
                     isHardcoded = true;
                 }
@@ -64,17 +71,10 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
     }
 
     private boolean hasPreparedStatement(String group) {
-        return StringUtils.containsIgnoreCase(group, RegexConstants.PREPARED_STATEMENT_KEYWORD);
-    }
-
-    private boolean isSQLCode(String group) {
-        if (group == null) return false;
-
-        for (String s: RegexConstants.SQL_KEYWORDS) {
-            if (StringUtils.containsIgnoreCase(group, s)) {
-                return true;
-            }
+        if (!StringUtils.containsIgnoreCase(group, RegexConstants.PREPARED_STATEMENT_KEYWORD)) {
+            Matcher stringLitMatcher = mJPAPreparedStatementPattern.matcher(group);
+            return stringLitMatcher.find();
         }
-        return false;
+        return true;
     }
 }

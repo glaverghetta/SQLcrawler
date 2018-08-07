@@ -22,6 +22,11 @@ public class GitProjectAnalysisManager {
                     "last_commit_date, forked_from, total_commit, total_branch, total_release, total_contr) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+    PreparedStatement mUpdateStatement = mConnection.
+            prepareStatement("UPDATE PROJECT_SPECS SET fork_count = ?, watch_count = ?," +
+                    " star_count = ?, last_commit_date = ?, forked_from = ?, total_commit = ?, total_branch = ?, " +
+                    "total_release = ?, total_contr = ? WHERE project_name = ?");
+
     public GitProjectAnalysisManager() throws SQLException {
     }
 
@@ -29,19 +34,37 @@ public class GitProjectAnalysisManager {
         try {
             List<GitDataDTO> projects = getAllUniqueProjects();
             int size = projects.size();
-            for (int j = 30000; j < size; j++) {
+            for (int j = 0; j < size; j++) {
                 GitDataDTO gd = projects.get(j);
                 System.out.print("\rAnalyzing -- file number: " + j + " out of " + size);
                 String url = UrlUtils.createGithubProjectUrl(gd.getRepoName(), gd.getRef());
                 GithubFileSpec fileSpec = mProjectCrawler.getFileSpecByUrl(url);
 
                 if (fileSpec != null) {
-//                    saveFileSpec(fileSpec, gd.getRepoName());
+                    updateFileSpec(fileSpec, gd.getRepoName());
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateFileSpec(GithubFileSpec fileSpec, String projectName) {
+        try {
+            mUpdateStatement.setInt(1, NumberUtils.toInt(fileSpec.getForkCount(), 0));
+            mUpdateStatement.setInt(2, NumberUtils.toInt(fileSpec.getWatchCount(), 0));
+            mUpdateStatement.setInt(3, NumberUtils.toInt(fileSpec.getStarCount(), 0));
+            mUpdateStatement.setInt(4, NumberUtils.toInt(fileSpec.getCommitDate(), 0));
+            mUpdateStatement.setString(5, fileSpec.getForkedFrom());
+            mUpdateStatement.setInt(6, NumberUtils.toInt(fileSpec.getTotalCommit(), 0));
+            mUpdateStatement.setInt(7, NumberUtils.toInt(fileSpec.getTotalBranch(), 0));
+            mUpdateStatement.setInt(8, NumberUtils.toInt(fileSpec.getTotalRelease(), 0));
+            mUpdateStatement.setInt(9, NumberUtils.toInt(fileSpec.getTotalContribution(), 0));
+            mUpdateStatement.setString(10, projectName);
+            mUpdateStatement.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -68,7 +91,11 @@ public class GitProjectAnalysisManager {
         List l = new ArrayList();
         Statement stmt = mConnection.createStatement();
 //        String sql = "select distinct frepo_name, fref from GDATA";
-        String sql = "select distinct frepo_name, fref from GDATA";
+//        String sql = "select distinct frepo_name, fref from gdata left join project_specs ON " +
+//                "project_specs.total_commit=0 where gdata.frepo_name = project_specs.project_name;";
+        String sql = "select distinct frepo_name, fref from gdata left join project_specs ON " +
+                "project_specs.total_commit!=0 and project_specs.last_commit_date=0 where " +
+                "gdata.frepo_name = project_specs.project_name;";
 
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {

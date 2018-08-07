@@ -1,8 +1,10 @@
 package usf.edu.bronie.sqlcrawler.crawler;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
 import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
@@ -35,12 +37,12 @@ public class GithubProjectCrawler {
 
     public GithubProjectCrawler() {
         mChromeDriver = new ChromeDriver();
-        mChromeDriver.manage().timeouts().implicitlyWait(UrlConstants.GITHUB_REQ_TIMEOUT, TimeUnit.SECONDS);
+        new WebDriverWait(mChromeDriver, UrlConstants.GITHUB_REQ_TIMEOUT).until(
+                webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
     }
 
     public GithubFileSpec getFileSpecByUrl(String url) {
         mChromeDriver.get(url);
-
         String page = mChromeDriver.getPageSource();
 
         if (page == null) return null;
