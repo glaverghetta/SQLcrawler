@@ -12,6 +12,8 @@ public class GitFileAnalysisResultDto {
 
     private SQLType mLikeUsage;
 
+    private SQLType mFromIntoUsage;
+
     private ApiType mApiType;
 
     private String mFileHash;
@@ -23,7 +25,7 @@ public class GitFileAnalysisResultDto {
     private String mRawUrl;
 
     private GitFileAnalysisResultDto(String projectName, String commitDate, SQLType SQLUsage, SQLType orderByUsage,
-                             SQLType groupByUsage, SQLType likeUsage, ApiType apiType, String fileHash,
+                             SQLType groupByUsage, SQLType likeUsage, SQLType fromIntoUsage, ApiType apiType, String fileHash,
                                      String fileUrl, String rawUrl) {
         mProjectName = projectName;
         mCommitDate = commitDate;
@@ -31,6 +33,7 @@ public class GitFileAnalysisResultDto {
         mOrderByUsage = orderByUsage;
         mGroupByUsage = groupByUsage;
         mLikeUsage = likeUsage;
+        mFromIntoUsage = fromIntoUsage;
         mApiType = apiType;
         mFileHash = fileHash;
         mFileUrl = fileUrl;
@@ -77,6 +80,10 @@ public class GitFileAnalysisResultDto {
         return mRawUrl;
     }
 
+    public SQLType getFromIntoUsage() {
+        return mFromIntoUsage;
+    }
+
     public static class GitFileAnalysisResultDtoBuilder {
         private String mProjectName;
         private String mCommitDate = null;
@@ -84,6 +91,7 @@ public class GitFileAnalysisResultDto {
         private SQLType mOrderByUsage = SQLType.NONE;
         private SQLType mGroupByUsage = SQLType.NONE;
         private SQLType mLikeUsage = SQLType.NONE;
+        private SQLType mFromIntoUsage = SQLType.NONE;
         private ApiType mApiType = ApiType.NONE;
         private String mFileHash = null;
         private String mFileUrl;
@@ -119,6 +127,11 @@ public class GitFileAnalysisResultDto {
             return this;
         }
 
+        public GitFileAnalysisResultDtoBuilder setFromIntoUsage(SQLType fromIntoUsage) {
+            mFromIntoUsage = fromIntoUsage;
+            return this;
+        }
+
         public GitFileAnalysisResultDtoBuilder setApiType(ApiType apiType) {
             mApiType = apiType;
             return this;
@@ -141,7 +154,7 @@ public class GitFileAnalysisResultDto {
 
         public GitFileAnalysisResultDto createGitFileAnalysisResultDto() {
             return new GitFileAnalysisResultDto(mProjectName, mCommitDate, mSQLUsage, mOrderByUsage, mGroupByUsage,
-                    mLikeUsage, mApiType, mFileHash, mFileUrl, mRawUrl);
+                    mLikeUsage, mFromIntoUsage, mApiType, mFileHash, mFileUrl, mRawUrl);
         }
     }
 }

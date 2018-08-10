@@ -20,7 +20,6 @@ public class HttpConnection {
 
             return result.toString();
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }

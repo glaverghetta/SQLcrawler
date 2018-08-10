@@ -13,8 +13,11 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.FileList;
+import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
@@ -23,7 +26,7 @@ public class GDriveConnection {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String FOLDER_ID = "1O_6CgTGPdgFu5cyMa3CqKvEAX6-jwQdO";
-    private static final String TMP_FILE_PATH = "src/main/resources/tmp.java";
+    private static final String TMP_FILE_PATH =  CredentialConstants.RESOURCES + "tmp.java";
 
     private static final java.util.Collection<String> SCOPES = DriveScopes.all();
     private static final String CREDENTIALS_FILE_PATH = "client_secret.json";
@@ -78,6 +81,19 @@ public class GDriveConnection {
 
     }
 
+    public static String getFileByHashCode(String hash) {
+        OutputStream outputStream = new ByteArrayOutputStream();
+
+        try {
+            FileList request = mDrive.files().list().setQ("name = '" + hash + ".java'").execute();
+            String id = (String) request.getFiles().get(0).get("id");
+            mDrive.files().get(id).executeMediaAndDownloadTo(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new String(((ByteArrayOutputStream) outputStream).toByteArray(), StandardCharsets.UTF_8);
+    }
 
     /**
      * Creates an authorized Credential object.
@@ -88,7 +104,7 @@ public class GDriveConnection {
      */
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = getResourceAsStream();
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
@@ -100,9 +116,8 @@ public class GDriveConnection {
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
     }
 
-    private static InputStream getResourceAsStream(String credentialsFilePath) {
-        ClassLoader classLoader = GDriveConnection.class.getClassLoader();
-        String file = classLoader.getResource(CREDENTIALS_FILE_PATH).getFile();
+    private static InputStream getResourceAsStream() {
+        String file = CredentialConstants.RESOURCES + CREDENTIALS_FILE_PATH;
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {

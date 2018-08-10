@@ -1,5 +1,6 @@
 package usf.edu.bronie.sqlcrawler;
 
+import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
 import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
 
 import java.sql.SQLException;
@@ -9,7 +10,9 @@ public class CrawlerMain {
         setupEnv();
 
         try {
-            new CodeAnalysisManager().analyzeCode();
+            int min = Integer.valueOf(args[0]);
+            int max = Integer.valueOf(args[1]);
+            new CodeAnalysisManager().analyzeCode(min, max);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -17,6 +20,6 @@ public class CrawlerMain {
 
     private static void setupEnv() {
         System.setProperty("webdriver.chrome.driver",
-                "/Users/cagricetin/Documents/DEV/BroNIE/Sqlcrawler/src/main/resources/chromedriver");
+                CredentialConstants.RESOURCES + "chromedriver");
     }
 }

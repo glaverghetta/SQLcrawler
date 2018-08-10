@@ -9,6 +9,8 @@ public class RegexConstants {
 
     public static final String STRING_LITERAL_CONCAT_WITH_GROUP_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*GROUP BY(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
+    public static final String STRING_LITERAL_CONCAT_WITH_FROM_INTO = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
     public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%|'%|'| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
     public static final String STRING_LITERAL_PREP_STATE_LIKE = "LIKE(\\r\\n|\\r|\\n|\\t| )*(\\?|:.*?\\W)(\\r\\n|\\r|\\n|\\t| )*";
@@ -26,6 +28,12 @@ public class RegexConstants {
     public static final String ORDER_BY_KEYWORD = "order by";
 
     public static final String GROUP_BY_KEYWORD = "group by";
+
+    public static final String FROM_KEYWORD = "from";
+
+    public static final String INTO_KEYWORD = "into";
+
+    public static final String UPDATE_KEYWORD = "update";
 
     public static final String LIKE_KEYWORD = "like";
 

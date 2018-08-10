@@ -24,6 +24,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         boolean isStringConcat = false;
         boolean isPreparedStatement = false;
         boolean isHardcoded = false;
+        boolean containsStringFormat = code.contains(RegexConstants.STRING_FORMAT_KEYWORD);
 
         Matcher stringLitWithVarMatcher = mStringLitWithVarPattern.matcher(code);
         while(stringLitWithVarMatcher.find()) {
@@ -49,7 +50,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
                     isPreparedStatement= true;
                     isHardcoded = false;
                     break;
-                } else if (mStringFormatPattern.matcher(keyword).find()) {
+                } else if (containsStringFormat && mStringFormatPattern.matcher(keyword).find()) {
                     isStringConcat = true;
                 } else {
                     isHardcoded = true;

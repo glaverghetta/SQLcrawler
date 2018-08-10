@@ -27,6 +27,8 @@ public class CodeAnalysisManager {
 
     private CodeAnalyzer mLikeCodeAnalyzer;
 
+    private CodeAnalyzer mFromIntoCodeAnalyzer;
+
     private ApiTypeAnalyzer mApiTypeAnalyzer;
 
     private GithubPageCrawler mPageCrawler;
@@ -34,9 +36,9 @@ public class CodeAnalysisManager {
     PreparedStatement mSelectStatement = mConnection.prepareStatement("select * from gdata where frepo_name= ?");
 
     PreparedStatement mUpdateStatement = mConnection.prepareStatement("INSERT INTO CODE_SPECS (project_name," +
-            " commit_date, sql_usage, orderby_usage, group_usage, like_usage, api_type, file_hash, file_url, " +
+            " commit_date, sql_usage, orderby_usage, group_usage, like_usage, from_into_usage, api_type, file_hash, file_url, " +
             " raw_url)" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
     public CodeAnalysisManager() throws SQLException {
 
@@ -48,15 +50,17 @@ public class CodeAnalysisManager {
 
         mLikeCodeAnalyzer = new LikeCodeAnalyzer();
 
+        mFromIntoCodeAnalyzer = new FromIntoCodeAnalyzer();
+
         mApiTypeAnalyzer = new ApiTypeAnalyzer();
 
         mPageCrawler = new GithubPageCrawler();
     }
 
-    public void analyzeCode() {
+    public void analyzeCode(int min, int max) {
         List<GitDataDTO> allUniqueProjects = getAllUniqueProjects();
         int size = allUniqueProjects.size();
-        for (int j = 15; j < size; j++) {
+        for (int j = min; j < max; j++) {
             GitDataDTO gitDataDTO = allUniqueProjects.get(j);
             List<GitDataDTO> files = getAllFilesByProjectName(gitDataDTO.getRepoName());
             int fileSize = files.size();
@@ -79,14 +83,15 @@ public class CodeAnalysisManager {
         analysisBuilder.setProjectName(file.getRepoName());
         analysisBuilder.setFileUrl(gitUrl);
 
-//        String rawUrl = UrlUtils.createGithubRawUrl(file.getRepoName(), file.getRef(), file.getPath());
-        String rawUrl = "https://raw.githubusercontent.com/InnovaCo/java-driver/1.0/driver-core/src/main/java/com/datastax/driver/core/QueryTrace.java";
+        String rawUrl = UrlUtils.createGithubRawUrl(file.getRepoName(), file.getRef(), file.getPath());
         analysisBuilder.setRawUrl(rawUrl);
 
         String sha256 = UrlUtils.sha256(rawUrl);
         analysisBuilder.setFileHash(sha256);
 
         String code = HttpConnection.get(rawUrl);
+
+        if (code == null) return;
 
         SQLType sqlCodeType = mSQLCodeAnalyzer.analyzeCode(code);
         analysisBuilder.setSQLUsage(sqlCodeType);
@@ -103,6 +108,9 @@ public class CodeAnalysisManager {
 
             ApiType apiType = mApiTypeAnalyzer.analyzeCode(code);
             analysisBuilder.setApiType(apiType);
+
+            SQLType fromIntoType = mFromIntoCodeAnalyzer.analyzeCode(code);
+            analysisBuilder.setFromIntoUsage(fromIntoType);
         }
 
         GDriveConnection.uploadData(code, sha256 + ".java");
@@ -119,10 +127,11 @@ public class CodeAnalysisManager {
             mUpdateStatement.setString(4, dto.getOrderByUsage().toString());
             mUpdateStatement.setString(5, dto.getGroupByUsage().toString());
             mUpdateStatement.setString(6, dto.getLikeUsage().toString());
-            mUpdateStatement.setString(7, dto.getApiType().toString());
-            mUpdateStatement.setString(8, dto.getFileHash());
-            mUpdateStatement.setString(9, dto.getFileUrl());
-            mUpdateStatement.setString(10, dto.getRawUrl());
+            mUpdateStatement.setString(7, dto.getFromIntoUsage().toString());
+            mUpdateStatement.setString(8, dto.getApiType().toString());
+            mUpdateStatement.setString(9, dto.getFileHash());
+            mUpdateStatement.setString(10, dto.getFileUrl());
+            mUpdateStatement.setString(11, dto.getRawUrl());
             mUpdateStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
