@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class RegexUtils {
 
-    private static Pattern mStringLitWithVarPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR);
+    private static Pattern mStringLitWithVarPattern = Pattern.compile(RegexConstants.STRING_LITERAL);
 
     public static boolean hasSpecificKeyword(String code, String keyword) {
         Matcher stringLitWithVarMatcher = mStringLitWithVarPattern.matcher(code);

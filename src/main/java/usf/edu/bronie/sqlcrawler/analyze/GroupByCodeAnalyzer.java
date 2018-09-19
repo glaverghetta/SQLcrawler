@@ -15,9 +15,7 @@ public class GroupByCodeAnalyzer implements CodeAnalyzer {
     public SQLType analyzeCode(String code) {
         if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.GROUP_BY_KEYWORD)) return SQLType.NONE;
 
-        boolean groupByConcat = isGroupByConcat(code);
-
-        return groupByConcat ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+            return isGroupByConcat(code) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
     private boolean isGroupByConcat(String code) {

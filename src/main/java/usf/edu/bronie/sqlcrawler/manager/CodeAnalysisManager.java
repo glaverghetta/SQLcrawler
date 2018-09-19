@@ -83,7 +83,8 @@ public class CodeAnalysisManager {
         analysisBuilder.setProjectName(file.getRepoName());
         analysisBuilder.setFileUrl(gitUrl);
 
-        String rawUrl = UrlUtils.createGithubRawUrl(file.getRepoName(), file.getRef(), file.getPath());
+//        String rawUrl = UrlUtils.createGithubRawUrl(file.getRepoName(), file.getRef(), file.getPath());
+        String rawUrl = "https://raw.githubusercontent.com/poporisil/azkaban3/m1/azkaban-common/src/main/java/azkaban/project/JdbcProjectLoader.java";
         analysisBuilder.setRawUrl(rawUrl);
 
         String sha256 = UrlUtils.sha256(rawUrl);

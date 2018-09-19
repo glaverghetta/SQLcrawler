@@ -15,9 +15,7 @@ public class OrderByCodeAnalyzer implements CodeAnalyzer {
     public SQLType analyzeCode(String code) {
         if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.ORDER_BY_KEYWORD)) return SQLType.NONE;
 
-        boolean orderByConcat = isOrderByConcat(code);
-
-        return orderByConcat ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        return isOrderByConcat(code) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
     private boolean isOrderByConcat(String code) {
