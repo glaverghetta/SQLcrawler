@@ -5,6 +5,7 @@ import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,11 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mStringLikePrepPattern = Pattern.compile(RegexConstants.STRING_LITERAL_PREP_STATE_LIKE,
             Pattern.CASE_INSENSITIVE);
+
+    @Override
+    public SQLType analyzeCode(String code, List sqlCodes) {
+        return null;
+    }
 
     public SQLType analyzeCode(String code) {
         if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.LIKE_KEYWORD)) return SQLType.NONE;
@@ -33,9 +39,9 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     }
 
     private boolean containsLike(String keyword) {
-        if (StringUtils.containsIgnoreCase(keyword, RegexConstants.LIKE_KEYWORD)) {
-            return true;
-        }
+//        if (StringUtils.containsIgnoreCase(keyword, RegexConstants.LIKE_KEYWORD)) {
+//            return true;
+//        }
 
         return false;
     }

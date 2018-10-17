@@ -5,11 +5,33 @@ public class RegexConstants {
     // SQL Analyzers
     public static final String STRING_LITERAL_CONCAT_WITH_VAR = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?=(\\r\\n\\|\\r\\|\\n|\\t| )*\\+(\\r\\n\\|\\r\\|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*ORDER BY(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+    public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?=(\\r\\n\\|\\r\\|\\n|\\t| )*\\+(\\r\\n\\|\\r\\|\\n|\\t| )*[a-z][_a-zA-Z0-9]*)";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_GROUP_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*GROUP BY(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+    public static final String STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_FROM_INTO = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+    public static final String STRING_LITERAL_CONCAT_WITH_TABLE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_TABLE_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[a-z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_COLUMN = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(SELECT|SELECT DISTINCT|((alter|drop) COLUMN)|WHERE)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_VIEW = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) VIEW)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_TSPACE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) TABLESPACE)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_PROC = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) PROCEDURE (IF EXIST|))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_FUN = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) FUNCTION (IF EXIST|))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_EVENT = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) EVENT (IF EXIST|))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_SERVER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) SERVER (IF EXIST|))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_DB = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) (DATABASE|SCHEMA) (IF EXIST|IF NOT EXIST|))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_INDEX = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) INDEX)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
+
+    public static final String STRING_LITERAL_CONCAT_WITH_TRIGGER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop) TRIGGER)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
     public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%|'%|'| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
@@ -21,21 +43,39 @@ public class RegexConstants {
 
     public static final String APPEND = "append(\\r\\n|\\r|\\n|\\t| )*\\((\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*(\\r\\n|\\r|\\n|\\t| )*\\)";
 
+    public static final String APPEND_LOWER = "append(\\r\\n|\\r|\\n|\\t| )*\\((\\r\\n|\\r|\\n|\\t| )*[a-z][_a-zA-Z0-9]*(\\r\\n|\\r|\\n|\\t| )*\\)";
+
     public static final String PREPARED_STATEMENT_KEYWORD = "?";
 
     public static final String PREPARED_STATEMENT_KEYWORD_JPA = "(\\r\\n|\\r|\\n|\\t| ):.*?\\W";
 
-    public static final String ORDER_BY_KEYWORD = "order by";
+    public static final String[] GROUP_ORDER_BY_KEYWORD = {"order by", "group by"};
 
-    public static final String GROUP_BY_KEYWORD = "group by";
+    public static final String[] COLUMN_KEYWORD = {"select", "select distinct", "alter column", "drop column"};
 
-    public static final String FROM_KEYWORD = "from";
+    public static final String[] TABLE_KEYWORD = {"from", "into", "update", "join", "create table", "alter table",
+            "drop table", "rename table", "truncate table"};
 
-    public static final String INTO_KEYWORD = "into";
+    public static final String[] VIEW_KEYWORD = {"create view", "drop view", "alter view"};
 
-    public static final String UPDATE_KEYWORD = "update";
+    public static final String[] TSPACE_KEYWORD = {"create tablespace", "drop tablespace", "alter tablespace"};
 
-    public static final String LIKE_KEYWORD = "like";
+    public static final String[] PROC_KEYWORD = {"create procedure", "drop procedure", "alter procedure"};
+
+    public static final String[] FUN_KEYWORD = {"create function", "drop function", "alter function"};
+
+    public static final String[] INDEX_KEYWORD = {"create index", "drop index", "alter index"};
+
+    public static final String[] EVENT_KEYWORD = {"create event", "drop event", "alter event"};
+
+    public static final String[] SERVER_KEYWORD = {"create server", "drop server", "alter server"};
+
+    public static final String[] DB_KEYWORD = {"create database", "drop database", "alter database",
+            "create schema", "drop schema", "alter schema"};
+
+    public static final String[] TRIGGER_KEYWORD = {"create trigger", "drop trigger"};
+
+    public static final String[] LIKE_KEYWORD = {"like"};
 
     public static final String STRING_FORMAT_KEYWORD = "String.format";
 

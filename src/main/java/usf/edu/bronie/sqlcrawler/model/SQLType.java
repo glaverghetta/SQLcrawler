@@ -1,19 +1,19 @@
 package usf.edu.bronie.sqlcrawler.model;
 
 public enum SQLType {
-    PARAMATIZED_QUERY("PARAMATIZED_QUERY"),
-    STRING_CONCAT("STRING_CONCAT"),
-    PARAMATIZED_QUERY_AND_CONCAT("PARAMATIZED_QUERY_AND_CONCAT"),
-    HARDCODED("HARDCODED"),
-    NONE("NONE");
+    PARAMATIZED_QUERY(4),
+    PARAMATIZED_QUERY_AND_CONCAT(3),
+    STRING_CONCAT(2),
+    HARDCODED(1),
+    NONE(0);
 
-    private String mType;
+    private int mType;
 
-    private SQLType(String type) {
+    SQLType(int type) {
         mType = type;
     }
 
-    public String toString() {
+    public int toInt() {
         return mType;
     }
 }

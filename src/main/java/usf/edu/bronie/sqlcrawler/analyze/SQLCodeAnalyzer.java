@@ -5,22 +5,22 @@ import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SQLCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mStringLitWithVarPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR);
+    private Pattern mStringLitWithVarPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR_LOWER);
 
-    private Pattern mStringLitPattern = Pattern.compile(RegexConstants.STRING_LITERAL);
-
-    private Pattern mAppendPattern = Pattern.compile(RegexConstants.APPEND);
+    private Pattern mAppendPattern = Pattern.compile(RegexConstants.APPEND_LOWER);
 
     private Pattern mStringFormatPattern = Pattern.compile(RegexConstants.STRING_FORMAT);
 
     private Pattern mJPAPreparedStatementPattern = Pattern.compile(RegexConstants.PREPARED_STATEMENT_KEYWORD_JPA);
 
-    public SQLType analyzeCode(String code) {
+    @Override
+    public SQLType analyzeCode(String code, List stringLiterals) {
         boolean isStringConcat = false;
         boolean isPreparedStatement = false;
         boolean isHardcoded = false;
@@ -42,12 +42,11 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
             }
         }
 
-        Matcher stringLitMatcher = mStringLitPattern.matcher(code);
-        while(stringLitMatcher.find()) {
-            String keyword = stringLitMatcher.group();
+        List<String> l = stringLiterals;
+        for (String keyword: l) {
             if (RegexUtils.isSQLCode(keyword)) {
                 if (hasPreparedStatement(keyword)) {
-                    isPreparedStatement= true;
+                    isPreparedStatement = true;
                     isHardcoded = false;
                     break;
                 } else if (containsStringFormat && mStringFormatPattern.matcher(keyword).find()) {
@@ -69,6 +68,10 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         }
 
         return SQLType.NONE;
+    }
+
+    public SQLType analyzeCode(String code) {
+        return null;
     }
 
     private boolean hasPreparedStatement(String group) {

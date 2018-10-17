@@ -1,16 +1,14 @@
 package usf.edu.bronie.sqlcrawler.manager;
 
 import usf.edu.bronie.sqlcrawler.analyze.*;
-import usf.edu.bronie.sqlcrawler.crawler.GithubPageCrawler;
 import usf.edu.bronie.sqlcrawler.io.DBConnection;
-import usf.edu.bronie.sqlcrawler.io.GDriveConnection;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
-import usf.edu.bronie.sqlcrawler.model.ApiType;
+import usf.edu.bronie.sqlcrawler.model.CodeSpecDTO;
 import usf.edu.bronie.sqlcrawler.model.GitDataDTO;
 import usf.edu.bronie.sqlcrawler.model.GitFileAnalysisResultDto;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
+import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 import usf.edu.bronie.sqlcrawler.utils.SQLUtils;
-import usf.edu.bronie.sqlcrawler.utils.UrlUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,38 +21,68 @@ public class CodeAnalysisManager {
 
     private CodeAnalyzer mOrderByCodeAnalyzer;
 
-    private CodeAnalyzer mGroupByCodeAnalyzer;
+    private CodeAnalyzer mColumnNameCodeAnalyzer;
 
-    private CodeAnalyzer mLikeCodeAnalyzer;
+    private CodeAnalyzer mTableNameAnalyzer;
 
-    private CodeAnalyzer mFromIntoCodeAnalyzer;
+    private CodeAnalyzer mTableNameLowerAnalyzer;
 
-    private ApiTypeAnalyzer mApiTypeAnalyzer;
+    private CodeAnalyzer mViewNameAnalyzer;
 
-    private GithubPageCrawler mPageCrawler;
+    private CodeAnalyzer mProcNameAnalyzer;
 
-    PreparedStatement mSelectStatement = mConnection.prepareStatement("select * from gdata where frepo_name= ?");
+    private CodeAnalyzer mFunNameAnalyzer;
 
-    PreparedStatement mUpdateStatement = mConnection.prepareStatement("INSERT INTO CODE_SPECS (project_name," +
-            " commit_date, sql_usage, orderby_usage, group_usage, like_usage, from_into_usage, api_type, file_hash, file_url, " +
-            " raw_url)" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+    private CodeAnalyzer mEventNameAnalyzer;
+
+    private CodeAnalyzer mTriggerNameAnalyzer;
+
+    private CodeAnalyzer mIndexNameAnalyzer;
+
+    private CodeAnalyzer mDBNameAnalyzer;
+
+    private CodeAnalyzer mServerNameAnalyzer;
+
+    private CodeAnalyzer mTSpaceNameAnalyzer;
+
+    private PreparedStatement mSelectStatement = mConnection.prepareStatement("select project_name, commit_date, " +
+            "sql_usage, like_usage, api_type, file_url, raw_url from code_specs where project_name = ?");
+
+    private PreparedStatement mUpdateStatement = mConnection.prepareStatement("INSERT INTO code_specs2 (project_name," +
+            " commit_date, sql_usage, sql_usage_lower, order_group_usage, like_usage, column_usage, table_usage, " +
+            "table_usage_lower, view_usage, proc_usage," +
+            " fun_usage, event_usage, trig_usage, index_usage, db_usage, server_usage, tspace_usage, api_type, url)" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
     public CodeAnalysisManager() throws SQLException {
 
         mSQLCodeAnalyzer = new SQLCodeAnalyzer();
 
-        mOrderByCodeAnalyzer = new OrderByCodeAnalyzer();
+        mOrderByCodeAnalyzer = new GroupOrderByCodeAnalyzer();
 
-        mGroupByCodeAnalyzer = new GroupByCodeAnalyzer();
+        mColumnNameCodeAnalyzer = new ColumnNameCodeAnalyzer();
 
-        mLikeCodeAnalyzer = new LikeCodeAnalyzer();
+        mTableNameAnalyzer = new TableNameCodeAnalyzer();
 
-        mFromIntoCodeAnalyzer = new FromIntoCodeAnalyzer();
+        mTableNameLowerAnalyzer= new TableNameLowerCodeAnalyzer();
 
-        mApiTypeAnalyzer = new ApiTypeAnalyzer();
+        mViewNameAnalyzer = new ViewNameCodeAnalyzer();
 
-        mPageCrawler = new GithubPageCrawler();
+        mProcNameAnalyzer = new ProcNameCodeAnalyzer();
+
+        mFunNameAnalyzer = new FunNameCodeAnalyzer();
+
+        mEventNameAnalyzer = new EventNameCodeAnalyzer();
+
+        mTriggerNameAnalyzer = new TriggerNameCodeAnalyzer();
+
+        mIndexNameAnalyzer = new IndexNameCodeAnalyzer();
+
+        mDBNameAnalyzer = new DBNameCodeAnalyzer();
+
+        mServerNameAnalyzer = new ServerNameCodeAnalyzer();
+
+        mTSpaceNameAnalyzer = new TableSpaceNameCodeAnalyzer();
     }
 
     public void analyzeCode(int min, int max) {
@@ -62,10 +90,10 @@ public class CodeAnalysisManager {
         int size = allUniqueProjects.size();
         for (int j = min; j < max; j++) {
             GitDataDTO gitDataDTO = allUniqueProjects.get(j);
-            List<GitDataDTO> files = getAllFilesByProjectName(gitDataDTO.getRepoName());
+            List<CodeSpecDTO> files = getAllFilesByProjectName(gitDataDTO.getRepoName());
             int fileSize = files.size();
             for (int i = 0; i < fileSize; i++) {
-                GitDataDTO file = files.get(i);
+                CodeSpecDTO file = files.get(i);
                 System.out.print("\rAnalyzing -- project #: " + j + " out of " + size +
                         " ==||== file #: " + i + " out of " + fileSize);
                 processFile(file);
@@ -73,50 +101,72 @@ public class CodeAnalysisManager {
         }
     }
 
-    private void processFile(GitDataDTO file) {
-        String gitUrl = UrlUtils.createGithubUrl(file.getRepoName(), file.getRef(), file.getPath());
-        mPageCrawler.loadUrl(gitUrl);
-        
+    private void processFile(CodeSpecDTO codeSpecDTO) {
+
         GitFileAnalysisResultDto.GitFileAnalysisResultDtoBuilder analysisBuilder =
                 new GitFileAnalysisResultDto.GitFileAnalysisResultDtoBuilder();
 
-        analysisBuilder.setProjectName(file.getRepoName());
-        analysisBuilder.setFileUrl(gitUrl);
+        analysisBuilder.setProjectName(codeSpecDTO.getProjectName());
+        analysisBuilder.setFileUrl(codeSpecDTO.getFileUrl());
+        analysisBuilder.setSQLUsage(codeSpecDTO.getSQLUsage());
+        analysisBuilder.setLikeUsage(codeSpecDTO.getLikeUsage());
+        analysisBuilder.setApiType(codeSpecDTO.getApiType());
+        analysisBuilder.setCommitDate(codeSpecDTO.getCommitDate());
 
-//        String rawUrl = UrlUtils.createGithubRawUrl(file.getRepoName(), file.getRef(), file.getPath());
-        String rawUrl = "https://raw.githubusercontent.com/poporisil/azkaban3/m1/azkaban-common/src/main/java/azkaban/project/JdbcProjectLoader.java";
-        analysisBuilder.setRawUrl(rawUrl);
-
-        String sha256 = UrlUtils.sha256(rawUrl);
-        analysisBuilder.setFileHash(sha256);
+        String rawUrl = codeSpecDTO.getRawUrl();
+//        rawUrl = "https://raw.githubusercontent.com/vzmc/K016A1743/537959ca6e397b4a00c364786c7d2d41ce79e32b/h2/src/test/org/h2/test/db/TestIndexHints.java";
 
         String code = HttpConnection.get(rawUrl);
 
         if (code == null) return;
 
-        SQLType sqlCodeType = mSQLCodeAnalyzer.analyzeCode(code);
-        analysisBuilder.setSQLUsage(sqlCodeType);
+        if (!SQLType.NONE.equals(codeSpecDTO.getSQLUsage())) {
+            List stringLiterals = RegexUtils.findAllStringLiteral(code);
 
-        if (!SQLType.NONE.equals(sqlCodeType)) {
-            SQLType orderByType = mOrderByCodeAnalyzer.analyzeCode(code);
-            analysisBuilder.setOrderByUsage(orderByType);
+            SQLType sqlType = mSQLCodeAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setSQLUsageLower(sqlType);
 
-            SQLType groupByType = mGroupByCodeAnalyzer.analyzeCode(code);
-            analysisBuilder.setGroupByUsage(groupByType);
+            SQLType orderByType = mOrderByCodeAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setOrderGroupByUsage(orderByType);
 
-            SQLType likeType = mLikeCodeAnalyzer.analyzeCode(code);
-            analysisBuilder.setLikeUsage(likeType);
+            SQLType columnSQLType = mColumnNameCodeAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setColumnUsage(columnSQLType);
 
-            ApiType apiType = mApiTypeAnalyzer.analyzeCode(code);
-            analysisBuilder.setApiType(apiType);
+            SQLType tableNameType = mTableNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setTableUsage(tableNameType);
 
-            SQLType fromIntoType = mFromIntoCodeAnalyzer.analyzeCode(code);
-            analysisBuilder.setFromIntoUsage(fromIntoType);
+            SQLType tableLowerSqlType = mTableNameLowerAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setTableUsageLower(tableLowerSqlType);
+
+            SQLType viewSqlTypes = mViewNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setViewUsage(viewSqlTypes);
+
+            SQLType procSqlType = mProcNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setProcUsage(procSqlType);
+
+            SQLType funSqlType = mFunNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setFunUsage(funSqlType);
+
+            SQLType eventSqlType = mEventNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setEventUsage(eventSqlType);
+
+            SQLType triggerSqlType = mTriggerNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setTriggerUsage(triggerSqlType);
+
+            SQLType indexSqlType = mIndexNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setIndexUsage(indexSqlType);
+
+            SQLType dbSqlType = mDBNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setDBUsage(dbSqlType);
+
+            SQLType serverSqlType = mServerNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setServerUsage(serverSqlType);
+
+            SQLType tSpaceSqlType = mTSpaceNameAnalyzer.analyzeCode(code, stringLiterals);
+            analysisBuilder.setTableSpaceUsage(tSpaceSqlType);
         }
 
-        GDriveConnection.uploadData(code, sha256 + ".java");
 
-        analysisBuilder.setCommitDate(mPageCrawler.getFileCommitDate());
         saveResults(analysisBuilder.createGitFileAnalysisResultDto());
     }
 
@@ -124,22 +174,31 @@ public class CodeAnalysisManager {
         try {
             mUpdateStatement.setString(1, dto.getProjectName());
             mUpdateStatement.setString(2, dto.getCommitDate());
-            mUpdateStatement.setString(3, dto.getSQLUsage().toString());
-            mUpdateStatement.setString(4, dto.getOrderByUsage().toString());
-            mUpdateStatement.setString(5, dto.getGroupByUsage().toString());
-            mUpdateStatement.setString(6, dto.getLikeUsage().toString());
-            mUpdateStatement.setString(7, dto.getFromIntoUsage().toString());
-            mUpdateStatement.setString(8, dto.getApiType().toString());
-            mUpdateStatement.setString(9, dto.getFileHash());
-            mUpdateStatement.setString(10, dto.getFileUrl());
-            mUpdateStatement.setString(11, dto.getRawUrl());
+            mUpdateStatement.setInt(3, dto.getSQLUsage().toInt());
+            mUpdateStatement.setInt(4, dto.getSQLUsageLower().toInt());
+            mUpdateStatement.setInt(5, dto.getOrderGroupByUsage().toInt());
+            mUpdateStatement.setInt(6, dto.getLikeUsage().toInt());
+            mUpdateStatement.setInt(7, dto.getColumnUsage().toInt());
+            mUpdateStatement.setInt(8, dto.getTableUsage().toInt());
+            mUpdateStatement.setInt(9, dto.getTableUsageLower().toInt());
+            mUpdateStatement.setInt(10, dto.getViewUsage().toInt());
+            mUpdateStatement.setInt(11, dto.getProcUsage().toInt());
+            mUpdateStatement.setInt(12, dto.getFunUsage().toInt());
+            mUpdateStatement.setInt(13, dto.getEventUsage().toInt());
+            mUpdateStatement.setInt(14, dto.getTriggerUsage().toInt());
+            mUpdateStatement.setInt(15, dto.getIndexUsage().toInt());
+            mUpdateStatement.setInt(16, dto.getDBUsage().toInt());
+            mUpdateStatement.setInt(17, dto.getServerUsage().toInt());
+            mUpdateStatement.setInt(18, dto.getTableSpaceUsage().toInt());
+            mUpdateStatement.setString(19, dto.getApiType().toString());
+            mUpdateStatement.setString(20, dto.getFileUrl());
             mUpdateStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private List<GitDataDTO> getAllFilesByProjectName(String repoName) {
+    private List<CodeSpecDTO> getAllFilesByProjectName(String repoName) {
         List l = new ArrayList();
         try {
             mSelectStatement.setString(1, repoName);
