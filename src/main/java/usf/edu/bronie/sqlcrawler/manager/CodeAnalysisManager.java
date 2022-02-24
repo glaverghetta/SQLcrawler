@@ -114,7 +114,6 @@ public class CodeAnalysisManager {
         analysisBuilder.setCommitDate(codeSpecDTO.getCommitDate());
 
         String rawUrl = codeSpecDTO.getRawUrl();
-//        rawUrl = "https://raw.githubusercontent.com/vzmc/K016A1743/537959ca6e397b4a00c364786c7d2d41ce79e32b/h2/src/test/org/h2/test/db/TestIndexHints.java";
 
         String code = HttpConnection.get(rawUrl);
 
