@@ -15,3 +15,12 @@ how SQL statements are constructed in a Java source file.
  ````
 
 * `GithubPageCrawler` and `GithubProjectCrawler` classes can crawl a GitHub project and extract source file specific information such as commit date, contributer count.
+
+
+TODO: DB notes
+
+Project table is very generic, allowing for new sources to be added (for example, searchcode also searches Fedora Project)
+
+Additional information for repos, such as stars and forks found in repo info table
+
+Add to repo_info the "used by" or dependency graph on github

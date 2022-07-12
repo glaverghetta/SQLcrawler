@@ -5,14 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/test";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/crawler";
 
     public static Connection getConnection() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection(DB_URL, "root", "");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            return DriverManager.getConnection(DB_URL, "kevin", "Super1Password");
         } catch (SQLException e) {
             e.printStackTrace();
         }

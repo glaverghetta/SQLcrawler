@@ -11,6 +11,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+/**
+    TODO: Remove this model.
+    
+    The name suggests this finds code using Github. However, it actually pulls 
+    the code from a Google Sheet that contains a project name and url. This is overly complex
+    and we will replace it.
+*/
+
 public class GithubProvider implements SourceCodeProvider {
 
     private ArrayList<GithubData> mGithubData;

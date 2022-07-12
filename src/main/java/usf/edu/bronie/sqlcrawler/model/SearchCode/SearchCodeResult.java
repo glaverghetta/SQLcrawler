@@ -1,6 +1,14 @@
-package usf.edu.bronie.sqlcrawler.model;
+package usf.edu.bronie.sqlcrawler.model.SearchCode;
 
 import java.util.List;
+
+/**
+ * Represents the results from a SearchCode query. Includes metadata, such as the
+ * page number, query, and total number of results. The {@link usf.edu.bronie.sqlcrawler.model.SearchCode.SearchCodeResult#results results}
+ * member is a {@link java.util.List List} containing the actual results for the given page number. 
+ * See {@link usf.edu.bronie.sqlcrawler.model.SearchCode.Results Results class}.  
+ * 
+ */
 
 public class SearchCodeResult {
 

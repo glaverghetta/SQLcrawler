@@ -1,4 +1,10 @@
-package usf.edu.bronie.sqlcrawler.model;
+package usf.edu.bronie.sqlcrawler.model.SearchCode;
+
+/**
+ * Represents an individual file in the results from SearchCode. 
+ * See {@link usf.edu.bronie.sqlcrawler.model.SearchCode.SearchCodeResult SearchCodeResult}.
+ * 
+ */
 
 public class Results {
     @com.google.gson.annotations.Expose

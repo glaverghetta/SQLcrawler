@@ -10,6 +10,7 @@ public class HttpConnection {
 
     public static String get(String url) {
         try {
+            System.out.println(url);
             URLConnection conn = new URL(url).openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder result = new StringBuilder();
