@@ -22,6 +22,7 @@ import java.sql.SQLException;
 public class CrawlerMain {
 
     public static void main(String[] args) {
+    	System.out.println("Testing from Bianca");
 
         String a = UrlUtils.convertRawGithubToRepo("https://raw.githubusercontent.com/Ktrio3/SQLcrawler/cfc9c02c0ea846148299a15570a4b06b10fcd3f8/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java");
 
