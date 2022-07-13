@@ -23,7 +23,7 @@ public class CrawlerMain {
 
     public static void main(String[] args) {
     	System.out.println("Testing from Bianca");
-
+    	/*
         String a = UrlUtils.convertRawGithubToRepo("https://raw.githubusercontent.com/Ktrio3/SQLcrawler/cfc9c02c0ea846148299a15570a4b06b10fcd3f8/src/main/java/usf/edu/bronie/sqlcrawler/CrawlerMain.java");
 
         System.out.println(a);
@@ -33,6 +33,7 @@ public class CrawlerMain {
         project.save();
 
         System.out.println(Project.idFromRepo("https://github.com/Philipp-Mueller/Connected_ITProjektSS18"));
+        */
 
         // CodeAnalyzer codeAnalyzer = new GroupOrderByCodeAnalyzer();
         // SourceCodeProvider scp = new SearchCodeProvider();

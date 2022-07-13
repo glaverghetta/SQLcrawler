@@ -20,4 +20,9 @@ public class GithubData {
     public void setUrl(String url) {
         this.url = url;
     }
+    
+    public GithubData(String name, String url) {
+    	this.name = name;
+    	this.url = url;
+    }
 }
