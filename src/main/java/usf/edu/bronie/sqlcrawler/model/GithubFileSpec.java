@@ -33,6 +33,20 @@ public class GithubFileSpec {
         mTotalContribution = totalContribution;
         mTotalRelease = totalRelease;
     }
+    
+    public void printFileSpecData() {
+        System.out.println(" -------------------------------------- ");
+        System.out.println("Printing data");
+        System.out.println("Star count: " + mStarCount);
+        System.out.println("Watch count: " + mWatchCount);
+        System.out.println("Fork count: " + mForkCount);
+        System.out.println("Commit Date: " + mCommitDate);
+        System.out.println("Forked from: " + mForkedFrom);
+        System.out.println("Total commit: " + mTotalCommit);
+        System.out.println("Total branch: " + mTotalBranch);
+        System.out.println("Total Contribution: " + mTotalContribution);
+        System.out.println("Total Release: " + mTotalRelease);
+    }
 
     public String getStarCount() {
         return mStarCount;
@@ -81,6 +95,16 @@ public class GithubFileSpec {
         private String mTotalContribution;
         private String mTotalRelease;
 
+        public GithubFileSpecBuilder setStarCount(int starCount) {
+            mStarCount = String.valueOf(starCount);
+            return this;
+        }
+
+        public GithubFileSpecBuilder setWatchCount(int watchCount) {
+            mWatchCount = String.valueOf(watchCount);
+            return this;
+        }
+        
         public GithubFileSpecBuilder setStarCount(String starCount) {
             mStarCount = starCount;
             return this;
@@ -95,6 +119,11 @@ public class GithubFileSpec {
             mForkCount = forkCount;
             return this;
         }
+        
+        public GithubFileSpecBuilder setForkCount(int forkCount) {
+        	mForkCount = String.valueOf(forkCount);
+        	return this;
+        }
 
         public GithubFileSpecBuilder setCommitDate(String commitDate) {
             mCommitDate = commitDate;
@@ -104,6 +133,11 @@ public class GithubFileSpec {
         public GithubFileSpecBuilder setForkedFrom(String forkedFrom) {
             mForkedFrom = forkedFrom;
             return this;
+        }
+        
+        public GithubFileSpecBuilder setForkedFrom(boolean forkedFrom) {
+        	mForkedFrom = String.valueOf(forkedFrom);
+        	return this;
         }
 
         public GithubFileSpecBuilder setTotalCommit(String totalCommit) {
