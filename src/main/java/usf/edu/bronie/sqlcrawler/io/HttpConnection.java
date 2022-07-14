@@ -32,16 +32,19 @@ public class HttpConnection {
      * This method will specifically get the number of pages, when querying
      * the GitHub API for 1/page. This value is also equal to certain values that
      * GitHub does not explicitly give regarding an API
+     * Needs extra support to handle 0/1 cases
      * @param url
      * @return Number of pages
      */
     public static String getHeadersPageCount(String url) {
     	try {
-            System.out.println(url);
             URLConnection conn = new URL(url).openConnection();
-            
-            // Testing area
-            String header = conn.getHeaderFields().get("Link").get(0);
+            List<String> headerFields = conn.getHeaderFields().get("Link");
+            if(headerFields==null) {
+            	// 0 or 1 outlier 
+            	return String.valueOf(1);
+            }
+            String header = headerFields.get(0);
             int first = header.lastIndexOf("page=");
     		int last = header.lastIndexOf("rel=\"last\"");
     		return header.substring(first+5, last-3);
@@ -50,10 +53,4 @@ public class HttpConnection {
         }
     	return null;
     }
-    /* 
-     * for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-			System.out.println("Key : " + entry.getKey() + 
-	                 " ,Value : " + entry.getValue());
-		}
-     */
 }
