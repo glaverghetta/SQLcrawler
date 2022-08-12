@@ -101,6 +101,14 @@ public class CodeAnalysisManager {
         }
     }
 
+    public Analysis proccessFile(){
+
+        //SQLUsage
+        //LikeUsage
+
+    }
+
+    //Update to match new format
     private void processFile(CodeSpecDTO codeSpecDTO) {
 
         GitFileAnalysisResultDto.GitFileAnalysisResultDtoBuilder analysisBuilder =
@@ -169,6 +177,7 @@ public class CodeAnalysisManager {
         saveResults(analysisBuilder.createGitFileAnalysisResultDto());
     }
 
+    //Don't need
     private void saveResults(GitFileAnalysisResultDto dto) {
         try {
             mUpdateStatement.setString(1, dto.getProjectName());
@@ -197,6 +206,7 @@ public class CodeAnalysisManager {
         }
     }
 
+    //Don't need
     private List<CodeSpecDTO> getAllFilesByProjectName(String repoName) {
         List l = new ArrayList();
         try {
@@ -209,7 +219,7 @@ public class CodeAnalysisManager {
         return l;
     }
 
-
+    //Don't need
     private List<GitDataDTO> getAllUniqueProjects() {
         try {
             List l = new ArrayList();

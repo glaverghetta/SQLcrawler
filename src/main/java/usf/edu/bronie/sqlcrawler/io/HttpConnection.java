@@ -3,19 +3,61 @@ package usf.edu.bronie.sqlcrawler.io;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Helper class that provides functions for retrieving data over HTTP(S).
+ */
+
 public class HttpConnection {
 
+    /**
+     * Sends an HTTP GET request to the provided URL and returns the resulting data.
+     * 
+     * @param url, String containing the URL to get
+     * @return the results as a String
+     */
     public static String get(String url) {
         try {
-            System.out.println(url);
             URLConnection conn = new URL(url).openConnection();
             
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            return result.toString();
+        } catch (IOException e) {
+        }
+        return null;
+    }
+
+    /**
+     * Sends an HTTP GET request to the provided URL and returns the resulting data.
+     * Allows for additional headers to be added to the request.
+     * 
+     * @param url, String containing the URL to get
+     * @param headers, Map<String, String> containing the headers to add to the request
+     * @return the results as a String
+     * 
+     */
+    public static String get(String url, Map<String, String> headers) {
+        try {
+            URLConnection conn = new URL(url).openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) conn;
+
+            //Add the requested headers
+            for (Map.Entry<String,String> entry : headers.entrySet()){
+                httpConn.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
             StringBuilder result = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {

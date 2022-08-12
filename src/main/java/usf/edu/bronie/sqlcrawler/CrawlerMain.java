@@ -11,6 +11,7 @@ import usf.edu.bronie.sqlcrawler.provider.GithubProvider;
 import usf.edu.bronie.sqlcrawler.provider.SourceCodeProvider;
 import usf.edu.bronie.sqlcrawler.provider.SearchCodeProvider;
 import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
+import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
 import usf.edu.bronie.sqlcrawler.model.Project;
 
@@ -24,6 +25,21 @@ import java.sql.SQLException;
 public class CrawlerMain {
 
     public static void main(String[] args) {
+
+        // SourceCodeProvider scp = new SearchCodeProvider();
+        GithubProvider scp = new GithubProvider();
+        scp = new GithubProvider();
+        scp.pollData(0, 1);
+
+        int i = 0;
+
+        while (scp.hasNext()) {
+            i++;
+            File result = scp.receiveNextData();
+            result.save();
+        }
+        System.out.println(String.format("Added %d files", i));
+
     	// TODO: Add the CLI for main so that everyone can work without commenting other people's stuff out
     	
     	/*
@@ -39,36 +55,26 @@ public class CrawlerMain {
         */
     	
     	
-    	String fileName = "urls.txt";
-    	System.out.println("Providing urls from a file: " + fileName);
+    	// String fileName = "urls.txt";
+    	// System.out.println("Providing urls from a file: " + fileName);
 		
-		// Provider
-		ExcelProvider excelProvider = new ExcelProvider();
-		excelProvider.setFile(fileName);
-		excelProvider.pollData();
-		excelProvider.printCurrentArray();
+		// // Provider
+		// ExcelProvider excelProvider = new ExcelProvider();
+		// excelProvider.setFile(fileName);
+		// excelProvider.pollData();
+		// excelProvider.printCurrentArray();
 		
-		// Crawler
+		// // Crawler
 			
-		//while(excelProvider.hasNext()) {
-			SearchData searchData = excelProvider.receiveNextData();
-			GithubCrawler gc = new GithubCrawler();
-			GithubFileSpec gh = gc.getFileSpecByUrl(searchData.getRawUrl());
-			gh.printFileSpecData();
-		//}
+		// //while(excelProvider.hasNext()) {
+		// 	SearchData searchData = excelProvider.receiveNextData();
+		// 	GithubCrawler gc = new GithubCrawler();
+		// 	GithubFileSpec gh = gc.getFileSpecByUrl(searchData.getRawUrl());
+		// 	gh.printFileSpecData();
+		// //}
 
         // CodeAnalyzer codeAnalyzer = new GroupOrderByCodeAnalyzer();
-        // SourceCodeProvider scp = new SearchCodeProvider();
-        // // SourceCodeProvider scp = new GithubProvider();
-        // scp.pollData();
-
-        // int i = 0;
-
-        // while (scp.hasNext()) {
-        //     System.out.print("\rAnalyzing -- file number: " + ++i);
-
-        //     SearchData searchData = scp.receiveNextData();
-        // }
+        
 
         // try {
         //     int min = Integer.valueOf(0);

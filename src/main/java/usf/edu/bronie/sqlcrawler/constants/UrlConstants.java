@@ -11,4 +11,9 @@ public class UrlConstants {
     public static final int GDRIVE_PAGE = 0;
 
     public static final int GITHUB_REQ_TIMEOUT = 3000; // In milliseconds
+
+    //Default Github request parameters
+    public static final String GITHUB_SEARCH_URL = "https://api.github.com/search/code?q=%s&per_page=%d&p=%d";
+
+    public static final int GITHUB_DEFAULT_MAX_PAGE = 10;
 }

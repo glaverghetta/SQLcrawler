@@ -44,9 +44,16 @@ public class UrlUtils {
         return "";
     }
 
+    public static String createGithubRawUrl(String repoName, String ref, String path) {
+        StringBuilder sb = new StringBuilder("https://raw.githubusercontent.com/");
+        sb.append(repoName).append("/");
+        sb.append(getBranch(ref)).append("/").append(path);
+        return sb.toString().replaceAll(" ", "%20");
+    }
+
     /**
      * Creates a Github URL using the repo name, branch, and path to the file
-     * TODO: This function is currently unused. Is it useful?
+     * TODO: This function is currently unused. Is it useful? Yes :)
      * 
      * @param repoName The name of the repository, including both owner and project, such as "Ktrio3/SQLcrawler"
      * @param ref The branch to use in the URL
@@ -74,13 +81,6 @@ public class UrlUtils {
             return appendMatcher.group();
         }
         return ref;
-    }
-
-    public static String createGithubRawUrl(String repoName, String ref, String path) {
-        StringBuilder sb = new StringBuilder("https://raw.githubusercontent.com/");
-        sb.append(repoName).append("/");
-        sb.append(getBranch(ref)).append("/").append(path);
-        return sb.toString().replaceAll(" ", "%20");
     }
 
     public static String sha256(String input) {

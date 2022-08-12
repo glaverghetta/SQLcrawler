@@ -1,10 +1,10 @@
-#SQL Injection Vulnerability Analyzer
+# SQL Injection Vulnerability Analyzer
 
 This tool is used to determine SQL usages in each source file.
 This tool takes an individual Java source file as an input, and matches regular expressions to identify 
 how SQL statements are constructed in a Java source file.
 
-##USAGE
+## USAGE
 
 * A database containing link to the Java source files need to be created. To do so,
   * Database URL must be entered to the DBConnection class
@@ -24,3 +24,5 @@ Project table is very generic, allowing for new sources to be added (for example
 Additional information for repos, such as stars and forks found in repo info table
 
 Add to repo_info the "used by" or dependency graph on github
+
+Add your Github token to the Credentials file. Link the github page detailing it.

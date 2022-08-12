@@ -1,13 +1,15 @@
 package usf.edu.bronie.sqlcrawler.model;
 
 import usf.edu.bronie.sqlcrawler.io.DBConnection;
+import usf.edu.bronie.sqlcrawler.io.HttpConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;  
 
 
 /**
- * Represents a project as stored in the database
+ * Represents an individual file from a project to be analzyed as stored in the database
  */
 
 public class File {
@@ -23,7 +25,7 @@ public class File {
     private String commit;
     //private String date_added;  // TODO: Implement datetime var... I don't want to play with time in Java at the moment
 
-    private String repo_url;
+    private String code = null;
 
     //Retrieves a file from DB by id
     public File(int id) {
@@ -98,13 +100,15 @@ public class File {
         return list;
     }
 
-    //Return project id for a given repo
-    static public int idFromRepo(String repo_url){
+    //Return file id for a given file
+    static public int idFromFilename(int project, String filename, String path){
         Connection mConnection = DBConnection.getConnection();
         PreparedStatement statement;
         try{
-            statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE url=?");
-            statement.setString(1, repo_url);          
+            statement = mConnection.prepareStatement("SELECT * FROM Files WHERE project=? AND filename=? AND path=?");
+            statement.setInt(1, project);
+            statement.setString(2, filename);
+            statement.setString(3, path);          
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 return resultSet.getInt("id");  
@@ -119,33 +123,36 @@ public class File {
         return 0;
     }
 
-    //Checks if the give repo already exists
-    static public Boolean checkIfExists(String repo_url){
-        if(idFromRepo(repo_url) > 0)
-        {
-            return true;
-        }
-
-        return false;
+    //Checks if the given repo already exists
+    static public Boolean checkIfExists(int project, String filename, String path){
+        return idFromFilename(project, filename, path) > 0;
     }
 
     //Saves the project to the database, if it does not already exist
     public void save(){
         PreparedStatement statement;
 
-        //If the project already exists, do nothing
-        if(checkIfExists(this.url))
-        {
+        String repo = this.repo();
+        //Check that the corresponding project exists
+        if(!Project.checkIfExists(repo)){
+            //Create the new project
+            new Project(repo.replace("https://github.com/", ""), repo).save();
+        } 
+        else if(checkIfExists(Project.idFromRepo(repo), this.filename, this.path)){
+            //TODO: Add a check to see if it's a new commit
             return;
         }
 
         try{
-            statement = mConnection.prepareStatement("INSERT INTO projects (name, url, source, date_added) VALUES (?, ?, ?, ?)");
-            // statement.setString(1, this.name);
-            // statement.setString(2, this.url);
-            // statement.setString(3, this.source);
+            statement = mConnection.prepareStatement("INSERT INTO files (project, filename, path, url, hash, commit, date_added) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            statement.setInt(1, Project.idFromRepo(repo));
+            statement.setString(2, this.filename);
+            statement.setString(3, this.path);
+            statement.setString(4, this.url);
+            statement.setString(5, this.hash);
+            statement.setString(6, this.commit);
             java.util.Date date = new java.util.Date();  //Get current time
-            statement.setTimestamp(4, new Timestamp(date.getTime()));            
+            statement.setTimestamp(7, new Timestamp(date.getTime()));            
             statement.executeUpdate();
         }
         catch(SQLException e){
@@ -155,10 +162,11 @@ public class File {
         }
     }
 
-    // Returns the repo details for this project, if applicable
-    // public RepoInfo getRepoInfo(){
-
-    // }
+    //Returns the repo url from the raw url
+    private String repo(){
+        int index = this.url.indexOf("/raw/");
+        return this.url.substring(0, index);
+    }
 
     //Getters and setters
     public int getId() {
@@ -217,12 +225,13 @@ public class File {
         this.commit = commit;
     }
 
-    public String getRepo_url() {
-        return repo_url;
-    }
+    public String getCode(){
+        if(this.code != null)
+        {
+            return this.code;
+        }
 
-    public void setRepo_url(String repo_url) {
-        this.repo_url = repo_url;
+        return this.code = HttpConnection.get(this.url);
     }
 
 }
