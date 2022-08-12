@@ -10,8 +10,6 @@ import java.sql.*;
 
 public class Project {
 
-    private Connection mConnection = DBConnection.getConnection();
-
     private int id;
     private String name;
     private String url;
@@ -99,6 +97,7 @@ public class Project {
     //Saves the project to the database, if it does not already exist
     public void save(){
         PreparedStatement statement;
+        Connection mConnection = DBConnection.getConnection();
 
         //If the project already exists, do nothing
         if(checkIfExists(this.url))

@@ -28,7 +28,6 @@ public class CrawlerMain {
 
         // SourceCodeProvider scp = new SearchCodeProvider();
         GithubProvider scp = new GithubProvider();
-        scp = new GithubProvider();
         scp.pollData(0, 1);
 
         int i = 0;

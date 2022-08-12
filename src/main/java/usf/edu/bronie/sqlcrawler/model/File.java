@@ -14,8 +14,6 @@ import java.util.List;
 
 public class File {
 
-    private Connection mConnection = DBConnection.getConnection();
-
     private int id;
     private int project;
     private String filename;
@@ -131,6 +129,7 @@ public class File {
     //Saves the project to the database, if it does not already exist
     public void save(){
         PreparedStatement statement;
+        Connection mConnection = DBConnection.getConnection();
 
         String repo = this.repo();
         //Check that the corresponding project exists

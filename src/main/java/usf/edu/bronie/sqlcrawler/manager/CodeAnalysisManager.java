@@ -101,12 +101,12 @@ public class CodeAnalysisManager {
         }
     }
 
-    public Analysis proccessFile(){
+    // public Analysis proccessFile(){
 
-        //SQLUsage
-        //LikeUsage
+    //     //SQLUsage
+    //     //LikeUsage
 
-    }
+    // }
 
     //Update to match new format
     private void processFile(CodeSpecDTO codeSpecDTO) {
