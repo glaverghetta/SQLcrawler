@@ -19,6 +19,13 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mJPAPreparedStatementPattern = Pattern.compile(RegexConstants.PREPARED_STATEMENT_KEYWORD_JPA);
 
+    private static final String DBFIELD = "sql_usage_lower";
+
+    public String getDBField()
+    {
+        return DBFIELD;
+    }
+
     @Override
     public SQLType analyzeCode(String code, List stringLiterals) {
         boolean isStringConcat = false;

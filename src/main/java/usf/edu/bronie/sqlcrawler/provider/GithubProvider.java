@@ -80,9 +80,17 @@ public class GithubProvider {
             "Authorization", "token " + CredentialConstants.GITHUB_TOKEN
         );
         String s = HttpConnection.get(url, headers);
+
         
         Gson gson = new Gson();
         SearchCode scr = gson.fromJson(s, SearchCode.class);
+        
+        if(scr == null){
+            //Unknown error, print out the response
+            System.out.println("Unknown response from Github, shown below");
+            System.out.println(s);
+            System.exit(-1);
+        }
 
         List<Item> list = scr.getItems();
 

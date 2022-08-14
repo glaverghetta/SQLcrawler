@@ -57,6 +57,26 @@ public class HttpConnection {
                 httpConn.setRequestProperty(entry.getKey(), entry.getValue());
             }
 
+            switch (httpConn.getResponseCode()) {
+                case HttpURLConnection.HTTP_OK:
+                    //Ok
+                    break;
+                case HttpURLConnection.HTTP_GATEWAY_TIMEOUT:
+                    System.out.println(" HTTP Error **gateway timeout**");
+                    System.exit(-1);
+                    break;// retry
+                case HttpURLConnection.HTTP_UNAVAILABLE:
+                    System.out.println(" HTTP Error **Unavailable**");
+                    System.exit(-1);
+                    break;// retry, server is unstable
+                default:
+                    System.out.print(" HTTP Error **Unknown** ");
+                    System.out.println(httpConn.getResponseCode());
+                    System.out.println(url);
+                    System.exit(-1);
+                    break; // abort
+            }
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
             StringBuilder result = new StringBuilder();
             String line;

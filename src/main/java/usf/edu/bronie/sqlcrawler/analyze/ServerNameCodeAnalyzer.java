@@ -11,6 +11,11 @@ public class ServerNameCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_SERVER,
             Pattern.CASE_INSENSITIVE);
+    private static final String DBFIELD = "server_usage";
+
+    public String getDBField() {
+        return DBFIELD;
+    }
 
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {

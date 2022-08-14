@@ -12,6 +12,12 @@ public class TriggerNameCodeAnalyzer implements CodeAnalyzer {
     private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_TRIGGER,
             Pattern.CASE_INSENSITIVE);
 
+    private static final String DBFIELD = "trig_usage";
+
+    public String getDBField() {
+        return DBFIELD;
+    }
+
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.TRIGGER_KEYWORD))

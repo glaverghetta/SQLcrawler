@@ -13,6 +13,12 @@ public class TableNameCodeAnalyzer implements CodeAnalyzer {
     private Pattern mStringLitWithFromIntoPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_TABLE,
             Pattern.CASE_INSENSITIVE);
 
+    private static final String DBFIELD = "table_usage";
+
+    public String getDBField() {
+        return DBFIELD;
+    }
+
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.TABLE_KEYWORD))

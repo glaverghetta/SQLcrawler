@@ -11,6 +11,11 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_COLUMN,
             Pattern.CASE_INSENSITIVE);
+    private static final String DBFIELD = "column_usage";
+
+    public String getDBField() {
+        return DBFIELD;
+    }
 
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {

@@ -20,11 +20,11 @@ public class Project {
     private String[] sources = {"github", "bitbucket", "gitlab"};
 
     //Retrieves a project from DB by id
-    //TODO: Currently just returns an empty object if it fails
+    //TODO: Currently just exits or returns an empty object if it fails
     public Project(int id) {
-        Connection mConnection = DBConnection.getConnection();
-        PreparedStatement statement;
         try{
+            Connection mConnection = DBConnection.getConnection();
+            PreparedStatement statement;
             statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE id=?");
             statement.setInt(1, id);          
             ResultSet resultSet = statement.executeQuery();
@@ -33,12 +33,15 @@ public class Project {
                 this.name = resultSet.getString("name");
                 this.url = resultSet.getString("url");
                 this.source = resultSet.getString("source");
-                return;
             }
+            statement.close();
+            mConnection.close();
         }
         catch(SQLException e){
             //Todo: For now, just print error and quit. Might want to add more complicated solution in the future
-            System.out.println(e.getMessage());
+            System.out.println("Error retrieving a project by ID");
+            System.out.println(e);
+            e.printStackTrace();
             System.exit(-1);
         }
     }
@@ -65,23 +68,29 @@ public class Project {
 
     //Return project id for a given repo
     static public int idFromRepo(String repo_url){
-        Connection mConnection = DBConnection.getConnection();
-        PreparedStatement statement;
+        int result = 0;
         try{
+            Connection mConnection = DBConnection.getConnection();
+            PreparedStatement statement;
             statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE url=?");
             statement.setString(1, repo_url);          
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                return resultSet.getInt("id");  
+                result = resultSet.getInt("id");  
             }
+
+            statement.close();
+            mConnection.close();
         }
         catch(SQLException e){
             //Todo: For now, just print error and quit. Might want to add more complicated solution in the future
-            System.out.println(e.getMessage());
+            System.out.println("Error retrieving a project by repo");
+            System.out.println(e);
+            e.printStackTrace();
             System.exit(-1);
         }
 
-        return 0;
+        return result;
     }
 
     //Checks if the give repo already exists
@@ -95,17 +104,18 @@ public class Project {
     }
 
     //Saves the project to the database, if it does not already exist
-    public void save(){
-        PreparedStatement statement;
-        Connection mConnection = DBConnection.getConnection();
-
+    public boolean save(){
+        
         //If the project already exists, do nothing
         if(checkIfExists(this.url))
         {
-            return;
+            return false;
         }
-
+        
         try{
+            PreparedStatement statement;
+            Connection mConnection = DBConnection.getConnection();
+
             statement = mConnection.prepareStatement("INSERT INTO projects (name, url, source, date_added) VALUES (?, ?, ?, ?)");
             statement.setString(1, this.name);
             statement.setString(2, this.url);
@@ -113,12 +123,19 @@ public class Project {
             java.util.Date date = new java.util.Date();  //Get current time
             statement.setTimestamp(4, new Timestamp(date.getTime()));            
             statement.executeUpdate();
+
+            statement.close();
+            mConnection.close();
         }
         catch(SQLException e){
             //Todo: For now, just print error and quit. Might want to add more complicated solution in the future
-            System.out.println(e.getMessage());
+            System.out.println("Error saving a project");
+            System.out.println(e);
+            e.printStackTrace();
             System.exit(-1);
         }
+
+        return true;
     }
 
     // Returns the repo details for this project, if applicable

@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface CodeAnalyzer {
 
-    SQLType analyzeCode(String code, List sqlCodes);
+    public SQLType analyzeCode(String code, List sqlCodes);
 
-    SQLType analyzeCode(String code);
+    public SQLType analyzeCode(String code);
+
+    public String getDBField();
 }
