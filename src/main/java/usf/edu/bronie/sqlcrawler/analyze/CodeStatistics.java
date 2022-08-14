@@ -6,6 +6,9 @@ import usf.edu.bronie.sqlcrawler.model.SQLTypeDTO;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: This will probably be implemented in SQL, but need to review this for
+//  future use
+
 public class CodeStatistics {
 
     private Map mProjectMap = new HashMap<String, Integer>();

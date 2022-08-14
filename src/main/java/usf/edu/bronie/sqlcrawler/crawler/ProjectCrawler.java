@@ -1,8 +1,5 @@
 package usf.edu.bronie.sqlcrawler.crawler;
 
-import java.util.regex.Pattern;
-
-import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
 
 /** 
@@ -10,9 +7,11 @@ import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
  * The goal of the crawler is to pull information about the repository,
  * such as statistics
  */
+
+//TODO: Update to match new data types
 public interface ProjectCrawler {
     
-	GithubFileSpec getFileSpecByUrl(String url);
+	GithubFileSpec getFileSpecByUrl(String url);  //Should probably be getProjectSpecByUrl
 }
 
 

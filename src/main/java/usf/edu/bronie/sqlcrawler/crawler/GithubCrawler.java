@@ -22,6 +22,8 @@ import usf.edu.bronie.sqlcrawler.io.HttpConnection;
 import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
 import usf.edu.bronie.sqlcrawler.utils.UrlUtils;
 
+//TODO: Update to match new DB interface
+
 public class GithubCrawler implements ProjectCrawler{
 	
     

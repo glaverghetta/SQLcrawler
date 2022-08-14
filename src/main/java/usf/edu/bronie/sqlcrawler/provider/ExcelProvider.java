@@ -2,17 +2,14 @@ package usf.edu.bronie.sqlcrawler.provider;
 
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
-
-import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
 import usf.edu.bronie.sqlcrawler.model.GithubData;
-import usf.edu.bronie.sqlcrawler.model.RootGitObject;
 import usf.edu.bronie.sqlcrawler.model.SearchData;
 import java.io.*;  
 import java.util.Scanner;
 
-//TODO: This will need to be updated slightly to work with the new classes
+//TODO: This will need to be updated slightly to work with the new logging classes 
+//  rather than printing so much
 
 /** 
  * This code pulls links from a .csv file in the format name, url
