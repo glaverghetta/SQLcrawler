@@ -10,7 +10,9 @@ import usf.edu.bronie.sqlcrawler.model.GithubData;
 import usf.edu.bronie.sqlcrawler.model.RootGitObject;
 import usf.edu.bronie.sqlcrawler.model.SearchData;
 import java.io.*;  
-import java.util.Scanner;  
+import java.util.Scanner;
+
+//TODO: This will need to be updated slightly to work with the new classes
 
 /** 
  * This code pulls links from a .csv file in the format name, url

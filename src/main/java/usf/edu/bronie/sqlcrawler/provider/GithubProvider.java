@@ -1,6 +1,5 @@
 package usf.edu.bronie.sqlcrawler.provider;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.gson.Gson;
 
 import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
@@ -9,7 +8,6 @@ import usf.edu.bronie.sqlcrawler.io.HttpConnection;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
 import usf.edu.bronie.sqlcrawler.model.Github.Item;
-import usf.edu.bronie.sqlcrawler.utils.UrlUtils;
 
 import java.util.LinkedList;
 import java.util.List;

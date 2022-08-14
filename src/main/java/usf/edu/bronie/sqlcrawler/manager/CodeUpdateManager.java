@@ -1,3 +1,6 @@
+
+//TODO: Will convert this over to manage the crawler developed to pull from Github API
+
 // package usf.edu.bronie.sqlcrawler.manager;
 
 // import usf.edu.bronie.sqlcrawler.crawler.GithubPageCrawler;
