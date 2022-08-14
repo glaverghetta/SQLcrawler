@@ -17,7 +17,7 @@ how SQL statements are constructed in a Java source file.
 * `GithubPageCrawler` and `GithubProjectCrawler` classes can crawl a GitHub project and extract source file specific information such as commit date, contributer count.
 
 
-TODO: DB notes
+TODO: DB notes. The creation statements can be found in the crawlerdb.sql file.
 
 Project table is very generic, allowing for new sources to be added (for example, searchcode also searches Fedora Project)
 
