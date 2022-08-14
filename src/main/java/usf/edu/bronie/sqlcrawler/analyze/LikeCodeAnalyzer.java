@@ -18,14 +18,22 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mStringLikePrepPattern = Pattern.compile(RegexConstants.STRING_LITERAL_PREP_STATE_LIKE,
             Pattern.CASE_INSENSITIVE);
+            
+    private static final String DBFIELD = "like_usage";
+
+    public String getDBField() {
+        return DBFIELD;
+    }
 
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {
-        return null;
+        // return null; //Old code
+        return analyzeCode(code);
     }
 
     public SQLType analyzeCode(String code) {
-        if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.LIKE_KEYWORD)) return SQLType.NONE;
+        if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.LIKE_KEYWORD))
+            return SQLType.NONE;
 
         if (isLikeConcat(code)) {
             return SQLType.STRING_CONCAT;
@@ -39,9 +47,9 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     }
 
     private boolean containsLike(String keyword) {
-//        if (StringUtils.containsIgnoreCase(keyword, RegexConstants.LIKE_KEYWORD)) {
-//            return true;
-//        }
+        // if (StringUtils.containsIgnoreCase(keyword, RegexConstants.LIKE_KEYWORD)) {
+        // return true;
+        // }
 
         return false;
     }

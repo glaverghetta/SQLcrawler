@@ -1,2 +1,9 @@
 target/
 tokens
+.classpath
+.project
+urls.txt
+.settings
+.vscode
+CredentialConstants.java
+dummy.java

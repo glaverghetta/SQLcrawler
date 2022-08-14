@@ -13,6 +13,12 @@ public class ProcNameCodeAnalyzer implements CodeAnalyzer {
     private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_PROC,
             Pattern.CASE_INSENSITIVE);
 
+    private static final String DBFIELD = "proc_usage";
+
+    public String getDBField() {
+        return DBFIELD;
+    }
+
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.PROC_KEYWORD))

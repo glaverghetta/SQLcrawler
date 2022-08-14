@@ -12,6 +12,13 @@ public class TableNameLowerCodeAnalyzer implements CodeAnalyzer {
     private Pattern mStringLitWithFromIntoPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_TABLE_LOWER,
             Pattern.CASE_INSENSITIVE);
 
+    private static final String DBFIELD = "table_usage_lower";
+
+    public String getDBField()
+    {
+        return DBFIELD;
+    }
+
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.TABLE_KEYWORD))

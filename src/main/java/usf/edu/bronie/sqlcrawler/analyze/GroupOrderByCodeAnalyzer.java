@@ -11,6 +11,13 @@ public class GroupOrderByCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mStringLitPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY,
             Pattern.CASE_INSENSITIVE);
+    
+    private static final String DBFIELD = "order_group_usage";
+
+    public String getDBField()
+    {
+        return DBFIELD;
+    }
 
     @Override
     public SQLType analyzeCode(String code, List sqlCodes) {

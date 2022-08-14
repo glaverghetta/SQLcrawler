@@ -12,9 +12,9 @@ package usf.edu.bronie.sqlcrawler.model;
 
 public class SearchData {
 
-    private String rawUrl;
-
     private String projectName;
+
+    private String rawUrl;
 
     private String code;
 
