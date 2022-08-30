@@ -7,12 +7,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents an individual file from a project to be analzyed as stored in the
  * database
  */
 
 public class File {
+
+    private static final Logger log = LoggerFactory.getLogger( File.class );
 
     private int id = 0;
     private int project = 0;
@@ -47,9 +52,7 @@ public class File {
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
-            System.out.println("Error retrieving a file by ID");
-            System.out.println(e);
-            e.printStackTrace();
+            log.error("Error retrieving a file by id: {}", id, e);
             System.exit(-1);
         }
     }
@@ -97,9 +100,7 @@ public class File {
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
-            System.out.println("Error getting all files for a project");
-            System.out.println(e);
-            e.printStackTrace();
+            log.error("Error retrieving files for Project-{}", project, e);
             System.exit(-1);
         }
 
@@ -126,9 +127,7 @@ public class File {
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
-            System.out.println("Error retrieving a file by name");
-            System.out.println(e);
-            e.printStackTrace();
+            log.error("Error retrieving a file by name: Project-{} {} {}", project, filename, path, e);
             System.exit(-1);
         }
 
@@ -151,8 +150,7 @@ public class File {
             new Project(repo.replace("https://github.com/", ""), repo).save();
         } else if (checkIfExists(Project.idFromRepo(repo), this.filename, this.path)) {
             // TODO: Add a check to see if it's a new commit
-            //Make this print a logging statement in future
-            //System.out.println(String.format("Found the existing file: %d %s %s", Project.idFromRepo(repo), this.filename, this.path));
+            log.debug("Not saving existing file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path);
             return false;
         }
 
@@ -176,9 +174,7 @@ public class File {
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
-            System.out.println("Error saving a file");
-            System.out.println(e);
-            e.printStackTrace();
+            log.error("Error saving a file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path, e);
             System.exit(-1);
         }
 
