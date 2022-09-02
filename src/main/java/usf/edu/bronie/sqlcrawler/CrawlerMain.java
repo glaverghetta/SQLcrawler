@@ -2,6 +2,7 @@ package usf.edu.bronie.sqlcrawler;
 
 import usf.edu.bronie.sqlcrawler.analyze.CodeAnalyzer;
 import usf.edu.bronie.sqlcrawler.analyze.GroupOrderByCodeAnalyzer;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.crawler.GithubCrawler;
 import usf.edu.bronie.sqlcrawler.analyze.CodeStatistics;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
@@ -27,12 +28,107 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 
-public class CrawlerMain {
 
-    public static void main(String[] args) {
-        // Create a fake file
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
+@Command(name = "ISOCodeResolve", subcommands = { CommandLine.HelpCommand.class, Pull.class, Analyze.class,
+		Statistics.class , Optimize.class, TestDummyFile.class}, description = "Tool for analyzing SQLIDIA vulnerabilities")
+public class CrawlerMain {
+	public static void main(String[] args) {
+		CommandLine cmd = new CommandLine(new CrawlerMain());
+		if (args.length == 0) {
+			cmd.usage(System.out);
+		} else {
+			cmd.execute(args);
+		}
+	}
+}
+
+// Provider command
+// Runs the provider, given the number of pages
+@Command(name = "pull", description = "Pulls [number] of pages from Github")
+class Pull implements Runnable {
+	@Parameters(paramLabel = "[number]", description = "number of pages to pull from Github")
+    int numberOfFiles;
+	
+	@Override
+	public void run() {
+		System.out.println("Running provider");
+		System.out.println("Pulling " + numberOfFiles + " files");
+	}
+}
+
+// Analyzer command
+// Runs the analyzer, given either [all] or [new]
+@Command(name = "analyze", description = "Analyze either [all] or [new] entries from the database")
+class Analyze implements Runnable {
+	@Override
+	public void run() {
+		// Runs when no sub-command is provided
+		// Default behavior to running leftover
+		analyzeNew();
+	}
+
+	@Command(name = "all", description = "Analyze all files in the database")
+	void analyzeAll() {
+		System.out.println("Add all analysis code here");
+	}
+
+	@Command(name = "new", description = "Analyze any new, non-analyzed files in the database")
+	void analyzeNew() {
+		System.out.println("Add new analysis code here");
+	}
+
+}
+
+// Statistics command
+@Command(name = "stats", description = "Provide statistics for either [all] or [new] entries from the database")
+class Statistics implements Runnable {
+
+	@Override
+	public void run() {
+		// Runs when no sub-command is provided
+		// Default behavior to running leftover
+		System.out.println(RegexConstants.STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY);
+
+		statisticsNew();
+	}
+
+	@Command(name = "all", description = "Analyze all files in the database")
+	void statisticsAll() {
+		System.out.println("Add all statistics code here");
+	}
+
+	@Command(name = "new", description = "Analyze any new, non-analyzed files in the database")
+	void statisticsNew() {
+		System.out.println("Add new statistics code here");
+	}
+}
+
+// Optimize command
+@Command(name = "optimize", description = "Runs all 3 functionalities")
+class Optimize implements Runnable {
+	@Parameters(paramLabel = "[number]", description = "number of pages to pull from Github")
+    int numberOfFiles;
+	
+	@Override
+	public void run() {
+		System.out.println("Running optimize mode");
+	}
+}
+
+//Optimize command
+@Command(name = "test", description = "Tests a dummy file using the analyzer")
+class TestDummyFile implements Runnable {
+	
+	@Override
+	public void run() {
+		System.out.println("Running test dummy file option");
+		System.out.println("The test file will be named dummy.java in the same directory as main");
+		// Create a fake file
         // Same as above, this won't create a new file on subsequent runs
-        // unless you update the file name or path, whic might be useful (i.e., name the
+        // unless you update the file name or path, which might be useful (i.e., name the
         // file "TriggerTest")
         File dummyFile = new File("dummyFile", "dummyPath", "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
                 "haaaaaash", "haaaaash again");
@@ -60,9 +156,18 @@ public class CrawlerMain {
         a.save();
         System.out.println("Successfully analyzed the dummy file");
         return;
+	}
+}
+
+
+/*
+public class CrawlerMain {
+
+    public static void main(String[] args) {
+        
         //Here is a SQL query to retrieve the results from the DB
         //  SELECT f.filename, a.* FROM crawler.analyses a LEFT JOIN crawler.projects p 
-        //  ON p.id = a.project LEFT JOIN crawler.files f ON f.id = a.file WHERE p.name="dummy/dummyRepo"
+        //  ON p.id = a.project LEFT JOIN crawler.files f ON f.id = a.file WHERE p.name="dummy/dummyRepo";
 
         // Kevin's code testing the Github provider
 
@@ -130,5 +235,5 @@ public class CrawlerMain {
         // e.printStackTrace();
         // }
 
-    }
-}
+    //}
+//}}

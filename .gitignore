@@ -8,3 +8,4 @@ urls.txt
 CredentialConstants.java
 dummy.java
 .github_cache
+.DS_Store
