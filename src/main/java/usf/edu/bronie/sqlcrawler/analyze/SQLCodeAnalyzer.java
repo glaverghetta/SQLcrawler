@@ -27,7 +27,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List stringLiterals) {
+    public SQLType analyzeCode(String code, List stringLiterals, RegexConstants.Languages language) {
         boolean isStringConcat = false;
         boolean isPreparedStatement = false;
         boolean isHardcoded = false;

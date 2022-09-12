@@ -23,7 +23,7 @@ public class GroupOrderByCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List sqlCodes) {
+    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.GROUP_ORDER_BY_KEYWORD)) return SQLType.NONE;
 
         return RegexUtils.isConcat(code, mStringLitPattern)  || RegexUtils.isConcat(code, mStringLitPatternMultiple)? SQLType.STRING_CONCAT : SQLType.HARDCODED;
@@ -32,4 +32,5 @@ public class GroupOrderByCodeAnalyzer implements CodeAnalyzer {
     public SQLType analyzeCode(String code) {
         return null;
     }
+    
 }

@@ -1,6 +1,7 @@
 package usf.edu.bronie.sqlcrawler.manager;
 
 import usf.edu.bronie.sqlcrawler.analyze.*;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
@@ -49,7 +50,7 @@ public class CodeAnalysisManager {
     //     }
     // }
 
-    public Analysis processFile(File f) {
+    public Analysis processFile(File f, RegexConstants.Languages language) {
 
         // SQLUsage
         // LikeUsage
@@ -68,7 +69,7 @@ public class CodeAnalysisManager {
 
         //Determine SQLUsage, which always runs
         SQLCodeAnalyzer sqlCodeAnalyzer = new SQLCodeAnalyzer();
-        result.setSql_usage(sqlCodeAnalyzer.analyzeCode(code, stringLiterals));
+        result.setSql_usage(sqlCodeAnalyzer.analyzeCode(code, stringLiterals, language));
 
         //Determine API type, which always runs
         ApiTypeAnalyzer apiTypeAnalyzer = new ApiTypeAnalyzer();
@@ -77,7 +78,7 @@ public class CodeAnalysisManager {
         //Run the remaining analyzers specified in the list
         if (!SQLType.NONE.equals(result.getSql_usage())) {
             for (CodeAnalyzer analyzer : analyzers) {
-                result.set(analyzer.getDBField(), analyzer.analyzeCode(code, stringLiterals));
+                result.set(analyzer.getDBField(), analyzer.analyzeCode(code, stringLiterals, language));
             }
         }
 

@@ -151,7 +151,7 @@ class TestDummyFile implements Runnable {
 
         //Now for the actual analysis!
         CodeAnalysisManager cam = new CodeAnalysisManager();
-        Analysis a = cam.processFile(dummyFile);
+        Analysis a = cam.processFile(dummyFile, RegexConstants.Languages.JAVA);
         a.save();
         System.out.println("Successfully analyzed the dummy file");
         return;

@@ -20,7 +20,7 @@ public class ProcNameCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List sqlCodes) {
+    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.PROC_KEYWORD))
             return SQLType.NONE;
 

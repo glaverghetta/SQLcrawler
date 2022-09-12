@@ -2,13 +2,21 @@ package usf.edu.bronie.sqlcrawler.constants;
 
 public class RegexConstants {
 
+	public enum Languages {
+		JAVA,
+		CSHARP,
+		PHP
+	}
     // SQL Analyzers
 	public static final String WHITESPACE = "(\\r\\n|\\r|\\n|\\t| )*";
     
 	public static final String JAVA_CONCAT = "\\+";
+	public static final String PHP_CONCAT = "\\.";
+	
+	public static final String JAVA_VARIABLE = "";
+	public static final String PHP_VARIABLE = "\\$";
 	// Concatenation with variable has the form " + var_name
-    public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "\\+" + WHITESPACE + "[_a-zA-Z][_a-zA-Z0-9]*)";
-    // to do - specifiers 
+    public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + "[_a-zA-Z][_a-zA-Z0-9]*)";
     	
     // Concatenation with multiple variable has the form x , " + var_name
     public static final String CONCAT_VAR_MULTIPLE = WHITESPACE + "(?=[_a-zA-Z][_a-zA-Z0-9]*" + WHITESPACE + "\\," + CONCAT_VAR + ")";
@@ -18,8 +26,6 @@ public class RegexConstants {
     public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?=(\\r\\n\\|\\r\\|\\n|\\t| )*\\+(\\r\\n\\|\\r\\|\\n|\\t| )*[a-z][_a-zA-Z0-9]*)";
 
     public static final String GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)";
-    //public static final String STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY = GROUP_ORDER_BY + CONCAT_VAR;
-    //public static final String STRING_LITERAL_CONCAT_MULTIPLE_WITH_GROUP_ORDER_BY = GROUP_ORDER_BY + CONCAT_VAR_MULTIPLE;
 
     public static final String TABLE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))";
     
@@ -119,6 +125,7 @@ public class RegexConstants {
 
     public static final String GITHUB_TOTAL_CONT_PATTERN = "\\d+(?= </span> contributor(s|))";
 
+    // php reminder
     public static final String IMPORT_JDBC = "java.sql";
 
     public static final String IMPORT_SPRING = "org.springframework";
@@ -127,6 +134,7 @@ public class RegexConstants {
 
     public static final String IMPORT_HIBERNATE = "org.hibernate";
     
+    public static final String JAVA_SEARCH_TERMS = "executeQuery";
     
     //Old regular expressions
     //public static final String STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
@@ -134,4 +142,9 @@ public class RegexConstants {
     //public static final String STRING_LITERAL_CONCAT_WITH_TABLE_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[a-z][_a-zA-Z0-9]*)";
     //public static final String STRING_LITERAL_CONCAT_WITH_COLUMN = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(SELECT|SELECT DISTINCT|((alter|drop) COLUMN)|WHERE)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\+(\\r\\n|\\r|\\n|\\t| )*[_a-zA-Z][_a-zA-Z0-9]*)";
 
+    //Unused regular expressions
+    //public static final String STRING_LITERAL_CONCAT_WITH_TABLE = TABLE + CONCAT_VAR;
+    //public static final String STRING_LITERAL_CONCAT_MULTIPLE_WITH_TABLE = TABLE + CONCAT_VAR_MULTIPLE;
+  //public static final String STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY = GROUP_ORDER_BY + CONCAT_VAR;
+    //public static final String STRING_LITERAL_CONCAT_MULTIPLE_WITH_GROUP_ORDER_BY = GROUP_ORDER_BY + CONCAT_VAR_MULTIPLE;	
 }
