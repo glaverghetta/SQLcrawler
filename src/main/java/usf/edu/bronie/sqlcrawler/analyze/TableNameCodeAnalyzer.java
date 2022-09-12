@@ -10,9 +10,12 @@ import java.util.regex.Pattern;
 
 public class TableNameCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mStringLitWithFromIntoPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_TABLE,
+    private Pattern mStringLitWithFromIntoPattern = Pattern.compile(RegexConstants.TABLE + RegexConstants.CONCAT_VAR,
             Pattern.CASE_INSENSITIVE);
 
+    private Pattern mStringLitWithFromIntoPatternMultiple = Pattern.compile(RegexConstants.TABLE + RegexConstants.CONCAT_VAR_MULTIPLE,
+            Pattern.CASE_INSENSITIVE);
+    
     private static final String DBFIELD = "table_usage";
 
     public String getDBField() {
@@ -24,7 +27,7 @@ public class TableNameCodeAnalyzer implements CodeAnalyzer {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.TABLE_KEYWORD))
             return SQLType.NONE;
 
-        return RegexUtils.isConcat(code, mStringLitWithFromIntoPattern) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        return RegexUtils.isConcat(code, mStringLitWithFromIntoPattern) || RegexUtils.isConcat(code, mStringLitWithFromIntoPatternMultiple)? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
     public SQLType analyzeCode(String code) {
