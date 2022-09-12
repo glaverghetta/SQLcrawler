@@ -90,7 +90,6 @@ class Statistics implements Runnable {
 	public void run() {
 		// Runs when no sub-command is provided
 		// Default behavior to running leftover
-		System.out.println(RegexConstants.STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY);
 
 		statisticsNew();
 	}

@@ -9,8 +9,12 @@ import java.util.regex.Pattern;
 
 public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_COLUMN,
+    private Pattern mStringLitPattern = Pattern.compile(RegexConstants.STRING_LITERAL_COLUMN + RegexConstants.CONCAT_VAR,
             Pattern.CASE_INSENSITIVE);
+    
+    private Pattern mStringLitPatternMultiple = Pattern.compile(RegexConstants.STRING_LITERAL_COLUMN + RegexConstants.CONCAT_VAR,
+            Pattern.CASE_INSENSITIVE);
+    
     private static final String DBFIELD = "column_usage";
 
     public String getDBField() {
@@ -22,7 +26,7 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.COLUMN_KEYWORD))
             return SQLType.NONE;
 
-        return RegexUtils.isConcat(code, mPattern) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        return RegexUtils.isConcat(code, mStringLitPattern) || RegexUtils.isConcat(code, mStringLitPatternMultiple) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
     public SQLType analyzeCode(String code) {
