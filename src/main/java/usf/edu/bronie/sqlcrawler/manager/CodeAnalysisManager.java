@@ -2,6 +2,7 @@ package usf.edu.bronie.sqlcrawler.manager;
 
 import usf.edu.bronie.sqlcrawler.analyze.*;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
@@ -50,12 +51,13 @@ public class CodeAnalysisManager {
     //     }
     // }
 
-    public Analysis processFile(File f, RegexConstants.Languages language) {
+    public Analysis processFile(File f) {
 
         // SQLUsage
         // LikeUsage
 
         String code = f.getCode();
+        Languages language = f.getLanguageType();
 
         if(code == null)
         {
@@ -182,4 +184,23 @@ public class CodeAnalysisManager {
     //     }
     // }
 
+    public static String getVariable(RegexConstants.Languages language) {
+    	switch(language) {
+    		case JAVA:
+    			return RegexConstants.JAVA_VARIABLE;
+    		case PHP:
+    			return RegexConstants.PHP_VARIABLE;
+    	}
+    	return "";
+    }
+    
+    public static String getConcat(RegexConstants.Languages language) {
+    	switch(language) {
+    		case JAVA:
+    			return RegexConstants.JAVA_CONCAT;
+    		case PHP:
+    			return RegexConstants.PHP_CONCAT;
+    	}
+    	return "";
+    }
 }
