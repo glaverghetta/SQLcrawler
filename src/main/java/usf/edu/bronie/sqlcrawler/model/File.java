@@ -1,5 +1,6 @@
 package usf.edu.bronie.sqlcrawler.model;
 
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.io.DBConnection;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
 
@@ -26,6 +27,7 @@ public class File {
     private String url;
     private String hash;
     private String commit;
+    private Languages languageType;
     // private String date_added; // TODO: Implement datetime var... I don't want to
     // play with time in Java at the moment
 
@@ -259,6 +261,14 @@ public class File {
 
     public void setCode(String code) {
         this.code = code;
+    }
+    
+    public Languages getLanguageType() {
+    	return this.languageType;
+    }
+    
+    public void setLanguageType(Languages languageType) {
+    	this.languageType = languageType;
     }
 
 }

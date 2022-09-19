@@ -3,6 +3,7 @@ package usf.edu.bronie.sqlcrawler;
 import usf.edu.bronie.sqlcrawler.analyze.CodeAnalyzer;
 import usf.edu.bronie.sqlcrawler.analyze.GroupOrderByCodeAnalyzer;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.crawler.GithubCrawler;
 import usf.edu.bronie.sqlcrawler.analyze.CodeStatistics;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
@@ -118,27 +119,37 @@ class Optimize implements Runnable {
 }
 
 //Optimize command
-@Command(name = "test", description = "Tests a dummy file using the analyzer")
+@Command(name = "test", description = "Tests a dummy file using the analyzer. Specify the type of dummy file")
 class TestDummyFile implements Runnable {
+	@Parameters(paramLabel = "[type of file]", description = "type of file to analyze. Currently supports java")
+    String typeOfFile;
 	
 	@Override
 	public void run() {
 		System.out.println("Running test dummy file option");
-		System.out.println("The test file will be named dummy.java in the same directory as main");
-		// Create a fake file
-        // Same as above, this won't create a new file on subsequent runs
-        // unless you update the file name or path, which might be useful (i.e., name the
-        // file "TriggerTest")
-        File dummyFile = new File("dummyFile", "dummyPath", "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
+		System.out.println("The test file will be named dummy.* in the same directory as main");
+		
+		File dummyFile = new File("dummyFile", "dummyPath", "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
                 "haaaaaash", "haaaaash again");
         
         dummyFile.save(); //Creates a project as well
+		Path filePath;
+		switch(typeOfFile.toLowerCase()) {
+			case "java":
+				System.out.println("Analyzing dummy.java");
+				filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.java");
+				dummyFile.setLanguageType(Languages.JAVA);
+				break;
+			case "php":
+				System.out.println("Analyzing dummy.php");
+				filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.php");
+				dummyFile.setLanguageType(Languages.PHP);
+				break;
+			default:
+				System.out.println("Error : Unrecognizable file extention");
+				return;
+		}
 
-        // Now load the code directly from a file instead of pulling from a url.
-        // Note that the getCode function will visit the url if not already set,
-        // so by setting it now we bypass that.
-        // I placed my file in the same folder as main
-        Path filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.java");
 
         try {
             String code = Files.readString(filePath, StandardCharsets.US_ASCII);
@@ -151,7 +162,8 @@ class TestDummyFile implements Runnable {
 
         //Now for the actual analysis!
         CodeAnalysisManager cam = new CodeAnalysisManager();
-        Analysis a = cam.processFile(dummyFile, RegexConstants.Languages.JAVA);
+        
+        Analysis a = cam.processFile(dummyFile);
         a.save();
         System.out.println("Successfully analyzed the dummy file");
         return;
