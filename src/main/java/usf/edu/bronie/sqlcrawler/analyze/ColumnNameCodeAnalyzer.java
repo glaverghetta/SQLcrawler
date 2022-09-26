@@ -16,16 +16,6 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
     Pattern stringLiteralPatternJava;
     Pattern stringLitPatternMultipleJava;
 
-    // private Pattern mStringLitPattern =
-    // Pattern.compile(RegexConstants.STRING_LITERAL_COLUMN +
-    // RegexConstants.CONCAT_VAR,
-    // Pattern.CASE_INSENSITIVE);
-
-    // private Pattern mStringLitPatternMultiple =
-    // Pattern.compile(RegexConstants.STRING_LITERAL_COLUMN +
-    // RegexConstants.CONCAT_VAR,
-    // Pattern.CASE_INSENSITIVE);
-
     private static final String DBFIELD = "column_usage";
 
     public String getDBField() {
