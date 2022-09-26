@@ -1,103 +1,107 @@
-package usf.edu.bronie.sqlcrawler.provider;
+//Kevin: This code has become very cumbersome compared to just using the GithubAPI directly.  
+//  Maybe we will move the code in main into here, but for the sake of getting us up 
+//  and running, I'm just commenting it out for now.
 
-import com.google.gson.Gson;
+// package usf.edu.bronie.sqlcrawler.provider;
 
-import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
-import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
-import usf.edu.bronie.sqlcrawler.io.GithubAPI;
-import usf.edu.bronie.sqlcrawler.io.HttpConnection;
-import usf.edu.bronie.sqlcrawler.io.GithubAPI.RateLimitException;
-import usf.edu.bronie.sqlcrawler.io.GithubAPI.SecondaryLimitException;
-import usf.edu.bronie.sqlcrawler.model.File;
-import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
-import usf.edu.bronie.sqlcrawler.model.Github.Item;
+// import com.google.gson.Gson;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+// import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
+// import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
+// import usf.edu.bronie.sqlcrawler.io.GithubAPI;
+// import usf.edu.bronie.sqlcrawler.io.HttpConnection;
+// import usf.edu.bronie.sqlcrawler.io.GithubAPI.RateLimitException;
+// import usf.edu.bronie.sqlcrawler.io.GithubAPI.SecondaryLimitException;
+// import usf.edu.bronie.sqlcrawler.model.File;
+// import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
+// import usf.edu.bronie.sqlcrawler.model.Github.Item;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import java.util.LinkedList;
+// import java.util.List;
+// import java.util.Queue;
 
-import java.util.Map;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
-/**
- * Using searchcode.com, the provider finds files and projects to be analyzed.
- * 
- * TODO: need to add params to modify the implementation.  For example, the language, sources, and page numbers
- */
+// import java.util.Map;
 
-public class GithubProvider {
+// /**
+//  * Using searchcode.com, the provider finds files and projects to be analyzed.
+//  * 
+//  * TODO: need to add params to modify the implementation.  For example, the language, sources, and page numbers
+//  */
 
-    private static final Logger log = LoggerFactory.getLogger(GithubProvider.class);
+// public class GithubProvider {
 
-    /** 
-     * Queue containing all of the results the provider has found. Populated using
-     * {@link #pollData() pollData} and accessed using {@link #receiveNextData() receiveNextData}.
-    */
-    private Queue<File> mQueue = new LinkedList();
-    private GithubAPI api = new GithubAPI();
+//     private static final Logger log = LoggerFactory.getLogger(GithubProvider.class);
 
-    public boolean hasNext() {
-        return !mQueue.isEmpty();
-    }
+//     /** 
+//      * Queue containing all of the results the provider has found. Populated using
+//      * {@link #pollData() pollData} and accessed using {@link #receiveNextData() receiveNextData}.
+//     */
+//     private Queue<File> mQueue = new LinkedList();
+//     private GithubAPI api = new GithubAPI();
 
-    //TODO: We should add a configure method so we can set things like the language, pages, etc.
-    //I also don't like that this prints straight to the console.  Should look into some proper logging, although 
-    // that may be overkill
-    // TODO: Need to add support for checking limits
-    // public void pollData() {
-    //     for (int i = 0; i < UrlConstants.GITHUB_DEFAULT_MAX_PAGE; i++) {
-    //         System.out.print("\rFetching data -- file number: " + i);
+//     public boolean hasNext() {
+//         return !mQueue.isEmpty();
+//     }
 
-    //         addAllUrlsByPage(i);
-    //     }
+//     //TODO: We should add a configure method so we can set things like the language, pages, etc.
+//     //I also don't like that this prints straight to the console.  Should look into some proper logging, although 
+//     // that may be overkill
+//     // TODO: Need to add support for checking limits
+//     // public void pollData() {
+//     //     for (int i = 0; i < UrlConstants.GITHUB_DEFAULT_MAX_PAGE; i++) {
+//     //         System.out.print("\rFetching data -- file number: " + i);
 
-    //     System.out.println(" ");
-    //     System.out.println(" -------------------------------------- ");
-    //     System.out.println("Total number of files to analyze: " + mQueue.size());
-    //     System.out.println(" -------------------------------------- ");
-    // }
+//     //         addAllUrlsByPage(i);
+//     //     }
 
-    public void pollData(int start, int end, String language) {
-        for (int i = start; i < end; i++) {
-            //addAllUrlsByPage(i, language);
-        }
-    }
+//     //     System.out.println(" ");
+//     //     System.out.println(" -------------------------------------- ");
+//     //     System.out.println("Total number of files to analyze: " + mQueue.size());
+//     //     System.out.println(" -------------------------------------- ");
+//     // }
 
-    public File receiveNextData() {
-        if (mQueue.isEmpty())
-            return null;
+//     public void pollData(int start, int end, String language) {
+//         for (int i = start; i < end; i++) {
+//             //addAllUrlsByPage(i, language);
+//         }
+//     }
 
-        File poll = (File) mQueue.poll();
+//     public File receiveNextData() {
+//         if (mQueue.isEmpty())
+//             return null;
 
-        return poll;
-    }
+//         File poll = (File) mQueue.poll();
 
-    /**
-     * Makes a call to the searchcode API to retrieve the query results. Searchcode 
-     * results are split into pages. The provided page is queried and the results
-     * are stored into a queue to be accessed using {@link #receiveNextData() receiveNextData}.
-     * 
-     * @param pageNumber The page number to query
-     */
-    public void addAllUrlsByPage(int pageNumber, String language) throws SecondaryLimitException, RateLimitException {
+//         return poll;
+//     }
 
-        String page = this.api.search(pageNumber, language);
-        Gson gson = new Gson();
-        SearchCode scr = gson.fromJson(page, SearchCode.class);
+//     /**
+//      * Makes a call to the searchcode API to retrieve the query results. Searchcode 
+//      * results are split into pages. The provided page is queried and the results
+//      * are stored into a queue to be accessed using {@link #receiveNextData() receiveNextData}.
+//      * 
+//      * @param pageNumber The page number to query
+//      */
+//     public void addAllUrlsByPage(int pageNumber, String language) throws SecondaryLimitException, RateLimitException {
+
+//         String page = this.api.search(pageNumber, language);
+//         Gson gson = new Gson();
+//         SearchCode scr = gson.fromJson(page, SearchCode.class);
         
-        if(scr == null){
-            //Unknown error, print out the response
-            log.error("Unknown response from Github:\n {}", page);
-            System.exit(-1);
-        }
+//         if(scr == null){
+//             //Unknown error, print out the response
+//             log.error("Unknown response from Github:\n {}", page);
+//             System.exit(-1);
+//         }
 
-        List<Item> list = scr.getItems();
+//         List<Item> list = scr.getItems();
 
-        // TODO: Currently, this just adds the raw url directly to the code on Searchcode.  We want more information than that though.
-        for (Item r: list) {
-            mQueue.add(new File(r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit()));
-        }
-    }
-}
+//         // TODO: Currently, this just adds the raw url directly to the code on Searchcode.  We want more information than that though.
+//         for (Item r: list) {
+//             mQueue.add(new File(r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit()));
+//         }
+//     }
+// }

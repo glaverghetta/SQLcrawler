@@ -11,7 +11,7 @@ import usf.edu.bronie.sqlcrawler.analyze.CodeStatistics;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.model.SearchData;
 import usf.edu.bronie.sqlcrawler.provider.ExcelProvider;
-import usf.edu.bronie.sqlcrawler.provider.GithubProvider;
+// import usf.edu.bronie.sqlcrawler.provider.GithubProvider;
 import usf.edu.bronie.sqlcrawler.provider.SourceCodeProvider;
 import usf.edu.bronie.sqlcrawler.provider.SearchCodeProvider;
 import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
