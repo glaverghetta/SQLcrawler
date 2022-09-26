@@ -31,8 +31,8 @@ public class GroupOrderByCodeAnalyzer implements CodeAnalyzer {
     public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.GROUP_ORDER_BY_KEYWORD)) return SQLType.NONE;
 
-        String variable = CodeAnalyzer.getVariable(language);
-        String concat = CodeAnalyzer.getConcat(language);
+        String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
 
         Pattern stringLiteralPatternJava = Pattern.compile(String.format(mStringLitPattern,
         		concat,
