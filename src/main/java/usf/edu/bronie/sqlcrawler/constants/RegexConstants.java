@@ -1,6 +1,11 @@
 package usf.edu.bronie.sqlcrawler.constants;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RegexConstants {
+
+        private static final Logger log = LoggerFactory.getLogger(RegexConstants.class);
 
         public enum Languages {
                 JAVA("Java"),
@@ -181,6 +186,43 @@ public class RegexConstants {
         public static final String IMPORT_HIBERNATE = "org.hibernate";
 
         public static final String JAVA_SEARCH_TERMS = "executeQuery";
+
+        public static String getVariable(RegexConstants.Languages language) {
+		switch (language) {
+			case JAVA:
+				return RegexConstants.JAVA_VARIABLE;
+			case PHP:
+				return RegexConstants.PHP_VARIABLE;
+			default:
+				log.error("Unhandled language requested {}", language);
+				System.exit(-1);
+		}
+                return "";
+	}
+
+	public static String getConcat(RegexConstants.Languages language) {
+		switch (language) {
+			case JAVA:
+				return RegexConstants.JAVA_CONCAT;
+			case PHP:
+				return RegexConstants.PHP_CONCAT;
+			default:
+				log.error("Unhandled language requested {}", language);
+				System.exit(-1);
+		}
+                return "";
+	}
+
+	public static String getSearchTerms(RegexConstants.Languages language) {
+		switch (language) {
+			case JAVA:
+				return RegexConstants.JAVA_SEARCH_TERMS;
+			default:
+				log.error("Unhandled language requested {}", language);
+				System.exit(-1);
+		}
+                return "";
+	}
 
         // Old regular expressions
         // public static final String STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY =
