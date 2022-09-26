@@ -30,8 +30,8 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.COLUMN_KEYWORD))
             return SQLType.NONE;
 
-        String variable = CodeAnalysisManager.getVariable(language);
-        String concat = CodeAnalysisManager.getConcat(language);
+        String variable = CodeAnalyzer.getVariable(language);
+        String concat = CodeAnalyzer.getConcat(language);
 
         Pattern stringLiteralPatternJava = Pattern.compile(String.format(mStringLitPattern,
         		concat,
