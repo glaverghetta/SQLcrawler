@@ -84,7 +84,6 @@ public class RegexConstants {
             "create database", "alter database", "create table", "alter table", "drop table",
             "create index", "drop index", "order by", "group by", "desc", "asc", "join", "where"};
 
-
     // String manipulation and analysis
 
     public static final String AFTER_LAST_SLASH = "([^\\/]+$)";
@@ -114,4 +113,6 @@ public class RegexConstants {
     public static final String IMPORT_JPA = "javax.persistence";
 
     public static final String IMPORT_HIBERNATE = "org.hibernate";
+
+    public static final String JAVA_SEARCH_TERMS = "executeQuery";
 }

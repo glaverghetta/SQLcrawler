@@ -1,6 +1,5 @@
 package usf.edu.bronie.sqlcrawler.analyze;
 
-import org.apache.commons.lang3.StringUtils;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;

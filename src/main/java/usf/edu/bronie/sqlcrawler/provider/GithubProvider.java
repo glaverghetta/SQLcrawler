@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 
 import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
 import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
+import usf.edu.bronie.sqlcrawler.io.GithubAPI;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
+import usf.edu.bronie.sqlcrawler.io.GithubAPI.RateLimitException;
+import usf.edu.bronie.sqlcrawler.io.GithubAPI.SecondaryLimitException;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
 import usf.edu.bronie.sqlcrawler.model.Github.Item;
@@ -12,6 +15,10 @@ import usf.edu.bronie.sqlcrawler.model.Github.Item;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 /**
@@ -22,11 +29,14 @@ import java.util.Map;
 
 public class GithubProvider {
 
+    private static final Logger log = LoggerFactory.getLogger(GithubProvider.class);
+
     /** 
      * Queue containing all of the results the provider has found. Populated using
      * {@link #pollData() pollData} and accessed using {@link #receiveNextData() receiveNextData}.
     */
     private Queue<File> mQueue = new LinkedList();
+    private GithubAPI api = new GithubAPI();
 
     public boolean hasNext() {
         return !mQueue.isEmpty();
@@ -36,22 +46,22 @@ public class GithubProvider {
     //I also don't like that this prints straight to the console.  Should look into some proper logging, although 
     // that may be overkill
     // TODO: Need to add support for checking limits
-    public void pollData() {
-        for (int i = 0; i < UrlConstants.GITHUB_DEFAULT_MAX_PAGE; i++) {
-            System.out.print("\rFetching data -- file number: " + i);
+    // public void pollData() {
+    //     for (int i = 0; i < UrlConstants.GITHUB_DEFAULT_MAX_PAGE; i++) {
+    //         System.out.print("\rFetching data -- file number: " + i);
 
-            addAllUrlsByPage(i);
-        }
+    //         addAllUrlsByPage(i);
+    //     }
 
-        System.out.println(" ");
-        System.out.println(" -------------------------------------- ");
-        System.out.println("Total number of files to analyze: " + mQueue.size());
-        System.out.println(" -------------------------------------- ");
-    }
+    //     System.out.println(" ");
+    //     System.out.println(" -------------------------------------- ");
+    //     System.out.println("Total number of files to analyze: " + mQueue.size());
+    //     System.out.println(" -------------------------------------- ");
+    // }
 
-    public void pollData(int start, int end) {
+    public void pollData(int start, int end, String language) {
         for (int i = start; i < end; i++) {
-            addAllUrlsByPage(i);
+            //addAllUrlsByPage(i, language);
         }
     }
 
@@ -71,22 +81,15 @@ public class GithubProvider {
      * 
      * @param pageNumber The page number to query
      */
-    private void addAllUrlsByPage(int pageNumber) {
-        String url = String.format(UrlConstants.GITHUB_SEARCH_URL, "executeQuery+language:java", 100, pageNumber);
-        Map<String, String> headers = Map.of(
-            "Accept", "application/vnd.github+json",
-            "Authorization", "token " + CredentialConstants.GITHUB_TOKEN
-        );
-        String s = HttpConnection.get(url, headers);
+    public void addAllUrlsByPage(int pageNumber, String language) throws SecondaryLimitException, RateLimitException {
 
-        
+        String page = this.api.search(pageNumber, language);
         Gson gson = new Gson();
-        SearchCode scr = gson.fromJson(s, SearchCode.class);
+        SearchCode scr = gson.fromJson(page, SearchCode.class);
         
         if(scr == null){
             //Unknown error, print out the response
-            System.out.println("Unknown response from Github, shown below");
-            System.out.println(s);
+            log.error("Unknown response from Github:\n {}", page);
             System.exit(-1);
         }
 
