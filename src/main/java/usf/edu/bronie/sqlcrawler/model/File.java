@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ public class File {
                 this.url = resultSet.getString("url");
                 this.hash = resultSet.getString("hash");
                 this.commit = resultSet.getString("commit");
+                this.languageType = Languages.extensionToLang(FilenameUtils.getExtension(this.filename));
             }
             statement.close();
             mConnection.close();
@@ -75,6 +77,7 @@ public class File {
         this.path = path;
         this.hash = hash;
         this.commit = commit;
+        this.languageType = Languages.extensionToLang(FilenameUtils.getExtension(this.filename));
     }
 
     // Returns all files for a given Project id

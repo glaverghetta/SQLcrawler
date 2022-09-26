@@ -5,23 +5,43 @@ import org.slf4j.LoggerFactory;
 
 public class RegexConstants {
 
-        private static final Logger log = LoggerFactory.getLogger(RegexConstants.class);
+    private static final Logger log = LoggerFactory.getLogger(RegexConstants.class);
 
-        public enum Languages {
-                JAVA("Java"),
-                CSHARP("C#"),
-                PHP("PHP");
+    public enum Languages {
+        JAVA("Java", "java"),
+        CSHARP("C#", "cs"),
+        PHP("PHP", "php");
 
-                private final String searchString;
+        private final String searchString;
+        private final String extension;
 
-                private Languages(final String searchString) {
-                        this.searchString = searchString;
-                }
-
-                public String searchString() {
-                        return this.searchString;
-                }
+        private Languages(final String searchString, String extension) {
+            this.searchString = searchString;
+            this.extension = extension;
         }
+
+        public String searchString() {
+            return this.searchString;
+        }
+
+        public String extension() {
+            return this.extension;
+        }
+
+        public static Languages extensionToLang(String ext) {
+            switch (ext) {
+                case "java":
+                    return Languages.JAVA;
+                case "cs":
+                    return Languages.CSHARP;
+                case "php":
+                    return Languages.PHP;
+            }
+            log.error("Unhandled file extension {}", ext);
+            System.exit(-1);
+            return Languages.JAVA;
+        }
+    }
 
         // SQL Analyzers
         public static final String WHITESPACE = "  (\\r\\n|\\r|\\n|\\t| )*";
