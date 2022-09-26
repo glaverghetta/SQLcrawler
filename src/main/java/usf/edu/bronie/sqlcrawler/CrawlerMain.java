@@ -2,6 +2,8 @@ package usf.edu.bronie.sqlcrawler;
 
 import usf.edu.bronie.sqlcrawler.analyze.CodeAnalyzer;
 import usf.edu.bronie.sqlcrawler.analyze.GroupOrderByCodeAnalyzer;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.crawler.GithubCrawler;
 import usf.edu.bronie.sqlcrawler.io.GithubAPI.RateLimitException;
 import usf.edu.bronie.sqlcrawler.io.GithubAPI.SecondaryLimitException;
@@ -28,83 +30,163 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
+@Command(name = "ISOCodeResolve", subcommands = { CommandLine.HelpCommand.class, Pull.class, Analyze.class,
+		Statistics.class , Optimize.class, TestDummyFile.class}, description = "Tool for analyzing SQLIDIA vulnerabilities")
+public class CrawlerMain {
+	public static void main(String[] args) {
+		CommandLine cmd = new CommandLine(new CrawlerMain());
+		if (args.length == 0) {
+			cmd.usage(System.out);
+		} else {
+			cmd.execute(args);
+		}
+	}
+}
+
+// Provider command
+// Runs the provider, given the number of pages
+@Command(name = "pull", description = "Pulls [number] of pages from Github")
+class Pull implements Runnable {
+	@Parameters(paramLabel = "[number]", description = "number of pages to pull from Github")
+    int numberOfFiles;
+	
+	@Override
+	public void run() {
+		System.out.println("Running provider");
+		System.out.println("Pulling " + numberOfFiles + " files");
+	}
+}
+
+// Analyzer command
+// Runs the analyzer, given either [all] or [new]
+@Command(name = "analyze", description = "Analyze either [all] or [new] entries from the database")
+class Analyze implements Runnable {
+	@Override
+	public void run() {
+		// Runs when no sub-command is provided
+		// Default behavior to running leftover
+		analyzeNew();
+	}
+
+	@Command(name = "all", description = "Analyze all files in the database")
+	void analyzeAll() {
+		System.out.println("Add all analysis code here");
+	}
+
+	@Command(name = "new", description = "Analyze any new, non-analyzed files in the database")
+	void analyzeNew() {
+		System.out.println("Add new analysis code here");
+	}
+
+}
+
+// Statistics command
+@Command(name = "stats", description = "Provide statistics for either [all] or [new] entries from the database")
+class Statistics implements Runnable {
+
+	@Override
+	public void run() {
+		// Runs when no sub-command is provided
+		// Default behavior to running leftover
+
+		statisticsNew();
+	}
+
+	@Command(name = "all", description = "Analyze all files in the database")
+	void statisticsAll() {
+		System.out.println("Add all statistics code here");
+	}
+
+	@Command(name = "new", description = "Analyze any new, non-analyzed files in the database")
+	void statisticsNew() {
+		System.out.println("Add new statistics code here");
+	}
+}
+
+// Optimize command
+@Command(name = "optimize", description = "Runs all 3 functionalities")
+class Optimize implements Runnable {
+	@Parameters(paramLabel = "[number]", description = "number of pages to pull from Github")
+    int numberOfFiles;
+	
+	@Override
+	public void run() {
+		System.out.println("Running optimize mode");
+	}
+}
+
+//Optimize command
+@Command(name = "test", description = "Tests a dummy file using the analyzer. Specify the type of dummy file")
+class TestDummyFile implements Runnable {
+	@Parameters(paramLabel = "[type of file]", description = "type of file to analyze. Currently supports java")
+    String typeOfFile;
+	
+	@Override
+	public void run() {
+		System.out.println("Running test dummy file option");
+		System.out.println("The test file will be named dummy.* in the same directory as main");
+		
+		File dummyFile = new File("dummyFile", "dummyPath", "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
+                "haaaaaash", "haaaaash again");
+        
+        dummyFile.save(); //Creates a project as well
+		Path filePath;
+		switch(typeOfFile.toLowerCase()) {
+			case "java":
+				System.out.println("Analyzing dummy.java");
+				filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.java");
+				dummyFile.setLanguageType(Languages.JAVA);
+				break;
+			case "php":
+				System.out.println("Analyzing dummy.php");
+				filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.php");
+				dummyFile.setLanguageType(Languages.PHP);
+				break;
+			default:
+				System.out.println("Error : Unrecognizable file extention");
+				return;
+		}
+
+
+        try {
+            String code = Files.readString(filePath, StandardCharsets.US_ASCII);
+            dummyFile.setCode(code);
+        } catch (IOException e) {
+            System.out.println("Error reading file");
+            System.out.println(e);
+            System.exit(-1);
+        }
+
+        //Now for the actual analysis!
+        CodeAnalysisManager cam = new CodeAnalysisManager();
+        
+        Analysis a = cam.processFile(dummyFile);
+        a.save();
+        System.out.println("Successfully analyzed the dummy file");
+        return;
+	}
+}
+
+
+/*
 public class CrawlerMain {
 
-    private static final Logger log = LoggerFactory.getLogger(CrawlerMain.class);
-
     public static void main(String[] args) {
-        // Create a fake file
-        // Same as above, this won't create a new file on subsequent runs
-        // unless you update the file name or path, whic might be useful (i.e., name the
-        // file "TriggerTest")
-        // File dummyFile = new File("dummyFile", "dummyPath",
-        // "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
-        // "haaaaaash", "haaaaash again");
-
-        // dummyFile.save(); //Creates a project as well
-
-        // // Now load the code directly from a file instead of pulling from a url.
-        // // Note that the getCode function will visit the url if not already set,
-        // // so by setting it now we bypass that.
-        // // I placed my file in the same folder as main
-        // Path filePath =
-        // Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.java");
-
-        // try {
-        // String code = Files.readString(filePath, StandardCharsets.US_ASCII);
-        // dummyFile.setCode(code);
-        // } catch (IOException e) {
-        // System.out.println("Error reading file");
-        // System.out.println(e);
-        // System.exit(-1);
-        // }
-
-        // //Now for the actual analysis!
-        // CodeAnalysisManager cam = new CodeAnalysisManager();
-        // Analysis a = cam.processFile(dummyFile);
-        // a.save();
-        // System.out.println("Successfully analyzed the dummy file");
-        // return;
-
-        // Here is a SQL query to retrieve the results from the DB
-        // SELECT f.filename, a.* FROM crawler.analyses a LEFT JOIN crawler.projects p
-        // ON p.id = a.project LEFT JOIN crawler.files f ON f.id = a.file WHERE
-        // p.name="dummy/dummyRepo"
+        
+        //Here is a SQL query to retrieve the results from the DB
+        //  SELECT f.filename, a.* FROM crawler.analyses a LEFT JOIN crawler.projects p 
+        //  ON p.id = a.project LEFT JOIN crawler.files f ON f.id = a.file WHERE p.name="dummy/dummyRepo";
 
         // Kevin's code testing the Github provider
 
-        CodeAnalysisManager cam = new CodeAnalysisManager();
-        GithubProvider scp = new GithubProvider();
-
-        
-
-        int updated = 0;
-        int total = 0;
-        int WAIT = 60;
-
-        for(int i = 10; i < 15; i++){
-            while(true){
-                try{
-                    scp.addAllUrlsByPage(i, "Java");
-                    break;
-                }catch(SecondaryLimitException e){
-                    log.debug("Hit secondary limit, waiting {} seconds", WAIT);
-                    try        
-                    {
-                        TimeUnit.SECONDS.sleep(WAIT);
-                    } 
-                    catch(InterruptedException ex) 
-                    {
-                        Thread.currentThread().interrupt();
-                    }
-                }catch(RateLimitException e){
-                    log.debug("{}", e);
+        // CodeAnalysisManager cam = new CodeAnalysisManager();
+        // GithubProvider scp = new GithubProvider();
+        // scp.pollData(0, 5);
 
                     long time = e.getResetTime() + 1 - Instant.now().getEpochSecond();
                     try        
@@ -179,5 +261,5 @@ public class CrawlerMain {
         // e.printStackTrace();
         // }
 
-    }
-}
+    //}
+//}}

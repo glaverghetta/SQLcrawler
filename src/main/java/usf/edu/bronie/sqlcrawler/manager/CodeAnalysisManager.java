@@ -1,6 +1,8 @@
 package usf.edu.bronie.sqlcrawler.manager;
 
 import usf.edu.bronie.sqlcrawler.analyze.*;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
@@ -55,6 +57,7 @@ public class CodeAnalysisManager {
         // LikeUsage
 
         String code = f.getCode();
+        Languages language = f.getLanguageType();
 
         if(code == null)
         {
@@ -68,7 +71,7 @@ public class CodeAnalysisManager {
 
         //Determine SQLUsage, which always runs
         SQLCodeAnalyzer sqlCodeAnalyzer = new SQLCodeAnalyzer();
-        result.setSql_usage(sqlCodeAnalyzer.analyzeCode(code, stringLiterals));
+        result.setSql_usage(sqlCodeAnalyzer.analyzeCode(code, stringLiterals, language));
 
         //Determine API type, which always runs
         ApiTypeAnalyzer apiTypeAnalyzer = new ApiTypeAnalyzer();
@@ -77,7 +80,7 @@ public class CodeAnalysisManager {
         //Run the remaining analyzers specified in the list
         if (!SQLType.NONE.equals(result.getSql_usage())) {
             for (CodeAnalyzer analyzer : analyzers) {
-                result.set(analyzer.getDBField(), analyzer.analyzeCode(code, stringLiterals));
+                result.set(analyzer.getDBField(), analyzer.analyzeCode(code, stringLiterals, language));
             }
         }
 
@@ -181,4 +184,23 @@ public class CodeAnalysisManager {
     //     }
     // }
 
+    public static String getVariable(RegexConstants.Languages language) {
+    	switch(language) {
+    		case JAVA:
+    			return RegexConstants.JAVA_VARIABLE;
+    		case PHP:
+    			return RegexConstants.PHP_VARIABLE;
+    	}
+    	return "";
+    }
+    
+    public static String getConcat(RegexConstants.Languages language) {
+    	switch(language) {
+    		case JAVA:
+    			return RegexConstants.JAVA_CONCAT;
+    		case PHP:
+    			return RegexConstants.PHP_CONCAT;
+    	}
+    	return "";
+    }
 }

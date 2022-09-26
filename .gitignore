@@ -6,5 +6,6 @@ urls.txt
 .settings
 .vscode
 CredentialConstants.java
-dummy.java
 .github_cache
+.DS_Store
+dummy.*
