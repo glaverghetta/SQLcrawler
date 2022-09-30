@@ -6,10 +6,9 @@ import usf.edu.bronie.sqlcrawler.model.SQLType;
 import java.util.List;
 
 public interface CodeAnalyzer {
+	public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language);
 
-    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language);
+	public SQLType analyzeCode(String code, RegexConstants.Languages language);
 
-    public SQLType analyzeCode(String code);
-
-    public String getDBField();
+	public String getDBField();
 }

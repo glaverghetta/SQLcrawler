@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 
 public class ServerNameCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_SERVER,
-            Pattern.CASE_INSENSITIVE);
+    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_SERVER;
     private static final String DBFIELD = "server_usage";
 
+    RegexConstants.Languages CompiledLang = null;
+    Pattern stringLiteralPatternCompiled;
+    
     public String getDBField() {
         return DBFIELD;
     }
@@ -22,10 +24,22 @@ public class ServerNameCodeAnalyzer implements CodeAnalyzer {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.SERVER_KEYWORD))
             return SQLType.NONE;
 
-        return RegexUtils.isSingleConcat(code, mStringLitWithPattern) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
+
+        if(language != CompiledLang){
+            CompiledLang = language;
+            stringLiteralPatternCompiled = Pattern.compile(String.format(mStringLitPattern,
+                    concat,
+                    variable),
+                    Pattern.CASE_INSENSITIVE);
+  
+        }
+        
+        return RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 

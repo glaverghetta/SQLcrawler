@@ -9,10 +9,14 @@ import java.util.regex.Pattern;
 
 public class DBNameCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_DB,
-            Pattern.CASE_INSENSITIVE);
+    RegexConstants.Languages lastUsedLang = null;
+    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_DB;
+    
+    RegexConstants.Languages CompiledLang = null;
+    Pattern stringLiteralPatternCompiled;
+    
     private static final String DBFIELD = "db_usage";
-
+    
     public String getDBField() {
         return DBFIELD;
     }
@@ -21,11 +25,23 @@ public class DBNameCodeAnalyzer implements CodeAnalyzer {
     public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.DB_KEYWORD))
             return SQLType.NONE;
+        
+        String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
 
-        return RegexUtils.isSingleConcat(code, mStringLitWithPattern) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        if(language != CompiledLang){
+            CompiledLang = language;
+            stringLiteralPatternCompiled = Pattern.compile(String.format(mStringLitPattern,
+                    concat,
+                    variable),
+                    Pattern.CASE_INSENSITIVE);
+  
+        }
+
+        return RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 

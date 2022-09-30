@@ -1,6 +1,5 @@
 package usf.edu.bronie.sqlcrawler.analyze;
 
-import org.apache.commons.lang3.StringUtils;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
@@ -13,11 +12,14 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mStringLitPattern = Pattern.compile(RegexConstants.STRING_LITERAL);
 
-    private Pattern mStringLitWithLikePattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_LIKE,
-            Pattern.CASE_INSENSITIVE);
+    private String mStringLitWithLikePattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_LIKE;
 
+    // This one does not take any string formatters currently
     private Pattern mStringLikePrepPattern = Pattern.compile(RegexConstants.STRING_LITERAL_PREP_STATE_LIKE,
             Pattern.CASE_INSENSITIVE);
+    
+    RegexConstants.Languages CompiledLang = null;
+    Pattern stringLiteralLikePatternCompiled;
             
     private static final String DBFIELD = "like_usage";
 
@@ -28,14 +30,14 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     @Override
     public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
         // return null; //Old code
-        return analyzeCode(code);
+        return analyzeCode(code, language);
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificKeyword(code, RegexConstants.LIKE_KEYWORD))
             return SQLType.NONE;
 
-        if (isLikeConcat(code)) {
+        if (isLikeConcat(code, language)) {
             return SQLType.STRING_CONCAT;
         }
 
@@ -54,8 +56,20 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
         return false;
     }
 
-    private boolean isLikeConcat(String code) {
-        Matcher stringLitWithOrderByMatcher = mStringLitWithLikePattern.matcher(code);
+    private boolean isLikeConcat(String code, RegexConstants.Languages language) {
+    	String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
+        
+    	if(language != CompiledLang){
+            CompiledLang = language;
+            stringLiteralLikePatternCompiled = Pattern.compile(String.format(mStringLitWithLikePattern,
+                    concat,
+                    variable),
+                    Pattern.CASE_INSENSITIVE);
+  
+        }
+    	
+        Matcher stringLitWithOrderByMatcher = stringLiteralLikePatternCompiled.matcher(code);
         while (stringLitWithOrderByMatcher.find()) {
             String keyword = stringLitWithOrderByMatcher.group();
             if (RegexUtils.isSQLCode(keyword)) {
