@@ -12,9 +12,10 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
     private String mStringLitPatternMultiple = RegexConstants.STRING_LITERAL_COLUMN
             + RegexConstants.CONCAT_VAR_MULTIPLE;
     
-    RegexConstants.Languages CompiledLang = null;
     Pattern stringLiteralPatternCompiled;
     Pattern stringLiteralPatternMultipleCompiled;
+    RegexConstants.Languages lastUsedLang = null;
+
 
     private static final String DBFIELD = "column_usage";
 
@@ -30,8 +31,9 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
 
-        if(language != CompiledLang){
-            CompiledLang = language;
+
+        if(language != lastUsedLang){
+            lastUsedLang = language;
             stringLiteralPatternCompiled = Pattern.compile(String.format(mStringLitPattern,
                     concat,
                     variable),

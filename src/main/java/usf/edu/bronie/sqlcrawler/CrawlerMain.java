@@ -172,6 +172,7 @@ class TestDummyFile implements Runnable {
         log.info("Running test dummy file option");
         log.info("The test file will be named dummy.* in the same directory as main");
 
+
         File dummyFile = new File("dummy." + typeOfFile, "dummyPath", "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
                 "haaaaaash", "haaaaash again");
 

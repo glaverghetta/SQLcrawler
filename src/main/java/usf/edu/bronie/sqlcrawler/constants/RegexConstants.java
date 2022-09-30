@@ -45,6 +45,7 @@ public class RegexConstants {
 
     // SQL Analyzers
     public static final String WHITESPACE = "(\\r\\n|\\r|\\n|\\t| )*";
+
     public static final String JAVA_CONCAT = "\\+";
     public static final String PHP_CONCAT = "\\.";
 
@@ -68,13 +69,13 @@ public class RegexConstants {
     //    public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
     //+ WHITESPACE + "\\" + "%s" + WHITESPACE + "%s" + ")";
 
+
     public static final String GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)";
 
     public static final String TABLE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))";
 
     public static final String STRING_LITERAL_CONCAT_WITH_TABLE_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
-            + ")";
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_COLUMN = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(SELECT|SELECT DISTINCT|((alter|drop) COLUMN)|WHERE)";
 
