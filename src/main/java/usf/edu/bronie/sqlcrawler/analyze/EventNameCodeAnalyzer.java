@@ -9,9 +9,11 @@ import java.util.regex.Pattern;
 
 public class EventNameCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_EVENT,
-            Pattern.CASE_INSENSITIVE);
+    private String mStringLitWithPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_EVENT;
 
+    RegexConstants.Languages CompiledLang = null;
+    Pattern stringLiteralPatternCompiled;
+    
     private static final String DBFIELD = "event_usage";
 
     public String getDBField() {
@@ -23,10 +25,22 @@ public class EventNameCodeAnalyzer implements CodeAnalyzer {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.EVENT_KEYWORD))
             return SQLType.NONE;
 
-        return RegexUtils.isSingleConcat(code, mStringLitWithPattern) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
+
+        if(language != CompiledLang){
+            CompiledLang = language;
+            stringLiteralPatternCompiled = Pattern.compile(String.format(mStringLitWithPattern,
+                    concat,
+                    variable),
+                    Pattern.CASE_INSENSITIVE);
+  
+        }
+        
+        return RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 

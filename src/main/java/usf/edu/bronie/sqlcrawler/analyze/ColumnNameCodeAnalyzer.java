@@ -12,9 +12,10 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
     private String mStringLitPatternMultiple = RegexConstants.STRING_LITERAL_COLUMN
             + RegexConstants.CONCAT_VAR_MULTIPLE;
     
+    Pattern stringLiteralPatternCompiled;
+    Pattern stringLiteralPatternMultipleCompiled;
     RegexConstants.Languages lastUsedLang = null;
-    Pattern stringLiteralPatternJava;
-    Pattern stringLitPatternMultipleJava;
+
 
     private static final String DBFIELD = "column_usage";
 
@@ -30,14 +31,15 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
 
+
         if(language != lastUsedLang){
             lastUsedLang = language;
-            stringLiteralPatternJava = Pattern.compile(String.format(mStringLitPattern,
+            stringLiteralPatternCompiled = Pattern.compile(String.format(mStringLitPattern,
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
     
-            stringLitPatternMultipleJava = Pattern.compile(String.format(mStringLitPatternMultiple,
+            stringLiteralPatternMultipleCompiled = Pattern.compile(String.format(mStringLitPatternMultiple,
                     variable,
                     concat,
                     variable),
@@ -45,12 +47,12 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
         }
 
 
-        return RegexUtils.isConcat(code, stringLiteralPatternJava)
-                || RegexUtils.isConcat(code, stringLitPatternMultipleJava) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        return RegexUtils.isConcat(code, stringLiteralPatternCompiled)
+                || RegexUtils.isConcat(code, stringLiteralPatternMultipleCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
 
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 }

@@ -44,7 +44,8 @@ public class RegexConstants {
     }
 
     // SQL Analyzers
-    public static final String WHITESPACE = "  (\\r\\n|\\r|\\n|\\t| )*";
+    public static final String WHITESPACE = "(\\r\\n|\\r|\\n|\\t| )*";
+
     public static final String JAVA_CONCAT = "\\+";
     public static final String PHP_CONCAT = "\\.";
 
@@ -60,62 +61,62 @@ public class RegexConstants {
             + WHITESPACE + "\\," + CONCAT_VAR + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_VAR = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
-            + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s" + ")";
+            + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
-            + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s" + ")";
+            + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)(\\r\\n|\\r|\\n|\\t| )*\\\"(?=(\\r\\n|\\r|\\n|\\t| )*\\"
-            + "%s " + WHITESPACE + "%s" + ")";
+    //    public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
+    //+ WHITESPACE + "\\" + "%s" + WHITESPACE + "%s" + ")";
+
 
     public static final String GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)";
 
     public static final String TABLE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))";
 
     public static final String STRING_LITERAL_CONCAT_WITH_TABLE_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(FROM|INTO|UPDATE|JOIN|((create|alter|drop|rename|truncate) TABLE))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
-            + ")";
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_COLUMN = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(SELECT|SELECT DISTINCT|((alter|drop) COLUMN)|WHERE)";
 
     public static final String STRING_LITERAL_CONCAT_WITH_VIEW = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) VIEW)"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_TSPACE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) TABLESPACE)"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_PROC = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) PROCEDURE (IF EXIST|))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_FUN = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) FUNCTION (IF EXIST|))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_EVENT = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) EVENT (IF EXIST|))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_SERVER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) SERVER (IF EXIST|))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_DB = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) (DATABASE|SCHEMA) (IF EXIST|IF NOT EXIST|))"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_INDEX = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop|alter) INDEX)"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_TRIGGER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*((create|drop) TRIGGER)"
-            + WHITESPACE + "\\\"(?=" + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s"
+            + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
     public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%|'%|'| )*\\\"(?="
-            + WHITESPACE + "\\" + "%s " + WHITESPACE + "%s" + ")";
+            + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_PREP_STATE_LIKE = "LIKE" + WHITESPACE + "(\\?|:.*?\\W)" + WHITESPACE
             + "";

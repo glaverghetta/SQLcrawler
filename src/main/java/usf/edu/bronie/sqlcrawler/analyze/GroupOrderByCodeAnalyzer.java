@@ -48,7 +48,7 @@ public class GroupOrderByCodeAnalyzer implements CodeAnalyzer {
                 || RegexUtils.isConcat(code, stringLitPatternMultipleJava) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 

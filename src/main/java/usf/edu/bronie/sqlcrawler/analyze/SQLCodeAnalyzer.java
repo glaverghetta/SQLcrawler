@@ -5,13 +5,17 @@ import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SQLCodeAnalyzer implements CodeAnalyzer {
+	//
 
-    private Pattern mStringLitWithVarPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR_LOWER);
+    private String mStringLitWithVarPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR_LOWER;
 
     private Pattern mAppendPattern = Pattern.compile(RegexConstants.APPEND_LOWER);
 
@@ -20,6 +24,9 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
     private Pattern mJPAPreparedStatementPattern = Pattern.compile(RegexConstants.PREPARED_STATEMENT_KEYWORD_JPA);
 
     private static final String DBFIELD = "sql_usage_lower";
+    
+    RegexConstants.Languages CompiledLang = null;
+    Pattern stringLiteralWithVarPatternCompiled;
 
     public String getDBField()
     {
@@ -32,8 +39,19 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         boolean isPreparedStatement = false;
         boolean isHardcoded = false;
         boolean containsStringFormat = code.contains(RegexConstants.STRING_FORMAT_KEYWORD);
+        
+        String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
 
-        Matcher stringLitWithVarMatcher = mStringLitWithVarPattern.matcher(code);
+        if(language != CompiledLang){
+            CompiledLang = language;
+            stringLiteralWithVarPatternCompiled = Pattern.compile(String.format(mStringLitWithVarPattern,
+                    concat,
+                    variable),
+                    Pattern.CASE_INSENSITIVE);
+        }
+
+        Matcher stringLitWithVarMatcher = stringLiteralWithVarPatternCompiled.matcher(code);
         while(stringLitWithVarMatcher.find()) {
             String keyword = stringLitWithVarMatcher.group();
             if (RegexUtils.isSQLCode(keyword)) {
@@ -77,7 +95,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         return SQLType.NONE;
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 

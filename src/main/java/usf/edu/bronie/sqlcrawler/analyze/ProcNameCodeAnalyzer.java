@@ -10,9 +10,11 @@ import java.util.regex.Pattern;
 
 public class ProcNameCodeAnalyzer implements CodeAnalyzer {
 
-    private Pattern mStringLitWithPattern = Pattern.compile(RegexConstants.STRING_LITERAL_CONCAT_WITH_PROC,
-            Pattern.CASE_INSENSITIVE);
+    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_PROC;
 
+    RegexConstants.Languages CompiledLang = null;
+    Pattern stringLiteralPatternCompiled;
+    
     private static final String DBFIELD = "proc_usage";
 
     public String getDBField() {
@@ -24,10 +26,22 @@ public class ProcNameCodeAnalyzer implements CodeAnalyzer {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.PROC_KEYWORD))
             return SQLType.NONE;
 
-        return RegexUtils.isSingleConcat(code, mStringLitWithPattern) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        String variable = RegexConstants.getVariable(language);
+        String concat = RegexConstants.getConcat(language);
+
+        if(language != CompiledLang){
+            CompiledLang = language;
+            stringLiteralPatternCompiled = Pattern.compile(String.format(mStringLitPattern,
+                    concat,
+                    variable),
+                    Pattern.CASE_INSENSITIVE);
+  
+        }
+        
+        return RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
     }
 
-    public SQLType analyzeCode(String code) {
+    public SQLType analyzeCode(String code, RegexConstants.Languages language) {
         return null;
     }
 
