@@ -48,11 +48,13 @@ public class RegexConstants {
 
     public static final String JAVA_CONCAT = "\\+";
     public static final String PHP_CONCAT = "\\.";
+    public static final String CSHARP_CONCAT = "\\+";
 
     public static final String JAVA_VARIABLE = "[_a-zA-Z][_a-zA-Z0-9]*";
     public static final String PHP_VARIABLE = "\\$[_a-zA-Z][_a-zA-Z0-9]*";
+    public static final String CSHARP_VARIABLE = "[_a-zA-Z][_a-zA-Z0-9]*";
+    
     // Concatenation with variable has the form " + var_name
-    // First %s is a CONCAT, second is a VARIABLE
     public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     // Concatenation with multiple variable has the form x , " + var_name
@@ -115,7 +117,7 @@ public class RegexConstants {
             + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%|'%|'| )*\\\"(?="
+    public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%%|'%%|'| )*\\\"(?="
             + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_PREP_STATE_LIKE = "LIKE" + WHITESPACE + "(\\?|:.*?\\W)" + WHITESPACE
@@ -200,8 +202,17 @@ public class RegexConstants {
     public static final String IMPORT_JPA = "javax.persistence";
 
     public static final String IMPORT_HIBERNATE = "org.hibernate";
+    
+    // C-SHARP imports
+    public static final String USING_SQL = "using System.Data.SqlClient;";
 
     public static final String JAVA_SEARCH_TERMS = "executeQuery";
+    
+    // TO DO
+    public static final String PHP_SEARCH_TERMS = "";
+    
+    // EcecuteNonQuery, ExecuteReader, ExecuteScalar in terms of popularity - all are used
+    public static final String CSHARP_SEARCH_TERMS = "ExecuteScalar";
 
     public static String getVariable(RegexConstants.Languages language) {
         switch (language) {
@@ -209,6 +220,8 @@ public class RegexConstants {
                 return RegexConstants.JAVA_VARIABLE;
             case PHP:
                 return RegexConstants.PHP_VARIABLE;
+            case CSHARP:
+            	return RegexConstants.CSHARP_VARIABLE;
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);
@@ -222,6 +235,8 @@ public class RegexConstants {
                 return RegexConstants.JAVA_CONCAT;
             case PHP:
                 return RegexConstants.PHP_CONCAT;
+            case CSHARP:
+            	return RegexConstants.CSHARP_CONCAT;
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);
@@ -233,6 +248,10 @@ public class RegexConstants {
         switch (language) {
             case JAVA:
                 return RegexConstants.JAVA_SEARCH_TERMS;
+            case PHP:
+            	return RegexConstants.PHP_SEARCH_TERMS;
+            case CSHARP:
+            	return RegexConstants.CSHARP_SEARCH_TERMS;
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);
