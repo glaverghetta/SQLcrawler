@@ -41,37 +41,78 @@ class Kevin implements Runnable {
     @Override
     public void run() {
         // Kevin's code testing the Github provider
+        int minSize = 1;
+        int maxSize = 1000;
+
+        //Add a time statement
 
         CodeAnalysisManager cam = new CodeAnalysisManager();
-        GithubAPI gh = new GithubAPI(1, 1000,  Languages.JAVA);
+        GithubAPI gh = new GithubAPI(minSize, maxSize, Languages.JAVA);
 
         int updated = 0;
         int total = 0;
         int lastTotal = 0;
 
-        while(gh.isNextPage()){
-            Queue<File> results = null;
+        while (minSize < 10000) {
+            while (gh.isNextPage()) {
+                Queue<File> results = null;
 
-            try{
-                results = gh.searchSleep();
-            }catch(PageLimitException e){
-                log.error("", e);
-                System.exit(-1);
+                try {
+                    results = gh.searchSleep();
+                } catch (PageLimitException e) {
+                    log.error("", e);
+                    System.exit(-1);
+                }
+
+                while (!results.isEmpty()) {
+                    total++;
+                    File result = results.poll();
+                    if (result.save())
+                        updated++;
+                    Analysis a = cam.processFile(result);
+                    a.save();
+                }
+
+                if (minSize != maxSize) {
+                    log.debug("Finished scanning page {} for files between {} and {} bytes (page had {} results, {} total)", gh.lastPagePulled(), minSize, maxSize,
+                        total - lastTotal, total);
+                } else {
+                    log.debug("Finished scanning page {} for files of size {} bytes (page had {} results, {} total)", gh.lastPagePulled(), minSize,
+                        total - lastTotal, total);
+                }
+
+                lastTotal = total;
+
+                //Check if we need to shrink the window
+                if(gh.getLastTotalCount() > 1000 && minSize != maxSize){
+                    //Shrink the window by half
+                    int diff = (maxSize - minSize) / 2;
+                    if(diff == 0){
+                        maxSize = minSize;  //Just a single byte size now!
+                        log.debug("Got {} results. Shrunk the search window to {} bytes.", gh.getLastTotalCount(), minSize);
+                    }else{
+                        maxSize = minSize + diff;
+                        log.debug("Got {} results. Shrunk the search window to {}-{} bytes.", gh.getLastTotalCount(), minSize, maxSize);
+                    }
+                    gh.setSize(minSize, maxSize);
+                }
             }
 
-            while (!results.isEmpty()) {
-                total++;
-                File result = results.poll();
-                if (result.save())
-                    updated++;
-                Analysis a = cam.processFile(result);
-                a.save();
+            if (minSize != maxSize) {
+                log.info("Scanned and analyzed {} files so far, added {} new files between {} and {} bytes ", total,
+                        updated, minSize, maxSize);
+            } else {
+                log.info("Scanned and analyzed {} files so far, added {} new files of size {} bytes ", total, updated,
+                        minSize);
             }
-            log.debug("Finished scanning page {} (page had {} results, {} total)", gh.lastPagePulled(), total - lastTotal, total);
-            lastTotal = total;
+
+            // Increase the range
+            int diff = maxSize - minSize;
+            minSize += diff + 1;
+            maxSize += diff + 1;
+            gh.setSize(minSize, maxSize);
         }
 
-        log.info("Scanned and analyzed {} files, added {} new files", total, updated);
     }
 }
 
@@ -148,7 +189,7 @@ class Statistics implements Runnable {
 class Optimize implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(Optimize.class);
-    
+
     @Parameters(paramLabel = "[number]", description = "number of pages to pull from Github")
     int numberOfFiles;
 
@@ -172,8 +213,8 @@ class TestDummyFile implements Runnable {
         log.info("Running test dummy file option");
         log.info("The test file will be named dummy.* in the same directory as main");
 
-
-        File dummyFile = new File("dummy." + typeOfFile, "dummyPath", "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
+        File dummyFile = new File("dummy." + typeOfFile, "dummyPath",
+                "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
                 "haaaaaash", "haaaaash again");
 
         dummyFile.save(); // Creates a project as well
