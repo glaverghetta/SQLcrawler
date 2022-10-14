@@ -46,7 +46,7 @@ public class GithubAPI {
     private Languages language;
 
     private final int SIZE_LIMIT = 100 * 1000000; // 100 MB
-    private final int PER_PAGE = 50; // TODO: Make this non-constant
+    private final int PER_PAGE = 100; // TODO: Make this non-constant
     private final int MAX_PAGE = 1000 / PER_PAGE;  //1000 is the hard-limit cap of results from GH
     private final int WAIT = 60;  //TODO: Make this non-constant
 
@@ -92,6 +92,10 @@ public class GithubAPI {
         int numPages = (lastTotalCount / PER_PAGE) + 1;
         int maxPage = numPages > MAX_PAGE ? MAX_PAGE : numPages; // Set to 10 if numPages > 10
         return lastPage < maxPage;
+    }
+
+    public int getLastTotalCount() {
+        return lastTotalCount;
     }
 
     /**
