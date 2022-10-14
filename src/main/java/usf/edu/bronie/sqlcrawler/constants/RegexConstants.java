@@ -115,7 +115,7 @@ public class RegexConstants {
             + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
-    public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%|'%|'| )*\\\"(?="
+    public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t%%|'%%|'| )*\\\"(?="
             + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_PREP_STATE_LIKE = "LIKE" + WHITESPACE + "(\\?|:.*?\\W)" + WHITESPACE
@@ -123,6 +123,7 @@ public class RegexConstants {
 
     public static final String STRING_LITERAL = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"";
 
+    //Note this % is not passed to the format function, so it does not need to be escaped
     public static final String STRING_FORMAT = "%(s|d|h|a|b|c|e|f|g|n|o|t|x)";
 
     public static final String APPEND = "append" + WHITESPACE + "\\(" + WHITESPACE + ""
@@ -201,7 +202,7 @@ public class RegexConstants {
 
     public static final String IMPORT_HIBERNATE = "org.hibernate";
 
-    public static final String JAVA_SEARCH_TERMS = "executeQuery";
+    public static final String JAVA_SEARCH_TERMS = "executeQuery"; //Sort by Stars?
 
     public static String getVariable(RegexConstants.Languages language) {
         switch (language) {
