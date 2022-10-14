@@ -26,3 +26,12 @@ Additional information for repos, such as stars and forks found in repo info tab
 Add to repo_info the "used by" or dependency graph on github
 
 Add your Github token to the Credentials file. Link the github page detailing it.
+
+
+SELECT f.filename, a.* FROM crawler.analyses a LEFT JOIN crawler.projects p ON p.id = a.project LEFT JOIN crawler.files f ON f.id = a.file WHERE p.name="dummy/dummyRepo"
+
+SELECT f.filename, a.* FROM (WITH dated_analyses AS (
+  SELECT a.*, ROW_NUMBER() OVER (PARTITION BY file ORDER BY analysis_date DESC) AS rn
+  FROM analyses AS a
+)
+SELECT * FROM dated_analyses WHERE rn = 1) as a LEFT JOIN crawler.projects p ON p.id = a.project LEFT JOIN crawler.files f ON f.id = a.file WHERE p.name="dummy/dummyRepo";
