@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Queue;
 
 import org.slf4j.Logger;
@@ -107,6 +109,7 @@ class Statistics implements Runnable {
 class Optimize implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(Optimize.class);
+    private static final Logger finalLog = LoggerFactory.getLogger("FinalLogger");
 
     @Parameters(paramLabel = "[language]", description = "the language to search for SQLIDIAs. Currently supports Java, PHP")
     String typeOfFile;
@@ -127,10 +130,15 @@ class Optimize implements Runnable {
 
     @Override
     public void run() {
-        if(startingWindow > stopPoint){
+
+        long startTime = System.currentTimeMillis();
+        int startSize = minSize;
+
+        if (minSize > stopPoint) {
             log.error("Starting point is greater than max value");
             return;
         }
+
         log.info("Running optimized mode for {} up to {} bytes, starting window {}-{}{}", typeOfFile, stopPoint,
                 minSize, minSize + startingWindow, !noShrink ? "" : " (no window shrinking)");
         int maxSize = minSize + startingWindow;
@@ -157,6 +165,7 @@ class Optimize implements Runnable {
         int updated = 0;
         int total = 0;
         int lastTotal = 0;
+        int totalNumPages = 0;
 
         while (minSize < stopPoint) {
             while (gh.isNextPage()) {
@@ -169,13 +178,18 @@ class Optimize implements Runnable {
                     System.exit(-1);
                 }
 
+                totalNumPages++;
+
                 while (!results.isEmpty()) {
                     total++;
                     File result = results.poll();
-                    if (result.save())
+                    // Only analyze if this is a new file (may be some repeats when shrinking window
+                    // size)
+                    if (result.save()) {
                         updated++;
-                    Analysis a = cam.processFile(result);
-                    a.save();
+                        Analysis a = cam.processFile(result);
+                        a.save();
+                    }
                 }
 
                 if (minSize != maxSize) {
@@ -222,6 +236,10 @@ class Optimize implements Runnable {
             maxSize += diff + 1;
             gh.setSize(minSize, maxSize);
         }
+
+        long endTime = System.currentTimeMillis();
+        finalLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", typeOfFile.toLowerCase(), startSize, stopPoint, total,
+                totalNumPages, new Date(startTime), new Date(endTime), endTime - startTime);
     }
 }
 

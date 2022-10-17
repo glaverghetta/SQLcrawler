@@ -262,6 +262,10 @@ public class File {
         return this.code = HttpConnection.get(this.url);
     }
 
+    public int getCodeSize() {
+        return this.getCode().length();
+    }
+
     public void setCode(String code) {
         this.code = code;
     }

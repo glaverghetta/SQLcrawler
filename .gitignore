@@ -9,3 +9,4 @@ CredentialConstants.java
 .github_cache
 .DS_Store
 dummy.*
+logs

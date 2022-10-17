@@ -35,6 +35,7 @@ import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
 public class GithubAPI {
 
     private static final Logger log = LoggerFactory.getLogger(GithubAPI.class);
+    private static final Logger timingLog = LoggerFactory.getLogger("GithubAPILogger");
 
     private static final String githubURL = "api.github.com";
 
@@ -317,6 +318,7 @@ public class GithubAPI {
      * @throws PageLimitException
      */
     public Queue<File> search() throws RateLimitException, SecondaryLimitException, PageLimitException {
+        long start = System.currentTimeMillis();
 
         Map<String, String> params = new HashMap<>();
 
@@ -344,6 +346,11 @@ public class GithubAPI {
         r.close();
 
         Queue<File> ret = parseSearchResults(body);
+
+        long end = System.currentTimeMillis();
+
+        timingLog.info("{} ~ {} ~ {} ~ search ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, buildQuery(), body.length(), ret.size());
+
         lastPage++; // Successfully parsed the current page, move on
         return ret;
     }
