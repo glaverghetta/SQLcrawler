@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `crawler`.`files` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `project` INT NOT NULL,
   `filename` VARCHAR(200) NULL,
+  `lang` VARCHAR(45) NULL,
   `path` TEXT NULL,
   `url` TEXT NULL,
   `hash` VARCHAR(45) NULL,

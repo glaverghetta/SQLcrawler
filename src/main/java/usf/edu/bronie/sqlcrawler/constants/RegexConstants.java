@@ -1,11 +1,11 @@
 package usf.edu.bronie.sqlcrawler.constants;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RegexConstants {
 
-    private static final Logger log = LoggerFactory.getLogger(RegexConstants.class);
+    private static final Logger log = LogManager.getLogger(RegexConstants.class);
 
     public enum Languages {
         JAVA("Java", "java"),
@@ -34,10 +34,26 @@ public class RegexConstants {
                     return Languages.JAVA;
                 case "cs":
                     return Languages.CSHARP;
-                case "php":
+                case "php": // TODO: PHP has a bunch of junk extensions. Can't use extensions like this,
+                            // at least for PHP
                     return Languages.PHP;
             }
             log.error("Unhandled file extension {}", ext);
+            System.exit(-1);
+            return Languages.JAVA;
+        }
+
+        public static Languages nameToLang(String name) {
+            switch (name.toLowerCase()) {
+                case "java":
+                    return Languages.JAVA;
+                case "php":
+                    return Languages.PHP;
+                case "c#":
+                case "cs":
+                    return Languages.CSHARP;
+            }
+            log.error("Unrecognizable file type ({})", name.toLowerCase());
             System.exit(-1);
             return Languages.JAVA;
         }
@@ -53,7 +69,8 @@ public class RegexConstants {
     public static final String PHP_VARIABLE = "\\$[_a-zA-Z][_a-zA-Z0-9]*";
     // Concatenation with variable has the form " + var_name
     // First %s is a CONCAT, second is a VARIABLE
-    public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
+    public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
+            + ")";
 
     // Concatenation with multiple variable has the form x , " + var_name
     // First %s is a VARIABLE. Note CONCAT_VAR has two %s to fill
@@ -66,9 +83,9 @@ public class RegexConstants {
     public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
             + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
-    //    public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
-    //+ WHITESPACE + "\\" + "%s" + WHITESPACE + "%s" + ")";
-
+    // public static final String STRING_LITERAL_CONCAT_WITH_VAR_LOWER =
+    // "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"(?="
+    // + WHITESPACE + "\\" + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String GROUP_ORDER_BY = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*(ORDER BY|GROUP BY)";
 
@@ -123,7 +140,8 @@ public class RegexConstants {
 
     public static final String STRING_LITERAL = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*\\\"";
 
-    //Note this % is not passed to the format function, so it does not need to be escaped
+    // Note this % is not passed to the format function, so it does not need to be
+    // escaped
     public static final String STRING_FORMAT = "%(s|d|h|a|b|c|e|f|g|n|o|t|x)";
 
     public static final String APPEND = "append" + WHITESPACE + "\\(" + WHITESPACE + ""
@@ -202,7 +220,8 @@ public class RegexConstants {
 
     public static final String IMPORT_HIBERNATE = "org.hibernate";
 
-    public static final String JAVA_SEARCH_TERMS = "executeQuery"; //Sort by Stars?
+    public static final String JAVA_SEARCH_TERMS = "executeQuery"; // Sort by Stars?
+    public static final String PHP_SEARCH_TERMS = "executeQuery";
 
     public static String getVariable(RegexConstants.Languages language) {
         switch (language) {
@@ -234,6 +253,8 @@ public class RegexConstants {
         switch (language) {
             case JAVA:
                 return RegexConstants.JAVA_SEARCH_TERMS;
+            case PHP:
+                return RegexConstants.PHP_SEARCH_TERMS;
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);

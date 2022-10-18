@@ -6,11 +6,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Helper class that provides functions for retrieving data over HTTP(S).
@@ -18,7 +24,8 @@ import org.slf4j.LoggerFactory;
 
 public class HttpConnection {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpConnection.class);
+    private static final Logger log = LogManager.getLogger(HttpConnection.class);
+    private static final Logger timingLog = LogManager.getLogger("NetworkLogger");
 
     // Should switch these over to using OKHttp
 
@@ -30,21 +37,27 @@ public class HttpConnection {
      * @return the results as a String
      */
     public static String get(String url) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        log.debug("Getting {}", url);
+
+        Response r = null;
         try {
-            URLConnection conn = new URL(url).openConnection();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder result = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
+            Call c = client.newCall(request); 
+            long start = System.currentTimeMillis();
+            r = c.execute();
+            long end = System.currentTimeMillis();
 
-            return result.toString();
+            timingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+            return r.body().string();
         } catch (IOException e) {
             log.error("Error retrieving {}", url, e);
             System.exit(-1);
         }
+
         return null;
     }
 
@@ -58,6 +71,8 @@ public class HttpConnection {
      * @return the results as a String
      * 
      */
+    // TODO: Unused function. Remove?
+    // TODO: Update to use okhttp like the above, with logging
     public static String get(String url, Map<String, String> headers) {
         try {
             URLConnection conn = new URL(url).openConnection();
@@ -110,6 +125,7 @@ public class HttpConnection {
      * @param url
      * @return Number of pages
      */
+     //TODO: Use okhttp and add logging
     public static String getHeadersPageCount(String url) {
         try {
             URLConnection conn = new URL(url).openConnection();
