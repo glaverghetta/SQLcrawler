@@ -1,11 +1,11 @@
 package usf.edu.bronie.sqlcrawler.constants;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RegexConstants {
 
-    private static final Logger log = LoggerFactory.getLogger(RegexConstants.class);
+    private static final Logger log = LogManager.getLogger(RegexConstants.class);
 
     public enum Languages {
         JAVA("Java", "java"),
@@ -34,16 +34,26 @@ public class RegexConstants {
                     return Languages.JAVA;
                 case "cs":
                     return Languages.CSHARP;
-                case "php":  //TODO: PHP has a bunch of junk extensions.  Can't use extensions like this, at least for PHP
-                case "phpt": //  The same probably applies to Python as well, since both have several very popular templating framework inside HTML files
-                case "inc":
-                case "php3":
-                case "php4":
-                case "php5":
-                case "phtml":
+                case "php": // TODO: PHP has a bunch of junk extensions. Can't use extensions like this,
+                            // at least for PHP
                     return Languages.PHP;
             }
             log.error("Unhandled file extension {}", ext);
+            System.exit(-1);
+            return Languages.JAVA;
+        }
+
+        public static Languages nameToLang(String name) {
+            switch (name.toLowerCase()) {
+                case "java":
+                    return Languages.JAVA;
+                case "php":
+                    return Languages.PHP;
+                case "c#":
+                case "cs":
+                    return Languages.CSHARP;
+            }
+            log.error("Unrecognizable file type ({})", name.toLowerCase());
             System.exit(-1);
             return Languages.JAVA;
         }

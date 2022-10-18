@@ -11,12 +11,13 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
 import okhttp3.Cache;
+import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -34,8 +35,10 @@ import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
  */
 public class GithubAPI {
 
-    private static final Logger log = LoggerFactory.getLogger(GithubAPI.class);
-    private static final Logger timingLog = LoggerFactory.getLogger("GithubAPILogger");
+    private static final Logger log = LogManager.getLogger(GithubAPI.class);
+    private static final Logger timingLog = LogManager.getLogger("GithubAPILogger");
+    private static final Logger networkTimingLog = LogManager.getLogger("NetworkLogger");
+    private static final Logger throttleTimingLog = LogManager.getLogger("GithubThrottlingLogger");
 
     private static final String githubURL = "api.github.com";
 
@@ -48,8 +51,8 @@ public class GithubAPI {
 
     private final int SIZE_LIMIT = 100 * 1000000; // 100 MB
     private final int PER_PAGE = 100; // TODO: Make this non-constant
-    private final int MAX_PAGE = 1000 / PER_PAGE;  //1000 is the hard-limit cap of results from GH
-    private final int WAIT = 60;  //TODO: Make this non-constant
+    private final int MAX_PAGE = 1000 / PER_PAGE; // 1000 is the hard-limit cap of results from GH
+    private final int WAIT = 60; // TODO: Make this non-constant
 
     // Start all limits/times as unknown
     private int searchLimit = -1;
@@ -208,7 +211,12 @@ public class GithubAPI {
 
         Response r = null;
         try {
-            r = client.newCall(request).execute();
+            Call c = client.newCall(request);
+            long start = System.currentTimeMillis();
+            r = c.execute();
+            long end = System.currentTimeMillis();
+
+            networkTimingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
         } catch (IOException e) {
             log.error("Failed to reach Github API", e);
             System.exit(-1);
@@ -246,12 +254,20 @@ public class GithubAPI {
         if (r.code() == 403) {
             // Check regular limit (may occur if user is using API elsewhere)
             if (Integer.parseInt(r.header("x-ratelimit-remaining")) == 0) {
-                throw new RateLimitException(Long.parseLong(r.header("x-ratelimit-reset")),
+                Long reset = Long.parseLong(r.header("x-ratelimit-reset")) * 1000; //Seconds to milliseconds
+                throttleTimingLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {}", r.header("x-ratelimit-resource"),
+                        new Date(reset), reset - System.currentTimeMillis(), this.lastPage + 1, this.minSize,
+                        this.maxSize);
+                r.close();
+                throw new RateLimitException(Long.parseLong(r.header("x-ratelimit-reset")) * 1000,
                         r.header("x-ratelimit-resource"));
             }
             r.close();
 
             // Must be secondary
+            Long current = System.currentTimeMillis();
+            throttleTimingLog.info("Secondary ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(current + 60000), 60000,
+                    this.lastPage + 1, this.minSize, this.maxSize);
             throw new SecondaryLimitException();
         } else if (r.code() == 401) {
             log.error("Bad credentials for Github API");
@@ -275,20 +291,20 @@ public class GithubAPI {
     private Queue<File> parseSearchResults(String results) {
         Gson gson = new Gson();
         SearchCode scr = gson.fromJson(results, SearchCode.class);
-        
+
         if (scr == null) {
             // Unknown error, print out the response
             log.error("Unknown response from Github:\n {}", results);
             System.exit(-1);
         }
-        
+
         this.lastTotalCount = Integer.valueOf(scr.getTotal_count());
 
         List<Item> list = scr.getItems();
 
         Queue<File> mQueue = new LinkedList<File>();
         for (Item r : list) {
-            mQueue.add(new File(r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit()));
+            mQueue.add(new File(r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit(), this.language));
         }
         return mQueue;
     }
@@ -331,8 +347,12 @@ public class GithubAPI {
         params.put("page", String.valueOf(this.lastPage + 1));
 
         // Check the search API limit, check if we can use it
-        if (this.getSearchLimit() == 0 && this.getSearchReset() > Instant.now().getEpochSecond()) {
-            throw new RateLimitException(this.getSearchReset(), "search");
+        if (this.getSearchLimit() == 0 && this.getSearchReset() * 1000 > System.currentTimeMillis()) {
+            Long reset = this.getSearchReset() * 1000;
+            throttleTimingLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {}", "search",
+                    new Date(reset), reset - System.currentTimeMillis(), this.lastPage + 1, this.minSize,
+                    this.maxSize);
+            throw new RateLimitException(this.getSearchReset() * 1000, "search");
         }
 
         Response r = request("search/code", params);
@@ -349,7 +369,8 @@ public class GithubAPI {
 
         long end = System.currentTimeMillis();
 
-        timingLog.info("{} ~ {} ~ {} ~ search ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, buildQuery(), body.length(), ret.size());
+        timingLog.info("{} ~ {} ~ {} ~ search ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, this.lastPage + 1,
+                buildQuery(), body.length(), ret.size());
 
         lastPage++; // Successfully parsed the current page, move on
         return ret;
@@ -363,27 +384,21 @@ public class GithubAPI {
             } catch (SecondaryLimitException e) {
                 // Sleep for a minute and try again
                 log.debug("Hit secondary limit, waiting {} seconds", WAIT);
-                try        
-                {
+                try {
                     TimeUnit.SECONDS.sleep(WAIT);
-                } 
-                catch(InterruptedException ex) 
-                {
+                } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
             } catch (RateLimitException e) {
                 // Sleep until the refresh time
                 log.debug("{}", e);
 
-                long time = e.getResetTime() + 1 - Instant.now().getEpochSecond();
-                try        
-                {
-                    if(time > 0){
-                        TimeUnit.SECONDS.sleep(time); 
+                long time = e.getResetTime() * 1000 + 1 - System.currentTimeMillis();
+                try {
+                    if (time > 0) {
+                        TimeUnit.SECONDS.sleep(time);
                     }
-                } 
-                catch(InterruptedException ex) 
-                {
+                } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
             }
