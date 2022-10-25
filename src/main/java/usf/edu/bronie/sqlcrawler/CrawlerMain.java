@@ -191,13 +191,13 @@ class Optimize implements Runnable {
                         long fileStart = System.currentTimeMillis();
                         Analysis a = cam.processFile(result);
                         long fileEnd = System.currentTimeMillis();
-                        fileLog.info("{} ~ {}  ~ {}  ~ {}  ~ {}  ~ {}  ~ {}", new Date(fileStart), new Date(fileEnd),
-                                fileEnd - fileStart, result.getId(), gh.lastPagePulled(), minSize, maxSize);
+                        fileLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(fileStart), new Date(fileEnd),
+                                fileEnd - fileStart, result.getId(), result.getCodeSize(), gh.lastPagePulled(), minSize, maxSize);
                         a.save();
                     }
                 }
                 long pageEnd = System.currentTimeMillis();
-                pageLog.info("{} ~ {}  ~ {}  ~ {}  ~ {}  ~ {}  ~ {}", new Date(pageStart), new Date(pageEnd),
+                pageLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(pageStart), new Date(pageEnd),
                         pageEnd - pageStart, gh.lastPagePulled(), minSize, maxSize, pageSize);
 
                 if (minSize != maxSize) {

@@ -136,7 +136,7 @@ The File logger tracks the time taken to download a file and run all analyzers.
 
 File format:
 
-    Log Time ~ Start time ~ End time ~ Time Diff in ms ~ File Database ID ~ page number ~ frame start in bytes ~ frame end in bytes
+    Log Time ~ Start time ~ End time ~ Time Diff in ms ~ File Database ID ~ File Size ~ page number ~ frame start in bytes ~ frame end in bytes
 
 #### AnalyzerLogger
 
