@@ -7,8 +7,8 @@ package usf.edu.bronie.sqlcrawler.provider;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import usf.edu.bronie.sqlcrawler.model.File;
 
@@ -20,7 +20,7 @@ import usf.edu.bronie.sqlcrawler.model.File;
 
 public class GithubProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(GithubProvider.class);
+    private static final Logger log = LogManager.getLogger(GithubProvider.class);
 
     /** 
      * Queue containing all of the results the provider has found. Populated using

@@ -8,9 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Represents an individual file from a project to be analzyed as stored in the
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class File {
 
-    private static final Logger log = LoggerFactory.getLogger( File.class );
+    private static final Logger log = LogManager.getLogger( File.class );
 
     private int id = 0;
     private int project = 0;
@@ -49,7 +48,7 @@ public class File {
                 this.url = resultSet.getString("url");
                 this.hash = resultSet.getString("hash");
                 this.commit = resultSet.getString("commit");
-                this.languageType = Languages.extensionToLang(FilenameUtils.getExtension(this.filename));
+                this.languageType = Languages.nameToLang(resultSet.getString("lang"));
             }
             statement.close();
             mConnection.close();
@@ -71,13 +70,13 @@ public class File {
 
     // Creates a new project with the specified values
     // TODO: Add commit dates
-    public File(String filename, String path, String url, String hash, String commit) {
+    public File(String filename, String path, String url, String hash, String commit, Languages lang) {
         this.filename = filename;
         this.url = url;
         this.path = path;
         this.hash = hash;
         this.commit = commit;
-        this.languageType = Languages.extensionToLang(FilenameUtils.getExtension(this.filename));
+        this.languageType = lang;
     }
 
     // Returns all files for a given Project id
@@ -96,7 +95,8 @@ public class File {
                         resultSet.getString("path"),
                         resultSet.getString("url"),
                         resultSet.getString("hash"),
-                        resultSet.getString("commit"));
+                        resultSet.getString("commit"),
+                        Languages.nameToLang(resultSet.getString("lang"))); 
                 list.add(a);
             }
 
@@ -163,15 +163,16 @@ public class File {
             PreparedStatement statement;
             Connection mConnection = DBConnection.getConnection();
             statement = mConnection.prepareStatement(
-                    "INSERT INTO files (project, filename, path, url, hash, commit, date_added) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO files (project, filename, path, url, hash, commit, lang, date_added) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setInt(1, Project.idFromRepo(repo));
             statement.setString(2, this.filename);
             statement.setString(3, this.path);
             statement.setString(4, this.url);
             statement.setString(5, this.hash);
             statement.setString(6, this.commit);
+            statement.setString(7, this.languageType.searchString());
             java.util.Date date = new java.util.Date(); // Get current time
-            statement.setTimestamp(7, new Timestamp(date.getTime()));
+            statement.setTimestamp(8, new Timestamp(date.getTime()));
             statement.executeUpdate();
 
             statement.close();
@@ -260,6 +261,10 @@ public class File {
         }
 
         return this.code = HttpConnection.get(this.url);
+    }
+
+    public int getCodeSize() {
+        return this.getCode().length();
     }
 
     public void setCode(String code) {

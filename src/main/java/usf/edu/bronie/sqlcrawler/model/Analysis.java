@@ -79,9 +79,8 @@ public class Analysis {
                 statement.setInt(i, val);
                 i++;
             }
-
+            
             statement.executeUpdate();
-
             statement.close();
             mConnection.close();
         }
