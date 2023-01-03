@@ -65,7 +65,7 @@ public class Analysis {
             sql += sql_end + ")"; 
 
             statement = mConnection.prepareStatement(sql);
-
+            
             //Set the hardcoded values
             statement.setInt(1, this.projectID);
             statement.setInt(2, this.fileID);
@@ -73,7 +73,7 @@ public class Analysis {
             statement.setTimestamp(3, new Timestamp(date.getTime()));
             statement.setInt(4, this.sql_usage.toInt());
             statement.setString(5, this.api_type.toString());
-
+            
             int i = 6;
             for(int val : values){
                 statement.setInt(i, val);

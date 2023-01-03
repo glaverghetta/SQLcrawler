@@ -43,49 +43,6 @@ public class CrawlerMain {
 }
 
 
-
-@Command(name = "cs", description = "Testing C# github API")
-class CS implements Runnable {
-
-    private static final Logger log = LoggerFactory.getLogger(CS.class);
-
-    @Override
-    public void run() {
-        // Kevin's code testing the Github provider
-
-        CodeAnalysisManager cam = new CodeAnalysisManager();
-        GithubAPI gh = new GithubAPI(1, 1000,  Languages.CSHARP);
-
-        int updated = 0;
-        int total = 0;
-        int lastTotal = 0;
-
-        while(gh.isNextPage()){
-            Queue<File> results = null;
-
-            try{
-                results = gh.searchSleep();
-            }catch(PageLimitException e){
-                log.error("", e);
-                System.exit(-1);
-            }
-
-            while (!results.isEmpty()) {
-                total++;
-                File result = results.poll();
-                if (result.save())
-                    updated++;
-                Analysis a = cam.processFile(result);
-                a.save();
-            }
-            log.debug("Finished scanning page {} (page had {} results, {} total)", gh.lastPagePulled(), total - lastTotal, total);
-            lastTotal = total;
-        }
-
-        log.info("Scanned and analyzed {} files, added {} new files", total, updated);
-    }
-}
-
 // Provider command
 // Runs the provider, given the number of pages
 @Command(name = "pull", description = "Pulls [number] of pages from Github")
@@ -164,7 +121,7 @@ class Optimize implements Runnable {
     private static final Logger pageLog = LogManager.getLogger("PageLogger");
     private static final Logger fileLog = LogManager.getLogger("FileLogger");
 
-    @Parameters(paramLabel = "[language]", description = "the language to search for SQLIDIAs. Currently supports Java, PHP")
+    @Parameters(paramLabel = "[language]", description = "the language to search for SQLIDIAs. Currently supports Java, PHP, JS, C#")
     String typeOfFile;
 
     @Parameters(paramLabel = "[max size in bytes]", description = "pull files until search window passes X bytes in size (that is, may pull results beyond X if window is large)")
@@ -354,6 +311,11 @@ class TestDummyFile implements Runnable {
             	log.debug("Analyzing dummy.cs");
             	filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.cs");
             	dummyFile.setLanguageType(Languages.CSHARP);
+            	break;
+            case "js":
+            	log.debug("Analyzing dummy.js");
+            	filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.js");
+            	dummyFile.setLanguageType(Languages.JS);
             	break;
             default:
                 log.error("Unrecognizable file type ({})", typeOfFile.toLowerCase());

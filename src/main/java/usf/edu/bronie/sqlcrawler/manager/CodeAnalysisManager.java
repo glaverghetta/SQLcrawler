@@ -80,7 +80,7 @@ public class CodeAnalysisManager {
         // Determine SQLUsage, which always runs
         SQLCodeAnalyzer sqlCodeAnalyzer = new SQLCodeAnalyzer();
         result.setSql_usage(sqlCodeAnalyzer.analyzeCode(code, stringLiterals, language));
-
+        
         // Determine API type, which always runs
         ApiTypeAnalyzer apiTypeAnalyzer = new ApiTypeAnalyzer();
         result.setApi_type(apiTypeAnalyzer.analyzeCode(code));
