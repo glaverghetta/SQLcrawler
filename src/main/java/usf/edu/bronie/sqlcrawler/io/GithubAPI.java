@@ -1,18 +1,25 @@
 package usf.edu.bronie.sqlcrawler.io;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
@@ -20,15 +27,20 @@ import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.File;
+import usf.edu.bronie.sqlcrawler.model.Project;
+import usf.edu.bronie.sqlcrawler.model.ProjectStats;
 import usf.edu.bronie.sqlcrawler.model.Github.Item;
 import usf.edu.bronie.sqlcrawler.model.Github.SearchCode;
+import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
 /**
  * Retrieves data from Github using the official Github API
@@ -41,6 +53,7 @@ public class GithubAPI {
     private static final Logger throttleTimingLog = LogManager.getLogger("GithubThrottlingLogger");
 
     private static final String githubURL = "api.github.com";
+    private static final String graphQLQuery = setupGraphQL();
 
     private int lastPage = 0;
     private int lastTotalCount = -1;
@@ -59,6 +72,8 @@ public class GithubAPI {
     private long searchReset = -1; // In Epoch time
     private int coreLimit = -1;
     private long coreReset = -1; // In Epoch time
+    private int graphQLLimit = -1;
+    private long graphQLReset = -1; // In Epoch time
 
     /**
      * @param size The initial size to use when searching
@@ -224,37 +239,74 @@ public class GithubAPI {
         return r;
     }
 
-    /**
-     * Makes an API request by calling {@link #getURL(String, Map)}
-     * and provides error handling and rate limiting for the result
-     * 
-     * @param url    The endpoint to request
-     * @param params The parameters used for this request
-     * @return A valid 200 response with rate limits parsed
-     * @throws RateLimitException
-     * @throws SecondaryLimitException
-     */
-    private Response request(String url, Map<String, String> params)
-            throws RateLimitException, SecondaryLimitException {
-        Response r = getURL(url, params);
+    private Response postURL(String endpoint, String bodyString) {
 
-        // Rate limits always included regardless of response
+        // Create the cache
+        Cache cache = new Cache(new java.io.File(CredentialConstants.GITHUB_CACHE_FILE),
+                CredentialConstants.GITHUB_CACHE_SIZE);
+
+        // Setup the headers
+        Map<String, String> headers = Map.of(
+                "Accept", "application/vnd.github+json",
+                "Authorization", "token " + CredentialConstants.GITHUB_TOKEN);
+
+        // Create the url and add params
+        HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
+                .scheme("https")
+                .host(githubURL)
+                .addPathSegments(endpoint);
+
+        // Build the url and make the request
+        HttpUrl url = urlBuilder.build();
+
+        final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+        RequestBody body = RequestBody.create(new JSONObject().put("query", bodyString).toString(), JSON);
+
+        OkHttpClient client = new OkHttpClient.Builder().cache(cache).build();
+        Request request = new Request.Builder()
+                .url(url)
+                .headers(Headers.of(headers))
+                .post(body)
+                .build();
+        log.debug("Getting {}", url);
+
+        Response r = null;
+        try {
+            Call c = client.newCall(request);
+            long start = System.currentTimeMillis();
+            r = c.execute();
+            long end = System.currentTimeMillis();
+
+            networkTimingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+        } catch (IOException e) {
+            log.error("Failed to reach Github API", e);
+            System.exit(-1);
+        }
+        return r;
+    }
+
+    private void updateRateLimit(Response r) {
         if (r.header("x-ratelimit-resource").equals("search")) {
             this.searchLimit = Integer.parseInt(r.header("x-ratelimit-remaining"));
             this.searchReset = Long.parseLong(r.header("x-ratelimit-reset"));
         } else if (r.header("x-ratelimit-resource").equals("core")) {
             this.coreLimit = Integer.parseInt(r.header("x-ratelimit-remaining"));
             this.coreReset = Long.parseLong(r.header("x-ratelimit-reset"));
+        } else if (r.header("x-ratelimit-resource").equals("graphql")) {
+            this.graphQLLimit = Integer.parseInt(r.header("x-ratelimit-remaining"));
+            this.graphQLReset = Long.parseLong(r.header("x-ratelimit-reset"));
         } else {
             log.error("Unknown API type: {}", r.header("x-ratelimit-resource"));
             System.exit(-1);
         }
+    }
 
-        // Check response code
+    private void handleErrorCode(String url, Response r) throws RateLimitException, SecondaryLimitException {
         if (r.code() == 403) {
             // Check regular limit (may occur if user is using API elsewhere)
             if (Integer.parseInt(r.header("x-ratelimit-remaining")) == 0) {
-                Long reset = Long.parseLong(r.header("x-ratelimit-reset")) * 1000; //Seconds to milliseconds
+                Long reset = Long.parseLong(r.header("x-ratelimit-reset")) * 1000; // Seconds to milliseconds
                 throttleTimingLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {}", r.header("x-ratelimit-resource"),
                         new Date(reset), reset - System.currentTimeMillis(), this.lastPage + 1, this.minSize,
                         this.maxSize);
@@ -277,8 +329,89 @@ public class GithubAPI {
             System.exit(-1);
         }
         log.debug("Request to {} returned code {}", url, r.code());
+    }
+
+    /**
+     * Makes an API request by calling {@link #getURL(String, Map)}
+     * and provides error handling and rate limiting for the result
+     * 
+     * @param url    The endpoint to request
+     * @param params The parameters used for this request
+     * @return A valid 200 response with rate limits parsed
+     * @throws RateLimitException
+     * @throws SecondaryLimitException
+     */
+    private Response request(String url, Map<String, String> params)
+            throws RateLimitException, SecondaryLimitException {
+        Response r = getURL(url, params);
+
+        // Rate limits always included regardless of response
+        updateRateLimit(r);
+
+        // Check response code
+        handleErrorCode(url, r);
 
         return r;
+    }
+
+    private Response postRequest(String url, String body)
+            throws RateLimitException, SecondaryLimitException {
+        Response r = postURL(url, body);
+
+        // Rate limits always included regardless of response
+        updateRateLimit(r);
+
+        // Check response code
+        handleErrorCode(url, r);
+
+        return r;
+    }
+
+    private void parseGraphQLResults(String results) {
+        JSONObject all = new JSONObject(results);
+        JSONObject data = all.getJSONObject("data");
+
+        Iterator<String> keys = data.keys();
+
+        while (keys.hasNext()) {
+            String key = keys.next();
+
+            // Ignore nulls
+            if ((data.isNull(key))) {
+                continue;
+            }
+
+            if (data.get(key) instanceof JSONObject) {
+                // do something with jsonObject here
+                try {
+                    new ProjectStats(data.getJSONObject(key)).save();
+                } catch (noProjectFound e) {
+                    log.error("Could not find project to save", e);
+                    System.exit(-1);
+                }
+            }
+        }
+
+        if (all.has("errors")) {
+            JSONArray errors = all.getJSONArray("errors");
+
+            for (int i = 0; i < errors.length(); i++) {
+                String msg = errors.getJSONObject(i).getString("message");
+                if (errors.getJSONObject(i).getString("type").equals("NOT_FOUND")) {
+                    // Message contains repo url in single quotes, like 'URL'
+                    try {
+                        ProjectStats.makeNullEntry(Integer.parseInt(errors.getJSONObject(i).getString("path").replace("p", "")));
+                    } catch (noProjectFound e) {
+                        log.error("Could not find project to save", e);
+                        System.exit(-1);
+                    }
+                } else {
+                    log.error("Unknown error reading GraphQL error message: {} {}",
+                            errors.getJSONObject(i).getString("type"), msg);
+                    System.exit(-1);
+                }
+            }
+        }
     }
 
     /**
@@ -304,7 +437,7 @@ public class GithubAPI {
 
         Queue<File> mQueue = new LinkedList<File>();
         for (Item r : list) {
-            mQueue.add(new File(r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit(), this.language));
+            mQueue.add(new File(r.getRepository().getNode_id(), r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit(), this.language));
         }
         return mQueue;
     }
@@ -369,7 +502,8 @@ public class GithubAPI {
 
         long end = System.currentTimeMillis();
 
-        timingLog.info("{} ~ {} ~ {} ~ search ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, this.lastPage + 1,
+        timingLog.info("{} ~ {} ~ {} ~ search ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start,
+                this.lastPage + 1,
                 buildQuery(), body.length(), ret.size());
 
         lastPage++; // Successfully parsed the current page, move on
@@ -403,6 +537,103 @@ public class GithubAPI {
                 }
             }
         }
+    }
+
+    // Performs project search, but sleeps if the API limit is reached
+    public void projectSleep(Set<Project> projects, int maxNum) {
+        while (true) {
+            try {
+                searchProject(projects, maxNum);
+                return;
+            } catch (SecondaryLimitException e) {
+                // Sleep for a minute and try again
+                log.debug("Hit secondary limit, waiting {} seconds", WAIT);
+                try {
+                    TimeUnit.SECONDS.sleep(WAIT);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            } catch (RateLimitException e) {
+                // Sleep until the refresh time
+                log.debug("{}", e);
+
+                long time = e.getResetTime() * 1000 + 1 - System.currentTimeMillis();
+                try {
+                    if (time > 0) {
+                        TimeUnit.SECONDS.sleep(time);
+                    }
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
+    private static String setupGraphQL() {
+        String out = "";
+        try {
+            out = String.join("\n",
+                    Files.readAllLines(Paths.get(GithubAPI.class.getResource("/graphQLQuery.txt").toURI())));
+        } catch (Exception e) {
+            // TODO: handle exception
+            log.error("Error reading GraphQL resource file", e);
+            System.exit(-1);
+        }
+        return out;
+    }
+
+    public void searchProject(Set<Project> projects, int maxNum)
+            throws RateLimitException, SecondaryLimitException {
+
+        int count = 0;
+        String query = "query {\n";
+
+        Set<Project> toRemove = new HashSet<>();
+        for (Project p : projects) {
+            if (count >= maxNum) {
+                break;
+            }
+
+            toRemove.add(p);
+
+            query += "p" + p.getId() + ": ";
+
+            // Saved as owner/name, query wants name first (name: %s, owner: %s)
+            query += String.format(GithubAPI.graphQLQuery, p.getName(), p.getOwner());
+
+            count++;
+        }
+        query += "}";
+
+        long start = System.currentTimeMillis();
+
+        // Check the graphQL API limit, check if we can use it
+        if (this.getGraphQLLimit() == 0 && this.getGraphQLReset() * 1000 > System.currentTimeMillis()) {
+            Long reset = this.getGraphQLReset() * 1000;
+            throttleTimingLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {}", "search",
+                    new Date(reset), reset - System.currentTimeMillis(), this.lastPage + 1, this.minSize,
+                    this.maxSize);
+            throw new RateLimitException(this.getGraphQLReset() * 1000, "graphQL");
+        }
+
+        Response r = postRequest("graphql", query);
+        String body = null;
+        try {
+            body = r.body().string();
+        } catch (IOException e) {
+            log.error("Error retrieving response body", e);
+            System.exit(-1);
+        }
+        r.close();
+
+        parseGraphQLResults(body);
+
+        long end = System.currentTimeMillis();
+
+        timingLog.info("{} ~ {} ~ {} ~ graphql ~ {} ~ {} ~ {} ~ {}", new Date(start),
+                new Date(end), end - start, this.lastPage + 1,
+                "", body.length(), projects.size());
+        projects.removeAll(toRemove);
     }
 
     /**
@@ -448,6 +679,14 @@ public class GithubAPI {
 
     public long getSearchReset() {
         return this.searchReset;
+    }
+
+    public int getGraphQLLimit() {
+        return this.graphQLLimit;
+    }
+
+    public long getGraphQLReset() {
+        return this.graphQLReset;
     }
 
     public class SecondaryLimitException extends Exception {

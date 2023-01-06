@@ -1,0 +1,29 @@
+repository(name: "%s", owner: "%s") {
+    createdAt
+    stargazerCount
+    updatedAt
+    url
+    pushedAt
+    name
+    owner {
+        id
+        login
+        url
+    }
+    id
+    description
+    latestRelease {
+        createdAt
+        name
+        updatedAt
+        url
+        tagName
+    }
+    forkCount
+    watchers {
+        totalCount
+    }
+    releases {
+      totalCount
+    }
+}

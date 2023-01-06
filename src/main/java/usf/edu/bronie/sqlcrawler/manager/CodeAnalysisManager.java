@@ -6,6 +6,7 @@ import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
+import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
 import java.util.Date;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CodeAnalysisManager {
 
+    private static final Logger log = LogManager.getLogger(CodeAnalysisManager.class);
     private static final Logger timeLog = LogManager.getLogger("AnalyzerLogger");
 
     // private Connection mConnection = DBConnection.getConnection();
@@ -73,7 +75,13 @@ public class CodeAnalysisManager {
             System.exit(-1);
         }
 
-        Analysis result = new Analysis(f.getProject(), f.getId());
+        Analysis result = null;
+        try{
+            result = new Analysis(f.getProject(), f.getId());
+        }catch (noProjectFound e){
+            log.error("Could not find a project", e);
+            System.exit(-1);
+        }
 
         List stringLiterals = RegexUtils.findAllStringLiteral(code);
 

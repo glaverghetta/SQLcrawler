@@ -40,7 +40,11 @@ otherwise specified after compilation.
 
 First, create a copy of [CredentialConstants.java.example](src\main\java\usf\edu\bronie\sqlcrawler\constants\CredentialConstants.java.example) and remove the ".example" extension. If you are only analyzing an individual file, the following steps are optional.
 
-The Credential Constants file contains the [Github Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) for querying the Github API and database credentials for storing the results.  Follow the link to generate your own token and paste your token in the file.  For example:
+The Credential Constants file contains the [Github Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) for querying the Github API and database credentials for storing the results.  *The token should have the public_repo scope enabled*, as shown below.  Note this can be updated after creating the access token.
+
+![Github Token Scope](./readme_imgs/public_repo.png?raw=true "Github Token Scope")
+
+Follow the link to generate your own token and paste your token in the file.  For example:
 
     public static final String GITHUB_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 

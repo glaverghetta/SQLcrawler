@@ -3,6 +3,7 @@ package usf.edu.bronie.sqlcrawler.model;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.io.DBConnection;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
+import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class File {
     private static final Logger log = LogManager.getLogger( File.class );
 
     private int id = 0;
+    private String repo_id;
     private int project = 0;
     private String filename;
     private String path;
@@ -70,7 +72,8 @@ public class File {
 
     // Creates a new project with the specified values
     // TODO: Add commit dates
-    public File(String filename, String path, String url, String hash, String commit, Languages lang) {
+    public File(String repo_id, String filename, String path, String url, String hash, String commit, Languages lang) {
+        this.repo_id = repo_id;
         this.filename = filename;
         this.url = url;
         this.path = path;
@@ -86,11 +89,11 @@ public class File {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT * FROM Files WHERE project=?");
+            statement = mConnection.prepareStatement("SELECT f.*, p.gh_id FROM Files f LEFT JOIN Projects p on f.project=p.id WHERE project=?");
             statement.setInt(1, project);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                File a = new File(
+                File a = new File( resultSet.getString("gh_id"),
                         resultSet.getString("name"),
                         resultSet.getString("path"),
                         resultSet.getString("url"),
@@ -150,13 +153,21 @@ public class File {
 
         String repo = this.repo();
         // Check that the corresponding project exists
-        if (!Project.checkIfExists(repo)) {
-            // Create the new project
-            new Project(repo.replace("https://github.com/", ""), repo).save();
-        } else if (checkIfExists(Project.idFromRepo(repo), this.filename, this.path)) {
-            // TODO: Add a check to see if it's a new commit
-            log.debug("Not saving existing file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path);
-            return false;
+        try{
+            if (!Project.checkIfExists(repo)) {
+                // Create the new project
+                String[] ownerName = repo.replace("https://github.com/", "").split("/");  //Extract owner and name
+    
+                new Project(this.repo_id, ownerName[0], ownerName[1], repo).save();
+            } else if (checkIfExists(Project.idFromRepo(repo), this.filename, this.path)) {
+                // TODO: Add a check to see if it's a new commit
+                log.debug("Not saving existing file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path);
+                return false;
+            }
+        } catch (noProjectFound e){
+            //TODO: Handle
+            log.error("No project found", e);
+            System.exit(-1);
         }
 
         try {
@@ -164,7 +175,12 @@ public class File {
             Connection mConnection = DBConnection.getConnection();
             statement = mConnection.prepareStatement(
                     "INSERT INTO files (project, filename, path, url, hash, commit, lang, date_added) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            statement.setInt(1, Project.idFromRepo(repo));
+            try{
+                statement.setInt(1, Project.idFromRepo(repo));
+            }catch(noProjectFound e){
+                log.error("Unable to find a project for a file");
+                System.exit(-1);
+            }
             statement.setString(2, this.filename);
             statement.setString(3, this.path);
             statement.setString(4, this.url);
@@ -180,7 +196,12 @@ public class File {
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
-            log.error("Error saving a file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path, e);
+            try{
+                log.error("Error saving a file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path, e);
+            }catch(noProjectFound e2){
+                log.error("Unable to find a project for a file", e2);
+                System.exit(-1);
+            }
             System.exit(-1);
         }
 
@@ -195,8 +216,15 @@ public class File {
 
     // Getters and setters
     public int getId() {
-        if (this.id == 0)
-            return this.id = idFromFilename(this.getProject(), this.filename, this.path);
+        if (this.id == 0){
+            try{
+                return this.id = idFromFilename(this.getProject(), this.filename, this.path);
+
+            }catch(noProjectFound e){
+                log.error("Could not find a project", e);
+                System.exit(-1);
+            }
+        }
         return this.id;
     }
 
@@ -204,7 +232,7 @@ public class File {
         this.id = id;
     }
 
-    public int getProject() {
+    public int getProject() throws noProjectFound {
         // The project might not exist, need to handle that in the future
         if (this.project == 0)
             return this.project = Project.idFromRepo(this.repo());
