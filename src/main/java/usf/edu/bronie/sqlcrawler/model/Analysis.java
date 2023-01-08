@@ -17,6 +17,7 @@ public class Analysis {
     int fileID;
     SQLType sql_usage;
     ApiType api_type;
+    boolean parameterized;
 
     public ApiType getApi_type() {
         return api_type;
@@ -32,6 +33,10 @@ public class Analysis {
 
     public void setSql_usage(SQLType sql_usage) {
         this.sql_usage = sql_usage;
+    }
+    
+    public void setParameterized(boolean parameterized) {
+    	this.parameterized = parameterized;
     }
 
     public Analysis(int project, int fileID) {
@@ -51,8 +56,8 @@ public class Analysis {
             PreparedStatement statement;
             Connection mConnection = DBConnection.getConnection();
 
-            String sql = "INSERT INTO analyses (project, file, analysis_date, sql_usage, api_type";
-            String sql_end = ") VALUES (?, ?, ?, ?, ?";
+            String sql = "INSERT INTO analyses (project, file, analysis_date, sql_usage, is_parameterized, api_type";
+            String sql_end = ") VALUES (?, ?, ?, ?, ?, ?";
 
             //Dynamically add the column names and placeholders to the sql statement
             int j = 0;
@@ -65,16 +70,17 @@ public class Analysis {
             sql += sql_end + ")"; 
 
             statement = mConnection.prepareStatement(sql);
-
+            
             //Set the hardcoded values
             statement.setInt(1, this.projectID);
             statement.setInt(2, this.fileID);
             java.util.Date date = new java.util.Date();  //Get current time
             statement.setTimestamp(3, new Timestamp(date.getTime()));
             statement.setInt(4, this.sql_usage.toInt());
-            statement.setString(5, this.api_type.toString());
-
-            int i = 6;
+            statement.setBoolean(5, parameterized);
+            statement.setString(6, this.api_type.toString());
+            
+            int i = 7;
             for(int val : values){
                 statement.setInt(i, val);
                 i++;

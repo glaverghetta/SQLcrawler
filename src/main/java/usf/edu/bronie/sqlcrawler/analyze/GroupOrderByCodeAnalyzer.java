@@ -44,8 +44,10 @@ public class GroupOrderByCodeAnalyzer implements CodeAnalyzer {
                     Pattern.CASE_INSENSITIVE);
         }
 
-        return RegexUtils.isConcat(code, stringLiteralPatternJava)
-                || RegexUtils.isConcat(code, stringLitPatternMultipleJava) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        if(RegexUtils.isConcat(code, stringLiteralPatternJava)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isConcat(code, stringLitPatternMultipleJava)) return SQLType.STRING_CONCAT_LIST;
+        else return SQLType.HARDCODED;
+   
     }
 
     public SQLType analyzeCode(String code, RegexConstants.Languages language) {
