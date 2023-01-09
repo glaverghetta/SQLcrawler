@@ -81,6 +81,10 @@ public class CodeAnalysisManager {
         SQLCodeAnalyzer sqlCodeAnalyzer = new SQLCodeAnalyzer();
         result.setSql_usage(sqlCodeAnalyzer.analyzeCode(code, stringLiterals, language));
         
+        // Determine if it uses a parameterized query
+        result.setParameterized(sqlCodeAnalyzer.hasPreparedStatement(code, language));
+
+        
         // Determine API type, which always runs
         ApiTypeAnalyzer apiTypeAnalyzer = new ApiTypeAnalyzer();
         result.setApi_type(apiTypeAnalyzer.analyzeCode(code));

@@ -62,6 +62,7 @@ public class RegexConstants {
             System.exit(-1);
             return Languages.JAVA;
         }
+        
     }
 
     // SQL Analyzers
@@ -243,6 +244,12 @@ public class RegexConstants {
     
     // There is also execute() as a function & query
     public static final String JS_SEARCH_TERMS = "query createConnection";
+    
+    public static final String JAVA_PREP_STATEMENT_TERM = "prepareStatement";
+    public static final String JS_PREP_STATEMENT_TERM = "?";
+    public static final String PHP_PREP_STATEMENT_TERM = "->prepare";
+    public static final String CSHARP_PREP_STATEMENT_TERM = "@";
+    
 
 
     public static String getVariable(RegexConstants.Languages language) {
@@ -295,5 +302,22 @@ public class RegexConstants {
                 System.exit(-1);
         }
         return "";
+    }
+    
+    public static String getPreparedStatementTerm(RegexConstants.Languages language) {
+    	switch(language) {
+    		case JAVA:
+    			return RegexConstants.JAVA_PREP_STATEMENT_TERM;
+    		case PHP:
+    			return RegexConstants.PHP_PREP_STATEMENT_TERM;
+    		case CSHARP:
+    			return RegexConstants.CSHARP_PREP_STATEMENT_TERM;
+    		case JS:
+    			return RegexConstants.JS_PREP_STATEMENT_TERM;
+    		default:
+    			log.error("unhandled language requested {}", language);
+    			System.exit(-1);
+    	}
+    	return "";
     }
 }
