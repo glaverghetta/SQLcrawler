@@ -62,8 +62,8 @@ public class RegexUtils {
         return false;
     }
 
-    public static List findAllStringLiteral(String code) {
-        List l = new ArrayList();
+    public static List<String> findAllStringLiteral(String code) {
+        List<String> l = new ArrayList<String>();
         Matcher stringLitWithVarMatcher = mStringLitWithVarPattern.matcher(code);
         while (stringLitWithVarMatcher.find()) {
             String group = stringLitWithVarMatcher.group();

@@ -1,7 +1,6 @@
 package usf.edu.bronie.sqlcrawler.manager;
 
 import usf.edu.bronie.sqlcrawler.analyze.*;
-import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
@@ -83,7 +82,7 @@ public class CodeAnalysisManager {
             System.exit(-1);
         }
 
-        List stringLiterals = RegexUtils.findAllStringLiteral(code);
+        List<String> stringLiterals = RegexUtils.findAllStringLiteral(code);
 
         // Determine SQLUsage, which always runs
         SQLCodeAnalyzer sqlCodeAnalyzer = new SQLCodeAnalyzer();

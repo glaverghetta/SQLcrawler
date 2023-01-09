@@ -21,7 +21,7 @@ public class TableSpaceNameCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
+    public SQLType analyzeCode(String code, List<String> sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.TSPACE_KEYWORD))
             return SQLType.NONE;
         

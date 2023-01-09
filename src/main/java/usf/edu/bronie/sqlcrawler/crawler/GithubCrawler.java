@@ -1,26 +1,9 @@
 package usf.edu.bronie.sqlcrawler.crawler;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import usf.edu.bronie.sqlcrawler.constants.UrlConstants;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
 import usf.edu.bronie.sqlcrawler.model.GithubFileSpec;
-import usf.edu.bronie.sqlcrawler.utils.UrlUtils;
 
 //TODO: Update to match new DB interface
 
