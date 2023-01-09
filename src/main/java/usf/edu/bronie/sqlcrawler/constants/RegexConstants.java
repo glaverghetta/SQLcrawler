@@ -10,7 +10,8 @@ public class RegexConstants {
     public enum Languages {
         JAVA("Java", "java"),
         CSHARP("C#", "cs"),
-        PHP("PHP", "php");
+        PHP("PHP", "php"),
+    	JS("JavaScript", "js");
 
         private final String searchString;
         private final String extension;
@@ -37,6 +38,8 @@ public class RegexConstants {
                 case "php": // TODO: PHP has a bunch of junk extensions. Can't use extensions like this,
                             // at least for PHP
                     return Languages.PHP;
+                case "js":
+                	return Languages.JS;
             }
             log.error("Unhandled file extension {}", ext);
             System.exit(-1);
@@ -52,11 +55,14 @@ public class RegexConstants {
                 case "c#":
                 case "cs":
                     return Languages.CSHARP;
+                case "js":
+                	return Languages.JS;
             }
             log.error("Unrecognizable file type ({})", name.toLowerCase());
             System.exit(-1);
             return Languages.JAVA;
         }
+        
     }
 
     // SQL Analyzers
@@ -64,13 +70,17 @@ public class RegexConstants {
 
     public static final String JAVA_CONCAT = "\\+";
     public static final String PHP_CONCAT = "\\.";
+    public static final String CSHARP_CONCAT = "\\+";
+    public static final String JS_CONCAT = "\\+";
 
     public static final String JAVA_VARIABLE = "[_a-zA-Z][_a-zA-Z0-9]*";
     public static final String PHP_VARIABLE = "\\$[_a-zA-Z][_a-zA-Z0-9]*";
+    public static final String CSHARP_VARIABLE = "[_a-zA-Z][_a-zA-Z0-9]*";
+    public static final String JS_VARIABLE = "[_a-zA-Z][_a-zA-Z0-9]*";
+    
     // Concatenation with variable has the form " + var_name
-    // First %s is a CONCAT, second is a VARIABLE
-    public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
-            + ")";
+    public static final String CONCAT_VAR = WHITESPACE + "(\\\'|\\\")(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
+
 
     // Concatenation with multiple variable has the form x , " + var_name
     // First %s is a VARIABLE. Note CONCAT_VAR has two %s to fill
@@ -132,8 +142,9 @@ public class RegexConstants {
             + WHITESPACE + "\\\"(?=" + WHITESPACE + "%s" + WHITESPACE + "%s"
             + ")";
 
+    //public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t|%%|'%%|'| )*\\\"(?=";
     public static final String STRING_LITERAL_CONCAT_WITH_LIKE = "\\\"[^\\\"\\\\]*(\\\\.[^\\\"\\\\]*)*LIKE(\\r\\n|\\r|\\n|\\t%%|'%%|'| )*\\\"(?="
-            + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
+           + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";
 
     public static final String STRING_LITERAL_PREP_STATE_LIKE = "LIKE" + WHITESPACE + "(\\?|:.*?\\W)" + WHITESPACE
             + "";
@@ -219,9 +230,27 @@ public class RegexConstants {
     public static final String IMPORT_JPA = "javax.persistence";
 
     public static final String IMPORT_HIBERNATE = "org.hibernate";
+    
+    // C-SHARP imports
+    public static final String USING_SQL = "using System.Data.SqlClient;";
 
-    public static final String JAVA_SEARCH_TERMS = "executeQuery"; // Sort by Stars?
+    public static final String JAVA_SEARCH_TERMS = "executeQuery";
+    
+    // TO DO
     public static final String PHP_SEARCH_TERMS = "executeQuery";
+    
+    // EcecuteNonQuery, ExecuteReader, ExecuteScalar in terms of popularity - all are used
+    public static final String CSHARP_SEARCH_TERMS = "ExecuteScalar";
+    
+    // There is also execute() as a function & query
+    public static final String JS_SEARCH_TERMS = "query createConnection";
+    
+    public static final String JAVA_PREP_STATEMENT_TERM = "prepareStatement";
+    public static final String JS_PREP_STATEMENT_TERM = "?";
+    public static final String PHP_PREP_STATEMENT_TERM = "->prepare";
+    public static final String CSHARP_PREP_STATEMENT_TERM = "@";
+    
+
 
     public static String getVariable(RegexConstants.Languages language) {
         switch (language) {
@@ -229,6 +258,10 @@ public class RegexConstants {
                 return RegexConstants.JAVA_VARIABLE;
             case PHP:
                 return RegexConstants.PHP_VARIABLE;
+            case CSHARP:
+            	return RegexConstants.CSHARP_VARIABLE;
+            case JS:
+            	return RegexConstants.JS_VARIABLE;
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);
@@ -242,6 +275,10 @@ public class RegexConstants {
                 return RegexConstants.JAVA_CONCAT;
             case PHP:
                 return RegexConstants.PHP_CONCAT;
+            case CSHARP:
+            	return RegexConstants.CSHARP_CONCAT;
+            case JS:
+            	return RegexConstants.JS_CONCAT;
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);
@@ -254,11 +291,33 @@ public class RegexConstants {
             case JAVA:
                 return RegexConstants.JAVA_SEARCH_TERMS;
             case PHP:
-                return RegexConstants.PHP_SEARCH_TERMS;
+            	return RegexConstants.PHP_SEARCH_TERMS;
+            case CSHARP:
+            	return RegexConstants.CSHARP_SEARCH_TERMS;
+            case JS:
+            	return RegexConstants.JS_SEARCH_TERMS;
+
             default:
                 log.error("Unhandled language requested {}", language);
                 System.exit(-1);
         }
         return "";
+    }
+    
+    public static String getPreparedStatementTerm(RegexConstants.Languages language) {
+    	switch(language) {
+    		case JAVA:
+    			return RegexConstants.JAVA_PREP_STATEMENT_TERM;
+    		case PHP:
+    			return RegexConstants.PHP_PREP_STATEMENT_TERM;
+    		case CSHARP:
+    			return RegexConstants.CSHARP_PREP_STATEMENT_TERM;
+    		case JS:
+    			return RegexConstants.JS_PREP_STATEMENT_TERM;
+    		default:
+    			log.error("unhandled language requested {}", language);
+    			System.exit(-1);
+    	}
+    	return "";
     }
 }

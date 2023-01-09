@@ -36,7 +36,6 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
     @Override
     public SQLType analyzeCode(String code, List stringLiterals, RegexConstants.Languages language) {
         boolean isStringConcat = false;
-        boolean isPreparedStatement = false;
         boolean isHardcoded = false;
         boolean containsStringFormat = code.contains(RegexConstants.STRING_FORMAT_KEYWORD);
         
@@ -68,13 +67,10 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         }
 
         List<String> l = stringLiterals;
+
         for (String keyword: l) {
             if (RegexUtils.isSQLCode(keyword)) {
-                if (hasPreparedStatement(keyword)) {
-                    isPreparedStatement = true;
-                    isHardcoded = false;
-                    break;
-                } else if (containsStringFormat && mStringFormatPattern.matcher(keyword).find()) {
+                if (containsStringFormat && mStringFormatPattern.matcher(keyword).find()) {
                     isStringConcat = true;
                 } else {
                     isHardcoded = true;
@@ -82,16 +78,11 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
             }
         }
 
-        if (isStringConcat && isPreparedStatement) {
-            return SQLType.PARAMATIZED_QUERY_AND_CONCAT;
-        } else if (isStringConcat) {
+        if (isStringConcat) {
             return SQLType.STRING_CONCAT;
-        } else if (isPreparedStatement) {
-            return SQLType.PARAMATIZED_QUERY;
         } else if (isHardcoded) {
             return SQLType.HARDCODED;
         }
-
         return SQLType.NONE;
     }
 
@@ -99,8 +90,11 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         return null;
     }
 
-    private boolean hasPreparedStatement(String group) {
-        if (!StringUtils.containsIgnoreCase(group, RegexConstants.PREPARED_STATEMENT_KEYWORD)) {
+    public boolean hasPreparedStatement(String group, RegexConstants.Languages language) {
+    	String preparedStatement = RegexConstants.getPreparedStatementTerm(language);
+
+        if (!StringUtils.containsIgnoreCase(group, preparedStatement)) {
+        	// This code is for other ways to find parameterized queries 
             Matcher stringLitMatcher = mJPAPreparedStatementPattern.matcher(group);
             return stringLitMatcher.find();
         }

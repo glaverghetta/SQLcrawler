@@ -31,6 +31,7 @@ import usf.edu.bronie.sqlcrawler.model.Project;
 import usf.edu.bronie.sqlcrawler.model.ProjectStats;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
+
 @Command(name = "SQLCrawler", subcommands = { CommandLine.HelpCommand.class, Pull.class, Analyze.class,
         Statistics.class, Optimize.class,
         TestDummyFile.class }, description = "Tool for analyzing SQLIDIA vulnerabilities")
@@ -50,6 +51,7 @@ public class CrawlerMain {
         }
     }
 }
+
 
 // Provider command
 // Runs the provider, given the number of pages
@@ -129,7 +131,7 @@ class Optimize implements Runnable {
     private static final Logger pageLog = LogManager.getLogger("PageLogger");
     private static final Logger fileLog = LogManager.getLogger("FileLogger");
 
-    @Parameters(paramLabel = "[language]", description = "the language to search for SQLIDIAs. Currently supports Java, PHP")
+    @Parameters(paramLabel = "[language]", description = "the language to search for SQLIDIAs. Currently supports Java, PHP, JS, C#")
     String typeOfFile;
 
     @Parameters(paramLabel = "[max size in bytes]", description = "pull files until search window passes X bytes in size (that is, may pull results beyond X if window is large)")
@@ -343,7 +345,7 @@ class TestDummyFile implements Runnable {
 
     private static final Logger log = LogManager.getLogger(TestDummyFile.class);
 
-    @Parameters(paramLabel = "[type of file]", description = "type of file to analyze. Currently supports java")
+    @Parameters(paramLabel = "[type of file]", description = "type of file to analyze. Currently supports java, php, cs")
     String typeOfFile;
 
     @Override
@@ -369,6 +371,16 @@ class TestDummyFile implements Runnable {
                 filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.php");
                 dummyFile.setLanguageType(Languages.PHP);
                 break;
+            case "cs":
+            	log.debug("Analyzing dummy.cs");
+            	filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.cs");
+            	dummyFile.setLanguageType(Languages.CSHARP);
+            	break;
+            case "js":
+            	log.debug("Analyzing dummy.js");
+            	filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.js");
+            	dummyFile.setLanguageType(Languages.JS);
+            	break;
             default:
                 log.error("Unrecognizable file type ({})", typeOfFile.toLowerCase());
                 return;

@@ -43,9 +43,12 @@ public class TableNameCodeAnalyzer implements CodeAnalyzer {
                     variable),
                     Pattern.CASE_INSENSITIVE);
         }
+        
+        if(RegexUtils.isConcat(code, stringLiteralPatternJava)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isConcat(code, stringLitPatternMultipleJava)) return SQLType.STRING_CONCAT_LIST;
+        else return SQLType.HARDCODED;
 
-        return RegexUtils.isConcat(code, stringLiteralPatternJava)
-                || RegexUtils.isConcat(code, stringLitPatternMultipleJava) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+    
     }
 
     public SQLType analyzeCode(String code, RegexConstants.Languages language) {
