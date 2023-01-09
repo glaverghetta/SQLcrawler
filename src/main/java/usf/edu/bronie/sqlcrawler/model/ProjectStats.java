@@ -4,15 +4,8 @@ import usf.edu.bronie.sqlcrawler.io.DBConnection;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -46,7 +39,7 @@ public class ProjectStats {
     private String LRName;
     private Timestamp LRCreated;
     private Timestamp LRUpdated;
-    private Timestamp date_added;
+    private Timestamp date_added;  
     private int forkCount;
     private int watchersCount;
     private int releasesCount;
@@ -191,7 +184,6 @@ public class ProjectStats {
             insertSQL += "LRUpdated=new.LRUpdated, stargazerCount=new.stargazerCount, forkCount=new.forkCount, watchersCount=new.watchersCount, ";
             insertSQL += "createdAt=new.createdAt, updatedAt=new.updatedAt, pushedAt=new.pushedAt, date_added=new.date_added";
 
-            int i = 1;
             statement = mConnection.prepareStatement(insertSQL);
             statement.setInt(1, Project.idFromGH_ID(this.gh_id));
             statement.setString(2, this.gh_id);
@@ -241,6 +233,70 @@ public class ProjectStats {
             log.error("Error saving a project: {} {}", owner, name, e);
             System.exit(-1);
         }
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public int getStargazerCount() {
+        return stargazerCount;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Timestamp getPushedAt() {
+        return pushedAt;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getGh_id() {
+        return gh_id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLRName() {
+        return LRName;
+    }
+
+    public Timestamp getLRCreated() {
+        return LRCreated;
+    }
+
+    public Timestamp getLRUpdated() {
+        return LRUpdated;
+    }
+
+    public Timestamp getDate_added() {
+        return date_added;
+    }
+
+    public int getForkCount() {
+        return forkCount;
+    }
+
+    public int getWatchersCount() {
+        return watchersCount;
+    }
+
+    public int getReleasesCount() {
+        return releasesCount;
     }
 
     public class NoStatsException extends Exception {

@@ -60,7 +60,6 @@ public class Analysis {
             String sql_end = ") VALUES (?, ?, ?, ?, ?, ?";
 
             //Dynamically add the column names and placeholders to the sql statement
-            int j = 0;
             List<Integer> values = new ArrayList<Integer>();
             for (Map.Entry<String, SQLType> entry : results.entrySet()){
                 values.add(entry.getValue().toInt());

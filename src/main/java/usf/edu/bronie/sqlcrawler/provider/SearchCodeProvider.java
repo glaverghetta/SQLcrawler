@@ -24,7 +24,7 @@ public class SearchCodeProvider implements SourceCodeProvider{
      * Queue containing all of the results the provider has found. Populated using
      * {@link #pollData() pollData} and accessed using {@link #receiveNextData() receiveNextData}.
     */
-    private Queue mQueue = new LinkedList();
+    private Queue<SearchData> mQueue = new LinkedList<SearchData>();
 
     public boolean hasNext() {
         return !mQueue.isEmpty();

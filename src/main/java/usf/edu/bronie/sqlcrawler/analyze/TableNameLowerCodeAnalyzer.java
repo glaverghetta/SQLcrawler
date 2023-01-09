@@ -22,7 +22,7 @@ public class TableNameLowerCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
+    public SQLType analyzeCode(String code, List<String> sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificKeyword(sqlCodes, RegexConstants.TABLE_KEYWORD))
             return SQLType.NONE;
         

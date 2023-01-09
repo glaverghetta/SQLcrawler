@@ -28,7 +28,7 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
+    public SQLType analyzeCode(String code, List<String> sqlCodes, RegexConstants.Languages language) {
         // return null; //Old code
         return analyzeCode(code, language);
     }

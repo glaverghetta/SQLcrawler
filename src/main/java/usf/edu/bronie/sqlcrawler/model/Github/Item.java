@@ -1,9 +1,5 @@
 package usf.edu.bronie.sqlcrawler.model.Github;
 
-import java.util.List;
-
-import usf.edu.bronie.sqlcrawler.model.Project;
-
 /**
  * Represents an individual result from a Github search code API call.
  * 

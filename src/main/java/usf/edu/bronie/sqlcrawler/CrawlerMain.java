@@ -1,16 +1,11 @@
 package usf.edu.bronie.sqlcrawler;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -28,7 +23,6 @@ import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.Project;
-import usf.edu.bronie.sqlcrawler.model.ProjectStats;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
 
@@ -170,7 +164,7 @@ class Optimize implements Runnable {
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();
-        int startSize = minSize;
+        // int startSize = minSize;
 
         if (minSize > stopPoint) {
             log.error("Starting point is greater than max value");

@@ -5,7 +5,6 @@ import usf.edu.bronie.sqlcrawler.model.SQLType;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProcNameCodeAnalyzer implements CodeAnalyzer {
@@ -22,7 +21,7 @@ public class ProcNameCodeAnalyzer implements CodeAnalyzer {
     }
 
     @Override
-    public SQLType analyzeCode(String code, List sqlCodes, RegexConstants.Languages language) {
+    public SQLType analyzeCode(String code, List<String> sqlCodes, RegexConstants.Languages language) {
         if (!RegexUtils.hasSpecificSingleKeyword(sqlCodes, RegexConstants.PROC_KEYWORD))
             return SQLType.NONE;
 

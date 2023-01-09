@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class CodeStatistics {
 
-    private Map mProjectMap = new HashMap<String, Integer>();
+    private Map<String, Integer> mProjectMap = new HashMap<String, Integer>();
 
     private long mNumberOfFiles = 0;
 
