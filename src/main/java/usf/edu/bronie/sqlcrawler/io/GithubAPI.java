@@ -125,11 +125,11 @@ public class GithubAPI {
     public void setPage(int page) {
 
         if (page > MAX_PAGE || page < 1) {
-            log.error("Invalid page number {} (expects 0-{})", page, MAX_PAGE);
+            log.error("Invalid page number {} (expects 1-{})", page, MAX_PAGE);
             System.exit(-1);
         }
 
-        // For 0 this becomes -1, which acts as if a new size was added
+        // For 1 this becomes 0, which acts as if a new size was added
         this.lastPage = page - 1;
     }
 
@@ -343,12 +343,13 @@ public class GithubAPI {
     private Response request(String url, Map<String, String> params)
             throws RateLimitException, SecondaryLimitException {
         Response r = getURL(url, params);
+        
+        // Check response code
+        handleErrorCode(url, r);
 
         // Rate limits always included regardless of response
         updateRateLimit(r);
 
-        // Check response code
-        handleErrorCode(url, r);
 
         return r;
     }
@@ -357,11 +358,13 @@ public class GithubAPI {
             throws RateLimitException, SecondaryLimitException {
         Response r = postURL(url, body);
 
+        // Check response code
+        handleErrorCode(url, r);
+
         // Rate limits always included regardless of response
         updateRateLimit(r);
 
-        // Check response code
-        handleErrorCode(url, r);
+        
 
         return r;
     }

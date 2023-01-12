@@ -122,7 +122,11 @@ public class ProjectStats {
         }
 
         if (data.has("latestRelease") && !data.isNull("latestRelease")) {
-            this.LRName = data.getJSONObject("latestRelease").getString("name");
+            if (data.getJSONObject("latestRelease").has("name") && !data.getJSONObject("latestRelease").isNull("name")) {
+                this.LRName = data.getJSONObject("latestRelease").getString("name");
+            } else {
+                this.LRName = null;
+            }
             this.LRCreated = iso8601ToTimestamp(data.getJSONObject("latestRelease").getString("createdAt"));
             this.LRUpdated = iso8601ToTimestamp(data.getJSONObject("latestRelease").getString("updatedAt"));
         } else {

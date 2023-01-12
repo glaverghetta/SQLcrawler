@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
  */
 
 public class Project {
-    private static final Logger log = LogManager.getLogger(ProjectStats.class);
+    private static final Logger log = LogManager.getLogger(Project.class);
 
     private int id;
     private String gh_id;
@@ -248,7 +248,7 @@ public class Project {
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
-            log.error("Error saving a project", e);
+            log.error("Error saving a project: {}", url, e);
             System.exit(-1);
         }
 
