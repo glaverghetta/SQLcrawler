@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Queue;
@@ -17,6 +21,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
+import usf.edu.bronie.sqlcrawler.io.DBConnection;
 import usf.edu.bronie.sqlcrawler.io.GithubAPI;
 import usf.edu.bronie.sqlcrawler.io.GithubAPI.PageLimitException;
 import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
@@ -25,8 +30,7 @@ import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.Project;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
-
-@Command(name = "SQLCrawler", subcommands = { CommandLine.HelpCommand.class, Pull.class, Analyze.class,
+@Command(name = "SQLCrawler", subcommands = { CommandLine.HelpCommand.class, Pull.class, Repo.class, Analyze.class,
         Statistics.class, Optimize.class,
         TestDummyFile.class }, description = "Tool for analyzing SQLIDIA vulnerabilities")
 public class CrawlerMain {
@@ -45,7 +49,6 @@ public class CrawlerMain {
         }
     }
 }
-
 
 // Provider command
 // Runs the provider, given the number of pages
@@ -115,6 +118,60 @@ class Statistics implements Runnable {
     }
 }
 
+@Command(name = "repo", description = "Pulls repository info for projects without stats")
+class Repo implements Runnable {
+
+    private static final Logger log = LogManager.getLogger(Repo.class);
+
+    @Option(names = {"--batch-size" }, description = "Query N projects at once", arity = "1", defaultValue = "100")
+    int batchSize;
+
+    @Option(names = { "--all-projects" }, description = "Pull and update stats for all projects in the database")
+    boolean allProjects;
+
+    @Override
+    public void run() {
+        log.info("Pulling repository data");
+
+        Set<Project> projectsToScan = new HashSet<Project>();
+
+        //These values don't matter
+        GithubAPI gh = new GithubAPI(1, 100, Languages.nameToLang("Java"));
+
+        try {
+            Connection mConnection = DBConnection.getConnection();
+            PreparedStatement statement;
+            if(!allProjects){
+                statement = mConnection.prepareStatement("SELECT id from projects WHERE id NOT IN (SELECT project from repo_info)");
+            }
+            else{
+                statement = mConnection.prepareStatement("SELECT id FROM projects");
+            }
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                projectsToScan.add(new Project(resultSet.getInt("id")));
+
+                if (projectsToScan.size() > batchSize) {
+                    gh.projectSleep(projectsToScan, batchSize);
+                }
+            }
+            statement.close();
+            mConnection.close();
+        } catch (SQLException e) {
+            // Todo: For now, just print error and quit. Might want to add more complicated
+            // solution in the future
+            log.error("Error retrieving projects from database", e);
+            System.exit(-1);
+        }
+
+        //Finish any remaining queued projects
+        while (projectsToScan.size() > 0) {
+            gh.projectSleep(projectsToScan, batchSize);
+        }
+    }
+}
+
 // Optimize command
 @Command(name = "optimize", description = "Runs all 3 functionalities")
 class Optimize implements Runnable {
@@ -139,11 +196,15 @@ class Optimize implements Runnable {
     int minSize;
 
     @Option(names = {
+        "--start-page" }, description = "Start scanning the first frame on page N (used for resuming interrupted scanning)", arity = "1", defaultValue = "1")
+    int startPage;
+
+    @Option(names = {
             "--window" }, description = "The beginning size of the search window", arity = "1", defaultValue = "1000")
     int startingWindow;
 
     @Option(names = {
-            "--projectScan" }, description = "Pull repo stats after queueing N projects", arity = "1", defaultValue = "100")
+            "--project-scan" }, description = "Pull repo stats after queueing N projects", arity = "1", defaultValue = "100")
     int projectScan;
 
     @Option(names = {
@@ -154,7 +215,7 @@ class Optimize implements Runnable {
     private Set<Project> projectsToScan = new HashSet<Project>();
 
     public void addProjectToScan(Project p) {
-        if (p.hasStats()){
+        if (p.hasStats()) {
             return;
         }
 
@@ -180,6 +241,8 @@ class Optimize implements Runnable {
         CodeAnalysisManager cam = new CodeAnalysisManager();
         GithubAPI gh = new GithubAPI(minSize, maxSize, lang);
 
+        gh.setPage(startPage);
+
         int updated = 0;
         int total = 0;
         int lastTotal = 0;
@@ -191,6 +254,7 @@ class Optimize implements Runnable {
             int frameGrowth = 0;
             long frameStart = System.currentTimeMillis();
             int recordsInFrame = 0;
+            Boolean repeated = false;
 
             // Check if there is another page and we have not reached minimum records to
             // continue
@@ -231,7 +295,7 @@ class Optimize implements Runnable {
                         addProjectToScan(new Project(result.getProject()));
                     } catch (noProjectFound e) {
                         // TODO Auto-generated catch block
-                        log.error("Unable to find project", e);
+                        log.error("Unable to find project id for file id {}", result.getId(), e);
                     }  
                 }
                 long pageEnd = System.currentTimeMillis();
@@ -248,6 +312,15 @@ class Optimize implements Runnable {
                             "Finished scanning page {} for files of size {} bytes (page had {} results, frame has {}, {} total)",
                             gh.lastPagePulled(), minSize,
                             total - lastTotal, gh.getLastTotalCount(), total);
+                }
+
+                if(total == lastTotal  && !repeated){
+                    log.debug("Last page had zero results, repeating page once");
+                    repeated = true;
+                    gh.setPage(gh.lastPagePulled());
+                }
+                else{
+                    repeated = false;
                 }
 
                 lastTotal = total;
@@ -271,7 +344,7 @@ class Optimize implements Runnable {
                     gh.setSize(minSize, maxSize);
                 }
 
-                // Check if the frame is too small - only grow if we haven't already shrunkon
+                // Check if the frame is too small - only grow if we haven't already shrunk on
                 // this frame
                 if (gh.getLastTotalCount() < 500 && !noShrink && frameShrink == 0) {
                     // Shrink the window by half
@@ -366,15 +439,15 @@ class TestDummyFile implements Runnable {
                 dummyFile.setLanguageType(Languages.PHP);
                 break;
             case "cs":
-            	log.debug("Analyzing dummy.cs");
-            	filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.cs");
-            	dummyFile.setLanguageType(Languages.CSHARP);
-            	break;
+                log.debug("Analyzing dummy.cs");
+                filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.cs");
+                dummyFile.setLanguageType(Languages.CSHARP);
+                break;
             case "js":
-            	log.debug("Analyzing dummy.js");
-            	filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.js");
-            	dummyFile.setLanguageType(Languages.JS);
-            	break;
+                log.debug("Analyzing dummy.js");
+                filePath = Path.of("src/main/java/usf/edu/bronie/sqlcrawler/dummy.js");
+                dummyFile.setLanguageType(Languages.JS);
+                break;
             default:
                 log.error("Unrecognizable file type ({})", typeOfFile.toLowerCase());
                 return;
