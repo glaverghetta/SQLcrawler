@@ -79,6 +79,7 @@ public class Project {
     }
 
     // Return project id for a given repo
+    //TODO: Should be avoided and idFromGH_ID used instead
     static public int idFromRepo(String repo_url) throws noProjectFound  {
         int result = 0;
         try {
@@ -141,6 +142,7 @@ public class Project {
         return result;
     }
 
+    //TODO: Should be avoided and idFromGH_ID used instead
     static public int idFromOwnerName(String owner, String name) throws noProjectFound {
         int result = 0;
         try {
@@ -209,9 +211,9 @@ public class Project {
     }
 
     // Checks if the give repo already exists
-    static public Boolean checkIfExists(String repo_url) {
+    static public Boolean checkIfExists(String gh_id) {
         try{
-            if (idFromRepo(repo_url) > 0) {
+            if (idFromGH_ID(gh_id) > 0) {
                 return true;
             }
             return false;
@@ -224,7 +226,7 @@ public class Project {
     public boolean save() {
 
         // If the project already exists, do nothing
-        if (checkIfExists(this.url)) {
+        if (checkIfExists(this.gh_id)) {
             return false;
         }
 
@@ -266,7 +268,7 @@ public class Project {
         if (id == 0){
 
             try{
-                setId(idFromRepo(this.url));
+                setId(idFromGH_ID(this.gh_id));
             }catch(Project.noProjectFound e){
                 log.error("No ID exists for this project", e);
                 System.exit(-1);

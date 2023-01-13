@@ -154,14 +154,14 @@ public class File {
         String repo = this.repo();
         // Check that the corresponding project exists
         try{
-            if (!Project.checkIfExists(repo)) {
+            if (!Project.checkIfExists(this.repo_id)) {
                 // Create the new project
                 String[] ownerName = repo.replace("https://github.com/", "").split("/");  //Extract owner and name
     
                 new Project(this.repo_id, ownerName[0], ownerName[1], repo).save();
-            } else if (checkIfExists(Project.idFromRepo(repo), this.filename, this.path)) {
+            } else if (checkIfExists(Project.idFromGH_ID(this.repo_id), this.filename, this.path)) {
                 // TODO: Add a check to see if it's a new commit
-                log.debug("Not saving existing file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path);
+                log.debug("Not saving existing file: Project-{} {} {}", Project.idFromGH_ID(this.repo_id), this.filename, this.path);
                 return false;
             }
         } catch (noProjectFound e){
@@ -176,7 +176,7 @@ public class File {
             statement = mConnection.prepareStatement(
                     "INSERT INTO files (project, filename, path, url, hash, commit, lang, date_added) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             try{
-                statement.setInt(1, Project.idFromRepo(repo));
+                statement.setInt(1, Project.idFromGH_ID(this.repo_id));
             }catch(noProjectFound e){
                 log.error("Unable to find a project for a file");
                 System.exit(-1);
@@ -197,7 +197,7 @@ public class File {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
             try{
-                log.error("Error saving a file: Project-{} {} {}", Project.idFromRepo(repo), this.filename, this.path, e);
+                log.error("Error saving a file: Project-{} {} {}", Project.idFromGH_ID(this.repo_id), this.filename, this.path, e);
             }catch(noProjectFound e2){
                 log.error("Unable to find a project for a file", e2);
                 System.exit(-1);
@@ -235,7 +235,7 @@ public class File {
     public int getProject() throws noProjectFound {
         // The project might not exist, need to handle that in the future
         if (this.project == 0)
-            return this.project = Project.idFromRepo(this.repo());
+            return this.project = Project.idFromGH_ID(this.repo_id);
         return this.project;
     }
 
