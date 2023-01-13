@@ -17,9 +17,9 @@ public class ProjectStats {
 
     public int getProject() throws noProjectFound {
         if (project == 0) {
-            this.project = Project.idFromOwnerName(this.owner, this.name);
+            this.project = Project.idFromGH_ID(this.gh_id);
         }
-        log.error("Got the following project {}", this.project);
+        log.debug("Got the following project {}", this.project);
         return project;
     }
 
@@ -57,7 +57,7 @@ public class ProjectStats {
         }
     }
 
-    public static void makeNullEntry(String url) throws noProjectFound {
+    public static void makeNullEntry(String gh_id) throws noProjectFound {
         try {
             PreparedStatement statement;
             Connection mConnection = DBConnection.getConnection();
@@ -65,7 +65,7 @@ public class ProjectStats {
             insertSQL += "ON DUPLICATE KEY UPDATE project=new.project, date_added=new.date_added";
 
             statement = mConnection.prepareStatement(insertSQL);
-            statement.setInt(1, Project.idFromRepo(url));
+            statement.setInt(1, Project.idFromGH_ID(gh_id));
 
             java.util.Date date = new java.util.Date(); // Get current time
             statement.setTimestamp(2, new Timestamp(date.getTime()));
