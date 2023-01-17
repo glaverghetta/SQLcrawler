@@ -25,6 +25,9 @@ public class Repository {
     @com.google.gson.annotations.Expose
     @com.google.gson.annotations.SerializedName("full_name")
     private String full_name;
+    public String getFull_name() {
+        return full_name;
+    }
     @com.google.gson.annotations.Expose
     @com.google.gson.annotations.SerializedName("private")
     private boolean is_private;  //Should always be false

@@ -168,6 +168,10 @@ public class File {
             //TODO: Handle
             log.error("No project found", e);
             System.exit(-1);
+        } catch (ArrayIndexOutOfBoundsException e){
+            //TODO: Handle
+            log.error("Could not extract owner/name from {}", repo, e);
+            System.exit(-1);
         }
 
         try {
