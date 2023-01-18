@@ -1,6 +1,7 @@
 package usf.edu.bronie.sqlcrawler.io;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -231,6 +232,23 @@ public class GithubAPI {
             long end = System.currentTimeMillis();
 
             networkTimingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+        } catch (SocketTimeoutException e) {
+            //TODO: Handle this more dynamically
+            log.debug("Socket timeout.  Trying a second time.");
+
+            try {
+                Call c = client.newCall(request);
+                long start = System.currentTimeMillis();
+                r = c.execute();
+                long end = System.currentTimeMillis();
+
+                networkTimingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url,
+                        r.code());
+            } catch (IOException e2) {
+                log.error("Failed to reach Github API", e2);
+                System.exit(-1);
+            }
+
         } catch (IOException e) {
             log.error("Failed to reach Github API", e);
             System.exit(-1);
@@ -278,10 +296,28 @@ public class GithubAPI {
             long end = System.currentTimeMillis();
 
             networkTimingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
-        } catch (IOException e) {
+        } catch (SocketTimeoutException e) {
+            //TODO: Handle this more dynamically
+            log.debug("Socket timeout.  Trying a second time.");
+
+            try {
+                Call c = client.newCall(request);
+                long start = System.currentTimeMillis();
+                r = c.execute();
+                long end = System.currentTimeMillis();
+    
+                networkTimingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+            }
+            catch (IOException e2) {
+                log.error("Failed to reach Github API", e2);
+                System.exit(-1);
+            }
+        }
+        catch (IOException e) {
             log.error("Failed to reach Github API", e);
             System.exit(-1);
         }
+
         return r;
     }
 
@@ -343,13 +379,12 @@ public class GithubAPI {
     private Response request(String url, Map<String, String> params)
             throws RateLimitException, SecondaryLimitException {
         Response r = getURL(url, params);
-        
+
         // Check response code
         handleErrorCode(url, r);
 
         // Rate limits always included regardless of response
         updateRateLimit(r);
-
 
         return r;
     }
@@ -363,8 +398,6 @@ public class GithubAPI {
 
         // Rate limits always included regardless of response
         updateRateLimit(r);
-
-        
 
         return r;
     }
@@ -402,7 +435,8 @@ public class GithubAPI {
                 if (errors.getJSONObject(i).getString("type").equals("NOT_FOUND")) {
                     // Message contains repo url in single quotes, like 'URL'
                     try {
-                        ProjectStats.makeNullEntry(Integer.parseInt(errors.getJSONObject(i).getString("path").replace("p", "")));
+                        ProjectStats.makeNullEntry(
+                                Integer.parseInt(errors.getJSONObject(i).getString("path").replace("p", "")));
                     } catch (noProjectFound e) {
                         log.error("Could not find project to save", e);
                         System.exit(-1);
@@ -439,7 +473,8 @@ public class GithubAPI {
 
         Queue<File> mQueue = new LinkedList<File>();
         for (Item r : list) {
-            mQueue.add(new File(r.getRepository().getNode_id(), r.getName(), r.getPath(), r.getRawUrl(), r.getSha(), r.getCommit(), this.language));
+            mQueue.add(new File(r.getRepository().getNode_id(), r.getName(), r.getPath(), r.getRawUrl(), r.getSha(),
+                    r.getCommit(), this.language));
         }
         return mQueue;
     }
