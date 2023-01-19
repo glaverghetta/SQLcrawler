@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
@@ -53,6 +55,21 @@ public class HttpConnection {
 
             timingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
             return r.body().string();
+        } catch (SocketTimeoutException e) {
+            log.debug("Socket timeout.  Trying a second time.");
+
+            try {
+                Call c = client.newCall(request); 
+                long start = System.currentTimeMillis();
+                r = c.execute();
+                long end = System.currentTimeMillis();
+    
+                timingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+                return r.body().string();
+            } catch (IOException e2) {
+                log.error("Error retrieving {}", url, e2);
+                System.exit(-1);
+            }
         } catch (IOException e) {
             log.error("Error retrieving {}", url, e);
             System.exit(-1);
