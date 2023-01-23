@@ -237,7 +237,8 @@ public class RegexConstants {
     public static final String JAVA_SEARCH_TERMS = "executeQuery";
     
     // TO DO
-    public static final String PHP_SEARCH_TERMS = "executeQuery";
+    //public static final String PHP_SEARCH_TERMS = "multi_query";
+    public static final String PHP_SEARCH_TERMS = "query";
     
     // EcecuteNonQuery, ExecuteReader, ExecuteScalar in terms of popularity - all are used
     public static final String CSHARP_SEARCH_TERMS = "ExecuteScalar";
