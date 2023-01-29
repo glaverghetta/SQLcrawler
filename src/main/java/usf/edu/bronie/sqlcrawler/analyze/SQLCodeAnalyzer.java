@@ -13,6 +13,8 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
 	//
 
     private String mStringLitWithVarPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_VAR_LOWER;
+    
+    private String mStringLitWithVarPatternStringInterpolation = RegexConstants.STRING_LITERAL_STRING_INTERPOLATION_CONCAT;
 
     private Pattern mAppendPattern = Pattern.compile(RegexConstants.APPEND_LOWER);
 
@@ -24,6 +26,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
     
     RegexConstants.Languages CompiledLang = null;
     Pattern stringLiteralWithVarPatternCompiled;
+    Pattern stringLiteralWithVarPatternInterpolationCompiled;
 
     public String getDBField()
     {
@@ -38,6 +41,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
 
         if(language != CompiledLang){
             CompiledLang = language;
@@ -45,8 +49,13 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
+            stringLiteralWithVarPatternInterpolationCompiled = Pattern.compile(String.format(
+            		mStringLitWithVarPatternStringInterpolation,
+            		interpolationVariable), Pattern.CASE_INSENSITIVE);
+            
         }
-
+        
+        
         Matcher stringLitWithVarMatcher = stringLiteralWithVarPatternCompiled.matcher(code);
         while(stringLitWithVarMatcher.find()) {
             String keyword = stringLitWithVarMatcher.group();
@@ -55,6 +64,18 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
                 break;
             }
         }
+        
+        // Interpolation concatenation checking
+        if(interpolationVariable != "") {
+        Matcher stringLitWithVarInterpolationMatcher = stringLiteralWithVarPatternInterpolationCompiled.matcher(code);
+        while(stringLitWithVarInterpolationMatcher.find()) {
+            String keyword = stringLitWithVarInterpolationMatcher.group();
+            if (RegexUtils.isSQLCode(keyword)) {
+                isStringConcat = true;
+                break;
+            }
+        }
+        }	
 
         if (!isStringConcat) {
             Matcher appendMatcher = mAppendPattern.matcher(code);

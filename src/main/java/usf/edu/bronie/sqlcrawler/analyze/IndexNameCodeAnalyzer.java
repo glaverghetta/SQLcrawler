@@ -9,11 +9,15 @@ import java.util.regex.Pattern;
 
 public class IndexNameCodeAnalyzer implements CodeAnalyzer {
 
-    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_INDEX;
+    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_INDEX + RegexConstants.CONCAT_VAR;
+    private String mStringLitPatternInterpolation = RegexConstants.STRING_LITERAL_CONCAT_WITH_INDEX + RegexConstants.INTERPOLATION_VAR;
+
     private static final String DBFIELD = "index_usage";
 
     RegexConstants.Languages CompiledLang = null;
     Pattern stringLiteralPatternCompiled;
+    Pattern mStringLitPatternInterpolationCompiled;
+
     
     public String getDBField() {
         return DBFIELD;
@@ -26,6 +30,8 @@ public class IndexNameCodeAnalyzer implements CodeAnalyzer {
         
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
+
 
         if(language != CompiledLang){
             CompiledLang = language;
@@ -33,10 +39,15 @@ public class IndexNameCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
+            mStringLitPatternInterpolationCompiled = Pattern.compile(
+            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
+            		Pattern.CASE_INSENSITIVE);
   
         }
 
-        return RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        if( RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isSingleConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
+        else return SQLType.HARDCODED;
     }
 
     public SQLType analyzeCode(String code, RegexConstants.Languages language) {

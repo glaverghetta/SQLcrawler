@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 
 public class TableNameLowerCodeAnalyzer implements CodeAnalyzer {
 
-    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_TABLE_LOWER;
-    
+    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_TABLE_LOWER + RegexConstants.CONCAT_VAR;
+    private String mStringLitPatternInterpolation = RegexConstants.STRING_LITERAL_CONCAT_WITH_TABLE_LOWER + RegexConstants.INTERPOLATION_VAR;
+
     RegexConstants.Languages CompiledLang = null;
     Pattern stringLiteralPatternCompiled;
+    Pattern mStringLitPatternInterpolationCompiled;
 
     private static final String DBFIELD = "table_usage_lower";
 
@@ -28,6 +30,7 @@ public class TableNameLowerCodeAnalyzer implements CodeAnalyzer {
         
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
 
         if(language != CompiledLang){
             CompiledLang = language;
@@ -35,10 +38,14 @@ public class TableNameLowerCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
-  
+            mStringLitPatternInterpolationCompiled = Pattern.compile(
+            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
+            		Pattern.CASE_INSENSITIVE);
         }
 
-        return RegexUtils.isConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        if( RegexUtils.isConcat(code, stringLiteralPatternCompiled)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
+        else return SQLType.HARDCODED;
     }
 
     public SQLType analyzeCode(String code, RegexConstants.Languages language) {

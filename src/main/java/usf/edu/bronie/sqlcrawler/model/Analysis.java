@@ -18,6 +18,12 @@ public class Analysis {
     SQLType sql_usage;
     ApiType api_type;
     boolean parameterized;
+    
+    public void printResults() {
+    	for (Map.Entry<String,SQLType> entry : results.entrySet()) 
+            System.out.println("Key = " + entry.getKey() +
+                             ", Value = " + entry.getValue());
+    }
 
     public ApiType getApi_type() {
         return api_type;

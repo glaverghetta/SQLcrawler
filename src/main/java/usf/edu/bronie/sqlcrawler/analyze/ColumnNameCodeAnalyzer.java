@@ -12,8 +12,12 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
     private String mStringLitPatternMultiple = RegexConstants.STRING_LITERAL_COLUMN
             + RegexConstants.CONCAT_VAR_MULTIPLE;
     
+    private String mStringLitPatternInterpolation = RegexConstants.STRING_LITERAL_COLUMN + RegexConstants.INTERPOLATION_VAR;
+    
     Pattern stringLiteralPatternCompiled;
     Pattern stringLiteralPatternMultipleCompiled;
+    Pattern mStringLitPatternInterpolationCompiled;
+    
     RegexConstants.Languages lastUsedLang = null;
 
 
@@ -30,6 +34,7 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
 
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
 
 
         if(language != lastUsedLang){
@@ -44,11 +49,15 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
+            mStringLitPatternInterpolationCompiled = Pattern.compile(
+            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
+            		Pattern.CASE_INSENSITIVE);
         }
 
 
         if(RegexUtils.isConcat(code, stringLiteralPatternCompiled)) return SQLType.STRING_CONCAT;
         if(RegexUtils.isConcat(code, stringLiteralPatternMultipleCompiled)) return SQLType.STRING_CONCAT_LIST;
+        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
         else return SQLType.HARDCODED;
 
     }

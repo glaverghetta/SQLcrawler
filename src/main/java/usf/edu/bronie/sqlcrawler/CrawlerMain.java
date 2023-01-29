@@ -20,6 +20,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.io.DBConnection;
 import usf.edu.bronie.sqlcrawler.io.GithubAPI;
@@ -225,6 +226,7 @@ class Optimize implements Runnable {
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();
+                
         // int startSize = minSize;
 
         if (minSize > stopPoint) {
@@ -465,7 +467,9 @@ class TestDummyFile implements Runnable {
         CodeAnalysisManager cam = new CodeAnalysisManager();
 
         Analysis a = cam.processFile(dummyFile);
+        
         a.save();
+        a.printResults();
         log.info("Successfully analyzed the dummy file");
         return;
     }
