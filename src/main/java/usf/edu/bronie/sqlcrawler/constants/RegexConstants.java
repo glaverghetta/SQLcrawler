@@ -81,7 +81,7 @@ public class RegexConstants {
     public static final String JS_VARIABLE = "[_a-zA-Z][_a-zA-Z0-9]*";
     
     public static final String JS_VARIABLE_STRING_INTERPOLATION = "\\$\\{[_a-zA-Z][_a-zA-Z0-9]*\\}"; // ${var}
-    public static final String PHP_VARIABLE_STRING_INTERPOLATION =  "\\$[_a-zA-Z][_a-zA-Z0-9]*"; // $var
+    public static final String PHP_VARIABLE_STRING_INTERPOLATION =  "(\\{|)\\$[_a-zA-Z][_a-zA-Z0-9]*(\\}|)"; // $var OR {$var}
     public static final String JAVA_VARIABLE_STRING_INTERPOLATION = "\\$\\{[_a-zA-Z][_a-zA-Z0-9]*\\}"; // ${var}
     public static final String CSHARP_VARIABLE_STRING_INTERPOLATION = "\\\\{[_a-zA-Z][_a-zA-Z0-9]*\\\\}"; //{var}
     
@@ -240,7 +240,7 @@ public class RegexConstants {
     
     // TO DO
     //public static final String PHP_SEARCH_TERMS = "multi_query";
-    public static final String PHP_SEARCH_TERMS = "query";
+    public static final String PHP_SEARCH_TERMS = "mysqli_query";
     
     // EcecuteNonQuery, ExecuteReader, ExecuteScalar in terms of popularity - all are used
     public static final String CSHARP_SEARCH_TERMS = "ExecuteScalar";
