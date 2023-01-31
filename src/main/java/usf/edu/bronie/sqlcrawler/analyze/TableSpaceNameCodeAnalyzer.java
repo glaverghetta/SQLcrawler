@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 
 public class TableSpaceNameCodeAnalyzer implements CodeAnalyzer {
 
-    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_TSPACE;
-    
+    private String mStringLitPattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_TSPACE + RegexConstants.CONCAT_VAR;
+    private String mStringLitPatternInterpolation = RegexConstants.STRING_LITERAL_CONCAT_WITH_TSPACE + RegexConstants.INTERPOLATION_VAR;
+
     RegexConstants.Languages CompiledLang = null;
     Pattern stringLiteralPatternCompiled;
+    Pattern mStringLitPatternInterpolationCompiled;
 
     private static final String DBFIELD = "tspace_usage";
 
@@ -27,6 +29,7 @@ public class TableSpaceNameCodeAnalyzer implements CodeAnalyzer {
         
         String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
 
         if(language != CompiledLang){
             CompiledLang = language;
@@ -34,10 +37,15 @@ public class TableSpaceNameCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
+            mStringLitPatternInterpolationCompiled = Pattern.compile(
+            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
+            		Pattern.CASE_INSENSITIVE);
   
         }
 
-        return RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ? SQLType.STRING_CONCAT : SQLType.HARDCODED;
+        if( RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isSingleConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
+        else return SQLType.HARDCODED;
     }
 
     public SQLType analyzeCode(String code, RegexConstants.Languages language) {

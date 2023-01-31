@@ -12,7 +12,9 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
 
     private Pattern mStringLitPattern = Pattern.compile(RegexConstants.STRING_LITERAL);
 
-    private String mStringLitWithLikePattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_LIKE;
+    private String mStringLitWithLikePattern = RegexConstants.STRING_LITERAL_CONCAT_WITH_LIKE + RegexConstants.CONCAT_VAR;
+    private String mStringLitPatternInterpolation = RegexConstants.STRING_LITERAL_CONCAT_WITH_LIKE + RegexConstants.INTERPOLATION_VAR;
+
 
     // This one does not take any string formatters currently
     private Pattern mStringLikePrepPattern = Pattern.compile(RegexConstants.STRING_LITERAL_PREP_STATE_LIKE,
@@ -20,6 +22,7 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     
     RegexConstants.Languages CompiledLang = null;
     Pattern stringLiteralLikePatternCompiled;
+    Pattern mStringLitPatternInterpolationCompiled;
             
     private static final String DBFIELD = "like_usage";
 
@@ -59,6 +62,7 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     private boolean isLikeConcat(String code, RegexConstants.Languages language) {
     	String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
         
     	if(language != CompiledLang){
             CompiledLang = language;
@@ -66,12 +70,22 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
+            mStringLitPatternInterpolationCompiled = Pattern.compile(
+            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
+            		Pattern.CASE_INSENSITIVE);
   
         }
     	
         Matcher stringLitWithOrderByMatcher = stringLiteralLikePatternCompiled.matcher(code);
         while (stringLitWithOrderByMatcher.find()) {
             String keyword = stringLitWithOrderByMatcher.group();
+            if (RegexUtils.isSQLCode(keyword)) {
+                return true;
+            }
+        }
+        Matcher stringLitWithOrderByMatcherInterpolation = stringLiteralLikePatternCompiled.matcher(code);
+        while (stringLitWithOrderByMatcherInterpolation.find()) {
+            String keyword = stringLitWithOrderByMatcherInterpolation.group();
             if (RegexUtils.isSQLCode(keyword)) {
                 return true;
             }
