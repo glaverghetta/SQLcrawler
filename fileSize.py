@@ -22,7 +22,8 @@ def saveData(valsToAdd, mydb, name, threadNumber):
         return
     
     # Line up data for prepared statement
-    data = [(i[0], i[1],) for i in valsToAdd]
+    # Should be filesize, then id
+    data = [(i[1], i[0],) for i in valsToAdd]
     
     with mydb.cursor(prepared=True) as cursor:
         try:
