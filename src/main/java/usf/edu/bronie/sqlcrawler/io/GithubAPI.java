@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -436,9 +437,12 @@ public class GithubAPI {
                     // Message contains repo url in single quotes, like 'URL'
                     try {
                         ProjectStats.makeNullEntry(
-                                Integer.parseInt(errors.getJSONObject(i).getString("path").replace("p", "")));
+                                Integer.parseInt(errors.getJSONObject(i).getJSONArray("path").getString(0).replace("p", "")));
                     } catch (noProjectFound e) {
                         log.error("Could not find project to save", e);
+                        System.exit(-1);
+                    } catch (JSONException e){
+                        log.error("Error with JSON format: {}", errors.getJSONObject(i), e);     
                         System.exit(-1);
                     }
                 } else {
