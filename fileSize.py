@@ -29,7 +29,8 @@ def saveData(valsToAdd, mydb, name, threadNumber):
         try:
             sql = "UPDATE files SET fileSize = %s WHERE id = %s;"
             #print(f"Updating file {id} with fileSize {size}")
-            cursor.executemany(sql, data)
+            for d in data:
+                cursor.execute(sql, d)
             mydb.commit()
         except Error as e:
             print(f"Thread {threadNumber}: Encountered error when updating fileSize for some files in {name}: (id, size, line number)")
