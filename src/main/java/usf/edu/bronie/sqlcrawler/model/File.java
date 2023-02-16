@@ -178,7 +178,7 @@ public class File {
             PreparedStatement statement;
             Connection mConnection = DBConnection.getConnection();
             statement = mConnection.prepareStatement(
-                    "INSERT INTO files (project, filename, path, url, hash, commit, lang, date_added) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO files (project, filename, path, url, hash, commit, lang, date_added, fileSize) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)");
             try{
                 statement.setInt(1, Project.idFromGH_ID(this.repo_id));
             }catch(noProjectFound e){
@@ -193,6 +193,7 @@ public class File {
             statement.setString(7, this.languageType.searchString());
             java.util.Date date = new java.util.Date(); // Get current time
             statement.setTimestamp(8, new Timestamp(date.getTime()));
+            statement.setInt(9, this.getCodeSize());
             statement.executeUpdate();
 
             statement.close();

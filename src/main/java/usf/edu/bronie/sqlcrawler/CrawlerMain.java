@@ -124,7 +124,7 @@ class Repo implements Runnable {
 
     private static final Logger log = LogManager.getLogger(Repo.class);
 
-    @Option(names = {"--batch-size" }, description = "Query N projects at once", arity = "1", defaultValue = "100")
+    @Option(names = { "--batch-size" }, description = "Query N projects at once", arity = "1", defaultValue = "100")
     int batchSize;
 
     @Option(names = { "--all-projects" }, description = "Pull and update stats for all projects in the database")
@@ -136,16 +136,16 @@ class Repo implements Runnable {
 
         Set<Project> projectsToScan = new HashSet<Project>();
 
-        //These values don't matter
+        // These values don't matter
         GithubAPI gh = new GithubAPI(1, 100, Languages.nameToLang("Java"));
 
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            if(!allProjects){
-                statement = mConnection.prepareStatement("SELECT id from projects WHERE id NOT IN (SELECT project from repo_info)");
-            }
-            else{
+            if (!allProjects) {
+                statement = mConnection
+                        .prepareStatement("SELECT id from projects WHERE id NOT IN (SELECT project from repo_info)");
+            } else {
                 statement = mConnection.prepareStatement("SELECT id FROM projects");
             }
 
@@ -166,7 +166,7 @@ class Repo implements Runnable {
             System.exit(-1);
         }
 
-        //Finish any remaining queued projects
+        // Finish any remaining queued projects
         while (projectsToScan.size() > 0) {
             gh.projectSleep(projectsToScan, batchSize);
         }
@@ -197,7 +197,7 @@ class Optimize implements Runnable {
     int minSize;
 
     @Option(names = {
-        "--start-page" }, description = "Start scanning the first frame on page N (used for resuming interrupted scanning)", arity = "1", defaultValue = "1")
+            "--start-page" }, description = "Start scanning the first frame on page N (used for resuming interrupted scanning)", arity = "1", defaultValue = "1")
     int startPage;
 
     @Option(names = {
@@ -226,7 +226,7 @@ class Optimize implements Runnable {
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();
-                
+
         // int startSize = minSize;
 
         if (minSize > stopPoint) {
@@ -253,7 +253,6 @@ class Optimize implements Runnable {
         while (minSize < stopPoint) {
             int framePages = 0;
             int frameShrink = 0;
-            int frameGrowth = 0;
             long frameStart = System.currentTimeMillis();
             int recordsInFrame = 0;
             Boolean repeated = false;
@@ -298,7 +297,8 @@ class Optimize implements Runnable {
                     } catch (noProjectFound e) {
                         // TODO Auto-generated catch block
                         log.error("Unable to find project id for file id {}", result.getId(), e);
-                    }  
+                        System.exit(-1);
+                    }
                 }
                 long pageEnd = System.currentTimeMillis();
                 pageLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(pageStart), new Date(pageEnd),
@@ -316,18 +316,17 @@ class Optimize implements Runnable {
                             total - lastTotal, gh.getLastTotalCount(), total);
                 }
 
-                if(total == lastTotal  && !repeated){
+                if (total == lastTotal && !repeated) {
                     log.debug("Last page had zero results, repeating page once");
                     repeated = true;
                     gh.setPage(gh.lastPagePulled());
-                }
-                else{
+                } else {
                     repeated = false;
                 }
 
                 lastTotal = total;
 
-                // Check if we need to shrink the window
+                // Check if we need to shrink the frame
                 if (gh.getLastTotalCount() > 1000 && minSize != maxSize && !noShrink) {
                     // Shrink the window by half
                     frameShrink++;
@@ -343,31 +342,10 @@ class Optimize implements Runnable {
                                 gh.getLastTotalCount(),
                                 minSize, maxSize);
                     }
-                    gh.setSize(minSize, maxSize);
+                    gh.setSize(minSize, maxSize);  //Need to switch to new frame now to avoid data loss
                 }
 
-                // Check if the frame is too small - only grow if we haven't already shrunk on
-                // this frame
-                if (gh.getLastTotalCount() < 500 && !noShrink && frameShrink == 0) {
-                    // Shrink the window by half
-                    frameGrowth++;
-                    int diff = (maxSize - minSize) / 2;
-                    if (diff == 0) {
-                        maxSize = maxSize + 1; // Just a single byte size now!
-                        log.debug("Got {} results. Grew the search window to {}-{} bytes.",
-                                gh.getLastTotalCount(),
-                                minSize, maxSize);
-                    } else {
-                        maxSize = maxSize + diff;
-                        log.debug("Got {} results. Grew the search window to {}-{} bytes.",
-                                gh.getLastTotalCount(),
-                                minSize, maxSize);
-                    }
-                    // Growth is for next frame to avoid flipping back and forth. Don't call
-                    // gh.setSize here
-                }
-
-                log.debug("Currently queued {} projects to scan", projectsToScan.size());        
+                log.debug("Currently queued {} projects to scan", projectsToScan.size());
                 if (projectsToScan.size() > projectScan) {
                     gh.projectSleep(projectsToScan, projectScan);
                 }
@@ -382,21 +360,40 @@ class Optimize implements Runnable {
             }
 
             long frameEnd = System.currentTimeMillis();
-            frameLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(frameStart), new Date(frameEnd),
+            frameLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(frameStart), new Date(frameEnd),
                     frameEnd - frameStart, minSize, maxSize,
-                    updated, framePages, gh.getLastTotalCount(), frameShrink, frameGrowth);
+                    updated, framePages, gh.getLastTotalCount(), frameShrink);
 
-            log.debug("Currently queued {} projects to scan", projectsToScan.size());        
+            log.debug("Currently queued {} projects to scan", projectsToScan.size());
             if (projectsToScan.size() > projectScan) {
                 gh.projectSleep(projectsToScan, projectScan);
             }
 
-            // Increase the range
+            // Move to next frame
             int diff = maxSize - minSize;
             minSize += diff + 1;
             maxSize += diff + 1;
+
+            // Check if the new frame should grow in size
+            if (gh.getLastTotalCount() < 500 && !noShrink) {
+                // Increase the frame size by half
+                diff = (maxSize - minSize) / 2;
+                if (diff == 0) {
+                    maxSize = maxSize + 1;
+                    log.debug("Github reported {} results in last frame. Grew the search window to {}-{} bytes.",
+                            gh.getLastTotalCount(),
+                            minSize, maxSize);
+                } else {
+                    maxSize = maxSize + diff;
+                    log.debug("Github reported {} results in last frame. Grew the search window to {}-{} bytes.",
+                            gh.getLastTotalCount(),
+                            minSize, maxSize);
+                }
+            }
+
             gh.setSize(minSize, maxSize);
         }
+
         // Finish all the projects left to scan
         while (projectsToScan.size() > 0) {
             gh.projectSleep(projectsToScan, projectScan);
@@ -467,7 +464,7 @@ class TestDummyFile implements Runnable {
         CodeAnalysisManager cam = new CodeAnalysisManager();
 
         Analysis a = cam.processFile(dummyFile);
-        
+
         a.save();
         a.printResults();
         log.info("Successfully analyzed the dummy file");
