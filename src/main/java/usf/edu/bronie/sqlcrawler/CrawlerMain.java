@@ -197,6 +197,10 @@ class Optimize implements Runnable {
     int minSize;
 
     @Option(names = {
+        "--end" }, description = "The max size of the frame to begin searching with. Must be less than the specified max search size. If set, --window is ignored", arity = "1", defaultValue = "0")
+    int windowEnd;
+
+    @Option(names = {
             "--start-page" }, description = "Start scanning the first frame on page N (used for resuming interrupted scanning)", arity = "1", defaultValue = "1")
     int startPage;
 
@@ -234,10 +238,15 @@ class Optimize implements Runnable {
             return;
         }
 
-        log.info("Running optimized mode for {} up to {} bytes, starting window {}-{}{}", typeOfFile, stopPoint,
-                minSize, minSize + startingWindow, !noShrink ? "" : " (no window shrinking)");
         int maxSize = minSize + startingWindow;
 
+        if(windowEnd != 0){
+            maxSize = windowEnd;
+        }
+
+        log.info("Running optimized mode for {} up to {} bytes, starting window {}-{}{}", typeOfFile, stopPoint,
+                minSize, maxSize, !noShrink ? "" : " (no window shrinking)");
+        
         Languages lang = Languages.nameToLang(typeOfFile);
 
         CodeAnalysisManager cam = new CodeAnalysisManager();
