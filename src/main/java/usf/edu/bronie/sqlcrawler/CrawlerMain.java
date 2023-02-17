@@ -238,14 +238,15 @@ class Optimize implements Runnable {
             return;
         }
 
-        log.info("Running optimized mode for {} up to {} bytes, starting window {}-{}{}", typeOfFile, stopPoint,
-                minSize, minSize + startingWindow, !noShrink ? "" : " (no window shrinking)");
         int maxSize = minSize + startingWindow;
 
         if(windowEnd != 0){
             maxSize = windowEnd;
         }
 
+        log.info("Running optimized mode for {} up to {} bytes, starting window {}-{}{}", typeOfFile, stopPoint,
+                minSize, maxSize, !noShrink ? "" : " (no window shrinking)");
+        
         Languages lang = Languages.nameToLang(typeOfFile);
 
         CodeAnalysisManager cam = new CodeAnalysisManager();
