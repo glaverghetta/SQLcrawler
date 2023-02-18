@@ -59,7 +59,7 @@ Now simply build with maven.
 
 The jar file can be found in the target folder.  Sample usage:
 
-    $ java -jar target/sqlcrawler-2.0-jar-with-dependencies.jar
+    $ java -jar target/sqlcrawler-1.0-jar-with-dependencies.jar
     Usage: SQLCrawler [COMMAND]
     Tool for analyzing SQLIDIA vulnerabilities
     Commands:
@@ -156,7 +156,7 @@ This log file tracks the time taken to pull all pages in a frame from the API an
 
 File format:
 
-    Log Time ~ Start time ~ End time ~ Time Diff in ms ~ frame start in bytes ~ frame end in bytes ~ unique files analyzed ~ files reported by API ~ number of pages in frame ~ number of results reported by Github ~ number of times frame shrunk ~ a 1 if frame grew
+    Log Time ~ Start time ~ End time ~ Time Diff in ms ~ frame start in bytes ~ frame end in bytes ~ unique files analyzed ~ number of pages found in frame ~ number of results reported by Github ~ number of times frame shrunk
 
 #### FinalLogger
 
