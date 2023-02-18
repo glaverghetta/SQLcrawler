@@ -613,8 +613,8 @@ public class GithubAPI {
     private static String setupGraphQL() {
         String out = "";
         try {
-            out = String.join("\n",
-                    Files.readAllLines(Paths.get(GithubAPI.class.getResource("/graphQLQuery.txt").toURI())));
+            String text = new String(GithubAPI.class.getResourceAsStream("/graphQLQuery.txt").readAllBytes());
+            out = String.join("\n", text);
         } catch (Exception e) {
             // TODO: handle exception
             log.error("Error reading GraphQL resource file", e);
