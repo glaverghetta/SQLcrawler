@@ -330,6 +330,9 @@ class Optimize implements Runnable {
                     repeated = true;
                     gh.setPage(gh.lastPagePulled());
                 } else {
+                    if(total == lastTotal){
+                        log.debug("Last page had zero results twice, continuing");
+                    }
                     repeated = false;
                 }
 

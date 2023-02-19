@@ -488,11 +488,8 @@ public class GithubAPI {
         String q = RegexConstants.getSearchTerms(language);
 
         q = q + " language:" + language.searchString();
-        if (minSize != maxSize) {
-            q = q + " size:" + minSize + ".." + maxSize;
-        } else {
-            q = q + " size:" + minSize; // An exact size
-        }
+        //Size always takes two args, even if only looking for one byte
+        q = q + " size:" + minSize + ".." + maxSize;
 
         return q;
     }
