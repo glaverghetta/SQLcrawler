@@ -133,6 +133,7 @@ public class GithubAPI {
 
         // For 1 this becomes 0, which acts as if a new size was added
         this.lastPage = page - 1;
+        this.lastTotalCount = -1;  //Act as if this is a new pull entirely
     }
 
     /**
@@ -488,11 +489,8 @@ public class GithubAPI {
         String q = RegexConstants.getSearchTerms(language);
 
         q = q + " language:" + language.searchString();
-        if (minSize != maxSize) {
-            q = q + " size:" + minSize + ".." + maxSize;
-        } else {
-            q = q + " size:" + minSize; // An exact size
-        }
+        //Size always takes two args, even if only looking for one byte
+        q = q + " size:" + minSize + ".." + maxSize;
 
         return q;
     }
