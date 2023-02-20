@@ -7,9 +7,9 @@ import keyring
 import email
 import time
 import datetime
+import sys
 
 MYEMAIL = "acdcprovenance@gmail.com"
-MYNAME = "Kevin"
 
 def sendEmail(subject, content):
     yagmail.SMTP('acdcprovenance').send(MYEMAIL, subject, content)
@@ -116,6 +116,11 @@ def resume():
     return lastLines
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Please provide a tag/name for the subject line as the first argument!")
+        exit(-1)
+    print(f"Using '{sys.argv[1]}' as part of the subject line")
+    tag = sys.argv[1]
     print("First... rebuild!")
     mvn = subprocess.run(["mvn", "package"], shell=True, stderr=subprocess.STDOUT, encoding='utf-8')
     if mvn.returncode != 0:
@@ -128,7 +133,7 @@ if __name__ == '__main__':
         start = datetime.datetime.now()
         time.sleep(60)  # Wait a minute in case we crashed due to network instability
         fail = True
-        subject = MYNAME + " " + str(start)
+        subject = tag + " " + str(start)
         sendEmail(subject, ''.join(lastLines))
         print(f"Sent last 100 lines to myself with subject {start}")
         while((datetime.datetime.now() - start).days == 0):
