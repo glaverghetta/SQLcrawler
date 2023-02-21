@@ -106,7 +106,7 @@ def resume():
     print(f"Running the following command: ", ' '.join(newArgs))
 
     lastLines = []
-    with subprocess.Popen(newArgs, shell=True, stdout=subprocess.PIPE, bufsize=1,
+    with subprocess.Popen(' '.join(newArgs), shell=True, stdout=subprocess.PIPE, bufsize=1,
            universal_newlines=True, stderr=subprocess.STDOUT, encoding='utf-8') as p:
         for line in p.stdout:
             print(line, end='')
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     print(f"Using '{sys.argv[1]}' as part of the subject line")
     tag = sys.argv[1]
     print("First... rebuild!")
-    mvn = subprocess.run(["mvn", "package"], shell=True, stderr=subprocess.STDOUT, encoding='utf-8')
+    mvn = subprocess.run("mvn package", shell=True, stderr=subprocess.STDOUT, encoding='utf-8')
     if mvn.returncode != 0:
         print("Failed to build!")
         exit(-1)
