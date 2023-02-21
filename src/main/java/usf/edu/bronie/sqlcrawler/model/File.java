@@ -170,7 +170,7 @@ public class File {
             System.exit(-1);
         } catch (ArrayIndexOutOfBoundsException e){
             //TODO: Handle
-            log.error("Could not extract owner/name from {}", repo, e);
+            log.error("Could not extract owner/name from {}", this.url, e);
             System.exit(-1);
         }
 
@@ -215,7 +215,17 @@ public class File {
 
     // Returns the repo url from the raw url
     private String repo() {
+        String[] temp = this.url.replace("https://github.com/", "").split("/");
+        String owner = temp[0];
+        String name = temp[1];
+
         int index = this.url.indexOf("/raw/");
+        if(owner.equals("raw")){
+            index = this.url.indexOf("/raw/", index + 1);
+        }
+        if(name.equals("raw")){
+            index = this.url.indexOf("/raw/", index + 1);
+        }
         return this.url.substring(0, index);
     }
 
