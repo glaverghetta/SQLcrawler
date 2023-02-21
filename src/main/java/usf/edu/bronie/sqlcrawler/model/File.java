@@ -170,7 +170,7 @@ public class File {
             System.exit(-1);
         } catch (ArrayIndexOutOfBoundsException e){
             //TODO: Handle
-            log.error("Could not extract owner/name from {}", repo, e);
+            log.error("Could not extract owner/name from {}", this.url, e);
             System.exit(-1);
         }
 
