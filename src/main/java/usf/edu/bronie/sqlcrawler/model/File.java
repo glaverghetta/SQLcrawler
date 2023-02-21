@@ -221,14 +221,10 @@ public class File {
 
         int index = this.url.indexOf("/raw/");
         if(owner.equals("raw")){
-            
             index = this.url.indexOf("/raw/", index + 1);
-            
         }
         if(name.equals("raw")){
-            
             index = this.url.indexOf("/raw/", index + 1);
-            
         }
         return this.url.substring(0, index);
     }
