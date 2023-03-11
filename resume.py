@@ -69,7 +69,7 @@ def findDetails(filename):
     return page, frameStart, frameEnd
 
 def resume():
-    filename = glob.glob("logs/Final*")[-1]
+    filename = sorted(glob.glob("logs/Final*"))[-1]
     print(f"Most recent Final file {filename}")
     args = findArguments(filename)
 

@@ -38,6 +38,8 @@ analysis are stored in a database to allow for fine-tuned querying (some useful 
 A pom.xml file is provided for easy compilation, but a few steps must be taken. In the future, these may be runtime arguments or
 otherwise specified after compilation.
 
+Expects Java 18.
+
 First, create a copy of [CredentialConstants.java.example](src\main\java\usf\edu\bronie\sqlcrawler\constants\CredentialConstants.java.example) and remove the ".example" extension. If you are only analyzing an individual file, the following steps are optional.
 
 The Credential Constants file contains the [Github Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) for querying the Github API and database credentials for storing the results.  
