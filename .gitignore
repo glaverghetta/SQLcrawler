@@ -10,4 +10,6 @@ CredentialConstants.java
 .DS_Store
 dummy.*
 logs
+logs_fixed
 __pycache__
+ignore.txt
