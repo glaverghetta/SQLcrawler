@@ -53,7 +53,8 @@ def check_for_reply_from_self(subject):
 def nextFile():
     files = sorted(glob.glob("logs/GithubAPI*.log"))
 
-    finishedFiles = open("ignore.txt", "r").readlines()
+    with open("ignore.txt", "r") as file:
+            finishedFiles = file.read().splitlines()
     for f in files:
         if f not in finishedFiles:
             return f
