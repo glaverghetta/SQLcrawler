@@ -49,18 +49,18 @@ def biggestBytesUnit(bytes : int):
 
 class LogFile():
     """A basic implementation for the log files being analyzed. Don't use directly, instead call one of the subclasses"""
-    totalNumFiles = 0
+    globalNumFiles = 0
     """The total number of log files that have been read"""
-    firstLogTime = None
+    globalFirstLogTime = None
     """The first log time recorded in any file analyzed so far"""
-    lastLogTime = None
+    globalLastLogTime = None
     """The last log time recorded in any file analyzed so far"""
 
     def __init__(self, filename : str):
         self.print = self.print_instance 
         self.fileName = filename
         """The name of the log file"""
-        LogFile.totalNumFiles += 1
+        LogFile.globalNumFiles += 1
         self.numLines = 0
         """The number of lines in the log file"""
         self.firstLogTime = None
@@ -82,6 +82,26 @@ class LogFile():
     
     def displayAccurateDate(self, date):
         return date.isoformat(sep=' ', timespec='milliseconds')
+
+    def getAll(self, method):
+        """Calls a function on every line in the log file.
+        Very useful for custom aggregation. 
+        
+        For example, the following returns the median runtime in a timed log file
+
+        statistics.median(myLog.getAll(TimedLogFile.TimedLogFile.valsRunningTime))
+
+        Args:
+            method (function): The function to call on every line; passes self as first arg, vals on the line as second arg
+
+        Returns:
+            List: Contains all of the results from calling the function on every line
+        """
+        items = []
+        with open(self.getFilename()) as file:
+            while (line := file.readline().rstrip()):
+                items.append(method(self, self.splitLine(line)))
+        return items
 
     def splitLine(self, line):
         """Splits a log line into its values
@@ -132,10 +152,10 @@ class LogFile():
             self.firstLogTime = logTime
         self.lastLogTime = logTime
 
-        if LogFile.firstLogTime is None or logTime < LogFile.firstLogTime:
-           LogFile.firstLogTime = logTime
-        if LogFile.lastLogTime is None or logTime > LogFile.lastLogTime:
-           LogFile.lastLogTime = logTime
+        if LogFile.globalFirstLogTime is None or logTime < LogFile.globalFirstLogTime:
+           LogFile.globalFirstLogTime = logTime
+        if LogFile.globalLastLogTime is None or logTime > LogFile.globalLastLogTime:
+           LogFile.globalLastLogTime = logTime
         return vals
     
     def print_instance(self):
@@ -149,7 +169,7 @@ class LogFile():
         print(f"Total time of session (based on this file): {self.lastLogTime - self.firstLogTime})")
     
     def print():
-        print(f"Analyzed a total of {LogFile.totalNumFiles} files")
-        print(f"First recorded log time at {LogFile.firstLogTime}")
-        print(f"Last recorded log time at {LogFile.lastLogTime}")
-        print(f"Difference between last log time and first: {LogFile.lastLogTime - LogFile.firstLogTime}")
+        print(f"Analyzed a total of {LogFile.globalNumFiles} files")
+        print(f"First recorded log time at {LogFile.globalFirstLogTime}")
+        print(f"Last recorded log time at {LogFile.globalLastLogTime}")
+        print(f"Difference between last log time and first: {LogFile.globalLastLogTime - LogFile.globalFirstLogTime}")

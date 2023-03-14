@@ -39,7 +39,8 @@
 # Left is NodeJS
 
 import glob
-from crawlerLogAnalyzer import FileLog, LogFile, GithubAPILog
+import statistics
+from crawlerLogAnalyzer import FileLog, LogFile, GithubAPILog, TimedLogFile
        
 if __name__ == '__main__':
     f = FileLog.FileLog(sorted(glob.glob("logs/File*"))[0])
@@ -59,6 +60,11 @@ if __name__ == '__main__':
         i += 1
         a = GithubAPILog.GithubAPILog(f)
         a.analyze()
+        print()
+        print(statistics.median(a.getAll(TimedLogFile.valsRunningTime)))
+        exit()
         a.print()
+    print("\n--GLOBAL LOGFILE--")
     LogFile.LogFile.print()
+    print("\n--GLOBAL GITHUBAPI--")
     GithubAPILog.GithubAPILog.print()
