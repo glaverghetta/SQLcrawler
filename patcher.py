@@ -86,6 +86,7 @@ def runMissedFrames(gh:GithubAPILog.GithubAPILog):
         end = s[1]
         command = ["java", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "optimize",
                     gh.language, f"{int(end)+1}", "--start", start, "--end", end]
+        print(f"Starting new run for file {gh.fileName} with {start}-{end}")
         results = runCrawler(command)
         if results[0] == 0:
             gh.scannedMissedFrames.append(frame)  # Completed, keep going
@@ -105,6 +106,7 @@ def runHoles(gh:GithubAPILog.GithubAPILog):
             continue
         command = ["java", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "optimize",
                    gh.language, f"{i+1}", "--start", f"{i}", "--end", f"{i}"]
+        print(f"Starting new run for file {gh.fileName} with {i}-{i}")
         results = runCrawler(command)
         if results[0] == 0:
             gh.scannedSingleByteHoles.append(i)  # Completed, keep going
