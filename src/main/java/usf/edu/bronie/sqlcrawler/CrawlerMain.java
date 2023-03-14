@@ -42,11 +42,13 @@ public class CrawlerMain {
         CommandLine cmd = new CommandLine(new CrawlerMain());
         if (args.length == 0) {
             cmd.usage(System.out);
+            System.exit(-1);
         } else {
-            // Use a lambda to avoid somwhat expensive string join operation if logging
+            // Use a lambda to avoid somewhat expensive string join operation if logging
             // disabled
             finalLog.info("Arguments provided: {}", () -> String.join(" ~ ", args));
-            cmd.execute(args);
+            int exitCode = cmd.execute(args);
+            System.exit(exitCode);
         }
     }
 }

@@ -113,6 +113,7 @@ def resume():
             lastLines.append(line)
             if len(lastLines) > 100:
                 lastLines.pop(0)
+    print(f"Return code: {p.returncode}")
     return lastLines
 
 if __name__ == '__main__':

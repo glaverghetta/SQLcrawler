@@ -1,13 +1,11 @@
-import dateutil
 import crawlerLogAnalyzer.LogFile as LogFile
 
-class GithubThrottlingLog(LogFile.LogFile):
+class FinalLog(LogFile.LogFile):
     
+    # This file is very different... Need to figure out what to do with it
+
     def analyzeLine(self, line):
         vals = super().analyzeLine(line)
-    
-    def valsContinueTime(self, vals):
-        return dateutil.parser.parse(vals[2])
     
     def validate(self, vals):
         """Ensures that the correct number of values have been found (7 for GithubThrottlingLog)

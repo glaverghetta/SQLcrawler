@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS `crawler`.`projects` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `gh_id_UNIQUE` (`gh_id` ASC) INVISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 26838
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -56,7 +55,6 @@ CREATE TABLE IF NOT EXISTS `crawler`.`files` (
     FOREIGN KEY (`project`)
     REFERENCES `crawler`.`projects` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 43674
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -96,7 +94,6 @@ CREATE TABLE IF NOT EXISTS `crawler`.`analyses` (
     FOREIGN KEY (`project`)
     REFERENCES `crawler`.`projects` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 43672
 DEFAULT CHARACTER SET = utf8mb3;
 
 

@@ -5,6 +5,9 @@ import dateutil.parser
 class TimedLogFile(LogFile.LogFile):
     """A basic implementation for the timed log files being analyzed. Don't use directly, instead call one of the subclasses"""
 
+    globalCumulativeRunTime = 0
+    """The total runtime for all timed log files"""
+
     def __init__(self, filename):
         self.firstTimerStart = None
         self.firstTimerEnd = None
@@ -12,8 +15,12 @@ class TimedLogFile(LogFile.LogFile):
         self.lastTimerEnd = None
 
         self.cumulativeRunTime = 0
-        """The total runtime so far in ms"""
+        """The total runtime in this log file so far in ms"""
         super().__init__(filename)
+    
+    def analyze(self):
+        super().analyze()
+        TimedLogFile.globalCumulativeRunTime += self.cumulativeRunTime
     
     def analyzeLine(self, line):
         """Generic analysis, things like total runtime for this file"""
@@ -62,4 +69,5 @@ class TimedLogFile(LogFile.LogFile):
         print(f"Average run time per line: {self.cumulativeRunTime/self.currentLineNumber()} (ms) / {display[0]} ({display[1]})")
 
     def print():
-        pass
+        display = LogFile.biggestTimeUnit(TimedLogFile.globalCumulativeRunTime)
+        print(f"Total run time for all timed log files: {TimedLogFile.globalCumulativeRunTime} (ms) / {display[0]} ({display[1]})")

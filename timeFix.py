@@ -1,12 +1,14 @@
 import glob
-from crawlerLogAnalyzer import FileLog, LogFile, GithubAPILog
+from crawlerLogAnalyzer import FileLog, FinalLog, GithubThrottlingLog, LogFile, GithubAPILog, TimedLogFile
 from typing import List
 import datetime
 
 
 def getFixTime(logFile: LogFile.LogFile, vals: List[str]) -> str:
-    if type(logFile) is GithubAPILog.GithubAPILog:
+    if issubclass(type(logFile), TimedLogFile.TimedLogFile):
         return logFile.valsTimerEnd(vals)
+    if issubclass(type(logFile), GithubThrottlingLog.GithubThrottlingLog):
+        return logFile.valsContinueTime(vals) - datetime.timedelta(minutes=1)
     raise NotImplementedError()
 
 
@@ -45,11 +47,36 @@ def fix(logFile: LogFile.LogFile):
             newFile.write(" ~ ".join(vals) + "\n")
 
 if __name__ == '__main__':
-    files = sorted(glob.glob("logs/GithubAPI*"))
+    fileTypes = ["logs/Analyzer*", "logs/File*", "logs/Frame*", "logs/GithubAPI*", "logs/Network*", "logs/Page*"]
+    
+    LIMIT = 2
+
+    for fileType in fileTypes:
+        files = sorted(glob.glob(fileType))
+        i = 0
+        for file in files:
+            if i > LIMIT:
+                break
+            log = TimedLogFile.TimedLogFile(file)
+            fix(log)
+            i += 1
+    
+    # Final, GithubThrottling are special
+    files = sorted(glob.glob("logs/GithubThrottling*"))
     i = 0
     for file in files:
-        if i > 20:
+        if i > LIMIT:
             break
-        log = GithubAPILog.GithubAPILog(file)
+        log = GithubThrottlingLog.GithubThrottlingLog(file)
         fix(log)
         i += 1
+    
+    # Need something special for Final
+    # files = sorted(glob.glob("logs/Final*"))
+    # i = 0
+    # for file in files:
+    #     if i > LIMIT:
+    #         break
+    #     log = FinalLog.FinalLog(file)
+    #     fix(log)
+    #     i += 1

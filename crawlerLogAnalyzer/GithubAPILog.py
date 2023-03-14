@@ -5,24 +5,24 @@ import crawlerLogAnalyzer.LogFile as LogFile
 class GithubAPILog(TimedLogFile.TimedLogFile):
 
     QueryString = namedtuple("QueryString", ["query", "language", "frame"])
-    totalSearchCalls = 0
-    totalGraphCalls = 0
-    totalSearchResults = 0
-    totalSearchBytes = 0
-    totalGraphResults = 0
-    totalGraphBytes = 0
-    totalFrames = {}
-    totalSingleBytesHoles = []
-    totalMissedFrames = []
+    globalSearchCalls = 0
+    globalGraphCalls = 0
+    globalSearchResults = 0
+    globalSearchBytes = 0
+    globalGraphResults = 0
+    globalGraphBytes = 0
+    globalFrames = {}
+    globalSingleBytesHoles = []
+    globalMissedFrames = []
     numAPIFiles = 0
 
     def __init__(self, filename, ignoreFrames=False):
         self.searchCalls = 0
         self.graphCalls = 0
-        self.totalSearchResults = 0
-        self.totalSearchBytes = 0
-        self.totalGraphResults = 0
-        self.totalGraphBytes = 0
+        self.searchResults = 0
+        self.searchBytes = 0
+        self.graphResults = 0
+        self.graphBytes = 0
         self.ignoreFrames = False
         self.query = None
         self.language = None
@@ -41,21 +41,20 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
 
         if self.valsAPIEndpoint(vals) == "search":
             self.searchCalls += 1
-            self.totalSearchResults += self.valsNumResults(vals)
-            self.totalSearchBytes += self.valsResponseSize(vals)
-            GithubAPILog.totalSearchCalls += 1
-            GithubAPILog.totalSearchResults += self.valsNumResults(vals)
-            GithubAPILog.totalSearchBytes += self.valsResponseSize(vals)
+            self.searchResults += self.valsNumResults(vals)
+            self.searchBytes += self.valsResponseSize(vals)
+            GithubAPILog.globalSearchCalls += 1
+            GithubAPILog.globalSearchResults += self.valsNumResults(vals)
+            GithubAPILog.globalSearchBytes += self.valsResponseSize(vals)
 
             self.query, self.language, frame = self.valsQueryString(vals)
             if not self.ignoreFrames:
                 if len(frame) == 1:
                     # This is from an error in old version, mark as a hole to patch
-                    #TODO:Mark as hole to patch
                     start = frame[0]
                     end = frame[0]
                     self.singleByteHoles.append(start)
-                    GithubAPILog.totalSingleBytesHoles.append(start)
+                    GithubAPILog.globalSingleBytesHoles.append(start)
                 else:
                     start = frame[0]
                     end = frame[1]
@@ -72,7 +71,7 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
                     if self.lastSize + 1 != start and f"{self.lastSize+1}..{start-1}" not in self.missedFrames:
                         # Found a hole
                         self.missedFrames.append(f"{self.lastSize+1}..{start-1}")
-                        GithubAPILog.totalMissedFrames.append(f"{self.lastSize+1}..{start-1}")
+                        GithubAPILog.globalMissedFrames.append(f"{self.lastSize+1}..{start-1}")
                 self.lastSize = end
                 
                 page = self.valsPage(vals)
@@ -80,20 +79,20 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
                 if range in self.frames:
                     if page not in self.frames[range]:
                         self.frames[range].append(page)
-                        GithubAPILog.totalFrames[range].append(page)
+                        GithubAPILog.globalFrames[range].append(page)
                 else:
                     self.frames[range] = []
-                    GithubAPILog.totalFrames[range] = []
+                    GithubAPILog.globalFrames[range] = []
                     self.frames[range].append(page)
-                    GithubAPILog.totalFrames[range].append(page)
+                    GithubAPILog.globalFrames[range].append(page)
         else:
             self.graphCalls += 1
-            self.totalGraphResults += self.valsNumResults(vals)
-            self.totalGraphBytes += self.valsResponseSize(vals)
+            self.graphResults += self.valsNumResults(vals)
+            self.graphBytes += self.valsResponseSize(vals)
 
-            GithubAPILog.totalGraphCalls += 1
-            GithubAPILog.totalGraphResults += self.valsNumResults(vals)
-            GithubAPILog.totalGraphBytes += self.valsResponseSize(vals)
+            GithubAPILog.globalGraphCalls += 1
+            GithubAPILog.globalGraphResults += self.valsNumResults(vals)
+            GithubAPILog.globalGraphBytes += self.valsResponseSize(vals)
     
     def analyze(self):
         GithubAPILog.numAPIFiles += 1
@@ -145,7 +144,15 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
     def print_instance(self):
         """Prints out all of the data gathered, useful for debugging"""
         super().print_instance()
-        #TODO: Stuff
+        print("-#-Github API call information-#-")
+        print(f"Total number of search calls: {self.searchCalls}")
+        print(f"Total number of search results: {self.searchResults}")
+        a = LogFile.biggestBytesUnit(self.searchBytes)
+        print(f"Total number of search bytes: {self.searchBytes} (bytes) / {a[0]} ({a[1]})")
+        print(f"Total number of graphQL calls: {self.graphCalls}")
+        print(f"Total number of graphQL results: {self.graphResults}")
+        a = LogFile.biggestBytesUnit(self.graphBytes)
+        print(f"Total number of graphQL bytes: {self.graphBytes} (bytes) / {a[0]} ({a[1]})")
         if len(self.frames) == 0:
             "No frames in file (log is associated with repo command only)"
             return 
@@ -166,14 +173,14 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
     
     def print():
         print(f"Total number of GithubAPI files analyzed: {GithubAPILog.numAPIFiles}")
-        print(f"Total number of search calls: {GithubAPILog.totalSearchCalls}")
-        print(f"Total number of search results: {GithubAPILog.totalSearchResults}")
-        a = LogFile.biggestBytesUnit(GithubAPILog.totalSearchBytes)
-        print(f"Total number of search bytes: {GithubAPILog.totalSearchBytes} (bytes) / {a[0]} ({a[1]})")
-        print(f"Total number of graphQL calls: {GithubAPILog.totalGraphCalls}")
-        print(f"Total number of graphQL results: {GithubAPILog.totalGraphResults}")
-        a = LogFile.biggestBytesUnit(GithubAPILog.totalGraphBytes)
-        print(f"Total number of graphQL bytes: {GithubAPILog.totalGraphBytes} (bytes) / {a[0]} ({a[1]})")
-        print(f"All single-byte holes found across all files: {GithubAPILog.totalSingleBytesHoles}")
-        print(f"All multi-byte holes found across all files: {GithubAPILog.totalMissedFrames}")
+        print(f"Total number of search calls: {GithubAPILog.globalSearchCalls}")
+        print(f"Total number of search results: {GithubAPILog.globalSearchResults}")
+        a = LogFile.biggestBytesUnit(GithubAPILog.globalSearchBytes)
+        print(f"Total number of search bytes: {GithubAPILog.globalSearchBytes} (bytes) / {a[0]} ({a[1]})")
+        print(f"Total number of graphQL calls: {GithubAPILog.globalGraphCalls}")
+        print(f"Total number of graphQL results: {GithubAPILog.globalGraphResults}")
+        a = LogFile.biggestBytesUnit(GithubAPILog.globalGraphBytes)
+        print(f"Total number of graphQL bytes: {GithubAPILog.globalGraphBytes} (bytes) / {a[0]} ({a[1]})")
+        print(f"All single-byte holes found across all files: {GithubAPILog.globalSingleBytesHoles}")
+        print(f"All multi-byte holes found across all files: {GithubAPILog.globalMissedFrames}")
         
