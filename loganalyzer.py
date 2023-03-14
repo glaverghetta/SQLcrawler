@@ -60,9 +60,6 @@ if __name__ == '__main__':
         i += 1
         a = GithubAPILog.GithubAPILog(f)
         a.analyze()
-        print()
-        print(statistics.median(a.getAll(TimedLogFile.valsRunningTime)))
-        exit()
         a.print()
     print("\n--GLOBAL LOGFILE--")
     LogFile.LogFile.print()
