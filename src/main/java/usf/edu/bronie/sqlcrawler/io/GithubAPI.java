@@ -57,7 +57,7 @@ public class GithubAPI {
     private static final String graphQLQuery = setupGraphQL();
 
     private int lastPage = 0;
-    private int lastTotalCount = -1;
+    private int lastTotalCount = -1;  //TODO: This should only be changed if the number increases!
 
     private int minSize;
     private int maxSize;
