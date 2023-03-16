@@ -39,7 +39,7 @@ public class File {
     public File(int id) {
         try {
             Connection mConnection = DBConnection.getConnection();
-            PreparedStatement statement = mConnection.prepareStatement("SELECT * FROM Files WHERE id=?");
+            PreparedStatement statement = mConnection.prepareStatement("SELECT * FROM files WHERE id=?");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -89,7 +89,7 @@ public class File {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT f.*, p.gh_id FROM Files f LEFT JOIN Projects p on f.project=p.id WHERE project=?");
+            statement = mConnection.prepareStatement("SELECT f.*, p.gh_id FROM Files f LEFT JOIN projects p on f.project=p.id WHERE project=?");
             statement.setInt(1, project);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -121,7 +121,7 @@ public class File {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT * FROM Files WHERE project=? AND filename=? AND path=?");
+            statement = mConnection.prepareStatement("SELECT * FROM files WHERE project=? AND filename=? AND path=?");
             statement.setInt(1, project);
             statement.setString(2, filename);
             statement.setString(3, path);

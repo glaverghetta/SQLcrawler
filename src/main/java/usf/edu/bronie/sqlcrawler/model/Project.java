@@ -35,7 +35,7 @@ public class Project {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE id=?");
+            statement = mConnection.prepareStatement("SELECT * FROM projects WHERE id=?");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -85,7 +85,7 @@ public class Project {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE url=?");
+            statement = mConnection.prepareStatement("SELECT * FROM projects WHERE url=?");
             statement.setString(1, repo_url);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -116,7 +116,7 @@ public class Project {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE gh_id=?");
+            statement = mConnection.prepareStatement("SELECT * FROM projects WHERE gh_id=?");
             statement.setString(1, gh_id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -148,7 +148,7 @@ public class Project {
         try {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT * FROM Projects WHERE owner=? and name=?");
+            statement = mConnection.prepareStatement("SELECT * FROM projects WHERE owner=? and name=?");
             statement.setString(1, owner);
             statement.setString(2, name);
             ResultSet resultSet = statement.executeQuery();
