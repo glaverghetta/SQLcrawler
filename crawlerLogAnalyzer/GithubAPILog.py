@@ -14,9 +14,14 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
     globalFrames = {}
     globalSingleBytesHoles = []
     globalMissedFrames = []
+    globalLowPerformingPages = {}
     numAPIFiles = 0
 
-    def __init__(self, filename, ignoreFrames=False):
+    def __init__(self, filename, ignoreFrames=False, lowLevel=50):
+        """fileName (string): The filename to open
+           ignoreFrames (Bool): Whether frames should be analyzed
+           lowLevel (int): A page is considered low "performing" when they had less than lowLevel results
+        """
         self.searchCalls = 0
         self.graphCalls = 0
         self.searchResults = 0
@@ -24,6 +29,8 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
         self.graphResults = 0
         self.graphBytes = 0
         self.ignoreFrames = False
+        self.lowPerformingPages = {}
+        self.lowLevel = lowLevel
         self.query = None
         self.language = None
         self.frames = {}
@@ -85,6 +92,18 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
                     GithubAPILog.globalFrames[range] = []
                     self.frames[range].append(page)
                     GithubAPILog.globalFrames[range].append(page)
+                
+                if self.valsNumResults(vals) < self.lowLevel:
+                    if range in self.lowPerformingPages:
+                        if page not in self.lowPerformingPages[range]:
+                            self.lowPerformingPages[range].append(page)
+                            GithubAPILog.globalLowPerformingPages[range].append(page)
+                    else:
+                        self.lowPerformingPages[range] = []
+                        GithubAPILog.globalLowPerformingPages[range] = []
+                        self.lowPerformingPages[range].append(page)
+                        GithubAPILog.globalLowPerformingPages[range].append(page)
+
         else:
             self.graphCalls += 1
             self.graphResults += self.valsNumResults(vals)
@@ -170,6 +189,7 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
             print(f"Found Frames: {self.frames}")
             print(f"Single byte holes: {self.singleByteHoles}")
             print(f"Missed frames (Growth holes): {self.missedFrames}")
+            print(f"Pages flagged as low-performing: {self.lowPerformingPages}")
     
     def print():
         print(f"Total number of GithubAPI files analyzed: {GithubAPILog.numAPIFiles}")
@@ -183,4 +203,5 @@ class GithubAPILog(TimedLogFile.TimedLogFile):
         print(f"Total number of graphQL bytes: {GithubAPILog.globalGraphBytes} (bytes) / {a[0]} ({a[1]})")
         print(f"All single-byte holes found across all files: {GithubAPILog.globalSingleBytesHoles}")
         print(f"All multi-byte holes found across all files: {GithubAPILog.globalMissedFrames}")
+        print(f"Pages flagged as low-performing: {GithubAPILog.globalLowPerformingPages}")
         
