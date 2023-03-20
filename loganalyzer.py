@@ -55,7 +55,7 @@ if __name__ == '__main__':
     files = sorted(glob.glob("logs/GithubAPI*"))
     # files = files[0:len(files)-2]
     for f in files:
-        if i > 15:
+        if i > 2:
             break
         i += 1
         a = GithubAPILog.GithubAPILog(f)

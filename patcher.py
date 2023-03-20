@@ -115,6 +115,28 @@ def runHoles(gh:GithubAPILog.GithubAPILog):
             return results  # Failed, return results
     return results
 
+def runLowPerformingPages(gh:GithubAPILog.GithubAPILog):
+    if not hasattr(gh, 'scannedLowPerformingPages'):
+        gh.scannedLowPerformingPages = []  # Create list to save already scanned holes
+    results = (0, "")  # Used in the odd scenario where all holes have already been scanned
+    for frame, pages in gh.lowPerformingPages.items():
+        start = int(frame.split("-")[0])
+        end = int(frame.split("-")[1])
+        page = int(pages[0])  # Script will also rerun all pages after the first one
+        if frame in gh.scannedLowPerformingPages:
+            # We already did these pages
+            continue
+        command = ["java", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "optimize",
+                   gh.language, f"{end+1}", "--start", f"{start}", "--end", f"{end}", "--start-page", f"{page}"]
+        print(f"Starting new run for file {gh.fileName} with {start}-{end}, page {page}")
+        results = runCrawler(command)
+        if results[0] == 0:
+            gh.scannedLowPerformingPages.append(frame)  # Completed, keep going
+            continue
+        else:
+            return results  # Failed, return results
+    return results
+
 
 def mvn_package():
     print("First... rebuild!")
@@ -124,20 +146,31 @@ def mvn_package():
         exit(-1)
 
 
-def patchHoles(tag):
+def patchHoles(tag, types):
+    stopPoint = sorted(glob.glob("logs/GithubAPI*.log"))[-1]
     filename = nextFile()
     while filename is not None:
         gh = GithubAPILog.GithubAPILog(filename)
         gh.analyze()
 
-        runWithEmailRestore(tag, runMissedFrames, gh)
-        print(f"Finished patching 'growth' frames in {gh.fileName}")
-        runWithEmailRestore(tag, runHoles, gh)
-        print(f"Finished patching single-byte holes in {gh.fileName}")
+        if "missing" in types:
+            print(f"Patching missing frames in {gh.fileName}")
+            runWithEmailRestore(tag, runMissedFrames, gh)
+            print(f"Finished patching missing frames in {gh.fileName}")
+        if "single" in types:
+            print(f"Patching single-byte holes in {gh.fileName}")
+            runWithEmailRestore(tag, runHoles, gh)
+            print(f"Finished patching single-byte holes in {gh.fileName}")
+        if "low" in types:
+            print(f"Rerunning low performing pages in {gh.fileName}")
+            runWithEmailRestore(tag, runLowPerformingPages, gh)
+            print(f"Finished rerunning low performing pages in {gh.fileName}")
 
         with open("ignore.txt", "a") as f:
             print(f"Added {gh.fileName} to ignore list")
             f.write(filename + "\n")
+        if filename == stopPoint:
+            break  # Did the last file, remaining ones are new from running patcher scripts
         filename = nextFile()
 
 def runWithEmailRestore(tag, func, *args):
@@ -166,10 +199,25 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Please provide a tag/name for the subject line as the first argument!")
         exit(-1)
+    
+    if len(sys.argv) < 3:
+        print("Please provide at least one type of patch to run (single, missed, low)")
+        print("Example: python3 patcher.py tag low missed")
+        exit(-1)
+
     print(f"Using '{sys.argv[1]}' as part of the subject line")
     tag = sys.argv[1]
 
+    types = []
+    for i in sys.argv[2:]:
+        if i not in ["single", "missed", "low"]:
+            print(f"Unknown patch type: {i}")
+            exit(-1)
+        else:
+            types.append(i)
+
     mvn_package()
 
-    patchHoles(tag)
+    print("Running the following patch types: ", *types)
+    patchHoles(tag, types)
     
