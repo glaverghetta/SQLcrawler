@@ -122,19 +122,20 @@ def runLowPerformingPages(gh:GithubAPILog.GithubAPILog):
     for frame, pages in gh.lowPerformingPages.items():
         start = int(frame.split("-")[0])
         end = int(frame.split("-")[1])
-        page = int(pages[0])  # Script will also rerun all pages after the first one
-        if frame in gh.scannedLowPerformingPages:
-            # We already did these pages
-            continue
-        command = ["java", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "optimize",
-                   gh.language, f"{end+1}", "--start", f"{start}", "--end", f"{end}", "--start-page", f"{page}"]
-        print(f"Starting new run for file {gh.fileName} with {start}-{end}, page {page}")
-        results = runCrawler(command)
-        if results[0] == 0:
-            gh.scannedLowPerformingPages.append(frame)  # Completed, keep going
-            continue
-        else:
-            return results  # Failed, return results
+        for page in pages:
+            page = int(page)  # Script will also rerun all pages after the first one
+            if (frame + f":{page}") in gh.scannedLowPerformingPages:
+                # We already did these pages
+                continue
+            command = ["java", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "optimize",
+                    gh.language, f"{end+1}", "--start", f"{start}", "--end", f"{end}", "--start-page", f"{page}", "--onePage"]
+            print(f"Starting new run for file {gh.fileName} with {start}-{end}, page {page}")
+            results = runCrawler(command)
+            if results[0] == 0:
+                gh.scannedLowPerformingPages.append(frame + f":{page}")  # Completed, keep going
+                continue
+            else:
+                return results  # Failed, return results
     return results
 
 
@@ -153,7 +154,7 @@ def patchHoles(tag, types):
         gh = GithubAPILog.GithubAPILog(filename)
         gh.analyze()
 
-        if "missing" in types:
+        if "missed" in types:
             print(f"Patching missing frames in {gh.fileName}")
             runWithEmailRestore(tag, runMissedFrames, gh)
             print(f"Finished patching missing frames in {gh.fileName}")

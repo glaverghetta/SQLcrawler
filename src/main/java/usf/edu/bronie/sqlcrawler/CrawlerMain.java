@@ -194,6 +194,9 @@ class Optimize implements Runnable {
     @Option(names = { "--no-shrink" }, description = "Don't decrease the search window size if > 1000 results returned")
     boolean noShrink;
 
+    @Option(names = { "--onePage" }, description = "Only retrieve one page of results from each frame")
+    boolean stopAfterOnePage;
+
     @Option(names = {
             "--start" }, description = "The size to start searching with. Must be less than the specified max search size", arity = "1", defaultValue = "1")
     int minSize;
@@ -362,6 +365,10 @@ class Optimize implements Runnable {
                 log.debug("Currently queued {} projects to scan", projectsToScan.size());
                 if (projectsToScan.size() > projectScan) {
                     gh.projectSleep(projectsToScan, projectScan);
+                }
+
+                if(stopAfterOnePage && !repeated){
+                    break;
                 }
             }
 
