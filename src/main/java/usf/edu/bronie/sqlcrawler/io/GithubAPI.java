@@ -133,7 +133,9 @@ public class GithubAPI {
 
         // For 1 this becomes 0, which acts as if a new size was added
         this.lastPage = page - 1;
-        this.lastTotalCount = -1;  //Act as if this is a new pull entirely
+        if(this.lastTotalCount == 0){
+            this.lastTotalCount = -1;  //Act as if this is a new pull entirely
+        }
     }
 
     /**
@@ -472,7 +474,7 @@ public class GithubAPI {
             System.exit(-1);
         }
 
-        this.lastTotalCount = Integer.valueOf(scr.getTotal_count());
+        this.lastTotalCount = Math.max(Integer.valueOf(scr.getTotal_count()), this.lastTotalCount);
 
         List<Item> list = scr.getItems();
 
