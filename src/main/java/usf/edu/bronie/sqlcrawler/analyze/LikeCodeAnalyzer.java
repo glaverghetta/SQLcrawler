@@ -44,6 +44,10 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
             return SQLType.STRING_CONCAT;
         }
 
+        if (isLikeInterp(code, language)) {
+            return SQLType.STRING_INTERP;
+        }
+
         if (isLikePrepStatement(code)) {
             return SQLType.PARAMATIZED_QUERY;
         }
@@ -62,7 +66,6 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     private boolean isLikeConcat(String code, RegexConstants.Languages language) {
     	String variable = RegexConstants.getVariable(language);
         String concat = RegexConstants.getConcat(language);
-        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
         
     	if(language != CompiledLang){
             CompiledLang = language;
@@ -70,9 +73,6 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
                     concat,
                     variable),
                     Pattern.CASE_INSENSITIVE);
-            mStringLitPatternInterpolationCompiled = Pattern.compile(
-            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
-            		Pattern.CASE_INSENSITIVE);
   
         }
     	
@@ -82,6 +82,19 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
             if (RegexUtils.isSQLCode(keyword)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean isLikeInterp(String code, RegexConstants.Languages language) {
+        String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
+        
+    	if(language != CompiledLang){
+            CompiledLang = language;
+            mStringLitPatternInterpolationCompiled = Pattern.compile(
+            		String.format(mStringLitPatternInterpolation, interpolationVariable), 
+            		Pattern.CASE_INSENSITIVE);
+  
         }
         Matcher stringLitWithOrderByMatcherInterpolation = stringLiteralLikePatternCompiled.matcher(code);
         while (stringLitWithOrderByMatcherInterpolation.find()) {

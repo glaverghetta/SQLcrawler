@@ -94,6 +94,8 @@ def writeProgress(gh):
         json.dump(output, f)
 
 def loadProgress(gh, progress):
+    if progress is None:
+        return
     gh.scannedMissedFrames = progress["scannedMissedFrames"]
     gh.scannedSingleByteHoles = progress["scannedSingleByteHoles"]
     gh.scannedLowPerformingPages = progress["scannedLowPerformingPages"]

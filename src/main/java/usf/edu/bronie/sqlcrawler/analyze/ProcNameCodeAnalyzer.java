@@ -44,7 +44,7 @@ public class ProcNameCodeAnalyzer implements CodeAnalyzer {
         }
         
         if( RegexUtils.isSingleConcat(code, stringLiteralPatternCompiled) ) return SQLType.STRING_CONCAT;
-        if(RegexUtils.isSingleConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isSingleConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_INTERP;
         else return SQLType.HARDCODED;
     }
 

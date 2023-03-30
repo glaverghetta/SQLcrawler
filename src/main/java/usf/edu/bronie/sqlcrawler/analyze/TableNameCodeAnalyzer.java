@@ -52,7 +52,7 @@ public class TableNameCodeAnalyzer implements CodeAnalyzer {
         
         if(RegexUtils.isConcat(code, stringLiteralPatternJava)) return SQLType.STRING_CONCAT;
         if(RegexUtils.isConcat(code, stringLitPatternMultipleJava)) return SQLType.STRING_CONCAT_LIST;
-        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_INTERP;
         else return SQLType.HARDCODED;
 
     

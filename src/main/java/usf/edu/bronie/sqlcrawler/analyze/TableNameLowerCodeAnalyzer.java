@@ -44,7 +44,7 @@ public class TableNameLowerCodeAnalyzer implements CodeAnalyzer {
         }
 
         if( RegexUtils.isConcat(code, stringLiteralPatternCompiled)) return SQLType.STRING_CONCAT;
-        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
+        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_INTERP;
         else return SQLType.HARDCODED;
     }
 

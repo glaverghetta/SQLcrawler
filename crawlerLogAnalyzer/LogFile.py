@@ -55,6 +55,7 @@ class LogFile():
     """The first log time recorded in any file analyzed so far"""
     globalLastLogTime = None
     """The last log time recorded in any file analyzed so far"""
+    globalNumLines = 0
 
     def __init__(self, filename : str):
         self.print = self.print_instance 
@@ -121,6 +122,7 @@ class LogFile():
         with open(self.getFilename()) as file:
             while (line := file.readline().rstrip()):
                 self.numLines += 1
+                LogFile.globalNumLines += 1
                 self.analyzeLine(line)
     
     def currentLineNumber(self):
@@ -173,3 +175,4 @@ class LogFile():
         print(f"First recorded log time at {LogFile.globalFirstLogTime}")
         print(f"Last recorded log time at {LogFile.globalLastLogTime}")
         print(f"Difference between last log time and first: {LogFile.globalLastLogTime - LogFile.globalFirstLogTime}")
+        print(f"Total number of lines: {LogFile.globalNumLines}")
