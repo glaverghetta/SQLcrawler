@@ -76,6 +76,7 @@ class Pull implements Runnable {
 class Analyze implements Runnable {
 
     private static final Logger log = LogManager.getLogger(Analyze.class);
+    private static final Logger fileLog = LogManager.getLogger("FileLogger");
 
     @Override
     public void run() {
@@ -91,9 +92,35 @@ class Analyze implements Runnable {
 
     @Command(name = "new", description = "Analyze any new, non-analyzed files in the database")
     void analyzeNew() {
-        log.info("Add new analysis code here");
-    }
+        log.info("Running the classifier on all files without an entry in the analysis database");
 
+        try {
+            CodeAnalysisManager cam = new CodeAnalysisManager();
+            Connection mConnection = DBConnection.getConnection();
+            PreparedStatement statement;
+            // Switch XXX and YYY to ranges. We will remove those entirely when we are done fixing
+            statement = mConnection.prepareStatement("SELECT id from files WHERE id NOT IN (SELECT file FROM analyses) AND id >= XXX AND id < YYY");
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                File result = new File(resultSet.getInt("id"));
+
+                long fileStart = System.currentTimeMillis();
+                Analysis a = cam.processFile(result);
+                long fileEnd = System.currentTimeMillis();
+                fileLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(fileStart),
+                        new Date(fileEnd), fileEnd - fileStart, result.getId(), result.getCodeSize(), 0, 0, 0);
+                a.save();
+            }
+            statement.close();
+            mConnection.close();
+        } catch (SQLException e) {
+            // Todo: For now, just print error and quit. Might want to add more complicated
+            // solution in the future
+            log.error("Error retrieving files from database", e);
+            System.exit(-1);
+        }
+    }
 }
 
 // Statistics command
