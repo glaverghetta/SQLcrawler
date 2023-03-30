@@ -37,6 +37,7 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
     public SQLType analyzeCode(String code, List<String> stringLiterals, RegexConstants.Languages language) {
         boolean isStringConcat = false;
         boolean isHardcoded = false;
+        boolean isStringInterp = false;
         boolean containsStringFormat = code.contains(RegexConstants.STRING_FORMAT_KEYWORD);
         
         String variable = RegexConstants.getVariable(language);
@@ -67,14 +68,14 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
         
         // Interpolation concatenation checking
         if(interpolationVariable != "") {
-        Matcher stringLitWithVarInterpolationMatcher = stringLiteralWithVarPatternInterpolationCompiled.matcher(code);
-        while(stringLitWithVarInterpolationMatcher.find()) {
-            String keyword = stringLitWithVarInterpolationMatcher.group();
-            if (RegexUtils.isSQLCode(keyword)) {
-                isStringConcat = true;
-                break;
+            Matcher stringLitWithVarInterpolationMatcher = stringLiteralWithVarPatternInterpolationCompiled.matcher(code);
+            while(stringLitWithVarInterpolationMatcher.find()) {
+                String keyword = stringLitWithVarInterpolationMatcher.group();
+                if (RegexUtils.isSQLCode(keyword)) {
+                    isStringInterp = true;
+                    break;
+                }
             }
-        }
         }	
 
         if (!isStringConcat) {
@@ -96,11 +97,14 @@ public class SQLCodeAnalyzer implements CodeAnalyzer {
             }
         }
 
-        if (isStringConcat) {
+        if (isStringInterp) {
+            return SQLType.STRING_INTERP;
+        }else if (isStringConcat) {
             return SQLType.STRING_CONCAT;
         } else if (isHardcoded) {
             return SQLType.HARDCODED;
-        }
+        } 
+
         return SQLType.NONE;
     }
 

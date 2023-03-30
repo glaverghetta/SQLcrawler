@@ -7,9 +7,10 @@ package usf.edu.bronie.sqlcrawler.model;
  */
 
 public enum SQLType {
+    STRING_INTERP(7),
+    STRING_CONCAT_LIST(6),
     PARAMATIZED_QUERY(5),
     PARAMATIZED_QUERY_AND_CONCAT(4),
-    STRING_CONCAT_LIST(6),
     STRING_CONCAT(3),
     HARDCODED(2),
     NONE(1);

@@ -57,8 +57,8 @@ public class ColumnNameCodeAnalyzer implements CodeAnalyzer {
 
         if(RegexUtils.isConcat(code, stringLiteralPatternCompiled)) return SQLType.STRING_CONCAT;
         if(RegexUtils.isConcat(code, stringLiteralPatternMultipleCompiled)) return SQLType.STRING_CONCAT_LIST;
-        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_CONCAT;
-        else return SQLType.HARDCODED;
+        if(RegexUtils.isConcat(code, mStringLitPatternInterpolationCompiled)) return SQLType.STRING_INTERP;
+        return SQLType.HARDCODED;
 
     }
 
