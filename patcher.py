@@ -1,3 +1,4 @@
+import json
 import subprocess
 import glob
 from crawlerLogAnalyzer import GithubAPILog
@@ -53,12 +54,49 @@ def check_for_reply_from_self(subject):
 def nextFile():
     files = sorted(glob.glob("logs/GithubAPI*.log"))
 
-    with open("ignore.txt", "r") as file:
-            finishedFiles = file.read().splitlines()
+    try:
+        with open("resume.txt", "r") as f:
+            data = json.load(f)
+            
+            return data["file"], data["completed"]
+    except IOError:
+        # No resume, ignore
+        pass
+
+    try:
+        with open("ignore.txt", "r") as file:
+                finishedFiles = file.read().splitlines()
+    except IOError:
+        finishedFiles = []
+
     for f in files:
         if f not in finishedFiles:
-            return f
-    return None
+            return f, None
+    return None, None
+
+def writeProgress(gh):
+    if not hasattr(gh, 'scannedMissedFrames'):
+        gh.scannedMissedFrames = []
+    if not hasattr(gh, 'scannedSingleByteHoles'):
+        gh.scannedSingleByteHoles = []
+    if not hasattr(gh, 'scannedLowPerformingPages'):
+        gh.scannedLowPerformingPages = [] 
+    output = {
+        "file": gh.fileName,
+        "completed": {
+            "scannedMissedFrames": gh.scannedMissedFrames,
+            "scannedSingleByteHoles": gh.scannedSingleByteHoles,
+            "scannedLowPerformingPages": gh.scannedLowPerformingPages
+        }
+    }
+
+    with open("resume.txt", "w") as f:
+        json.dump(output, f)
+
+def loadProgress(gh, progress):
+    gh.scannedMissedFrames = progress["scannedMissedFrames"]
+    gh.scannedSingleByteHoles = progress["scannedSingleByteHoles"]
+    gh.scannedLowPerformingPages = progress["scannedLowPerformingPages"]
 
 
 def runCrawler(args):
@@ -90,6 +128,7 @@ def runMissedFrames(gh:GithubAPILog.GithubAPILog):
         results = runCrawler(command)
         if results[0] == 0:
             gh.scannedMissedFrames.append(frame)  # Completed, keep going
+            writeProgress(gh)
             continue
         else:
             return results  # Failed, return results
@@ -110,6 +149,7 @@ def runHoles(gh:GithubAPILog.GithubAPILog):
         results = runCrawler(command)
         if results[0] == 0:
             gh.scannedSingleByteHoles.append(i)  # Completed, keep going
+            writeProgress(gh)
             continue
         else:
             return results  # Failed, return results
@@ -133,6 +173,7 @@ def runLowPerformingPages(gh:GithubAPILog.GithubAPILog):
             results = runCrawler(command)
             if results[0] == 0:
                 gh.scannedLowPerformingPages.append(frame + f":{page}")  # Completed, keep going
+                writeProgress(gh)
                 continue
             else:
                 return results  # Failed, return results
@@ -149,10 +190,11 @@ def mvn_package():
 
 def patchHoles(tag, types):
     stopPoint = sorted(glob.glob("logs/GithubAPI*.log"))[-1]
-    filename = nextFile()
+    filename, progress = nextFile()
     while filename is not None:
         gh = GithubAPILog.GithubAPILog(filename)
         gh.analyze()
+        loadProgress(gh, progress)
 
         if "missed" in types:
             print(f"Patching missing frames in {gh.fileName}")
@@ -172,7 +214,7 @@ def patchHoles(tag, types):
             f.write(filename + "\n")
         if filename == stopPoint:
             break  # Did the last file, remaining ones are new from running patcher scripts
-        filename = nextFile()
+        filename, progress = nextFile()
 
 def runWithEmailRestore(tag, func, *args):
     while True:
