@@ -5,7 +5,6 @@ tokens
 urls.txt
 .settings
 .vscode
-CredentialConstants.java
 .github_cache
 .DS_Store
 dummy.*
@@ -14,3 +13,4 @@ logs_fixed
 __pycache__
 ignore.txt
 resume.txt
+config.json

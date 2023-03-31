@@ -1,3 +1,4 @@
+import json
 from mysql.connector import connect, Error
 import pymysql.cursors
 import time
@@ -55,7 +56,7 @@ class File():
             field_map (Dictionary): Maps column name to the index in sqlResult
         """
         self.value = lambda n : sqlResult[field_map[n]]
-        self.originalFileID = self.value("projectID")
+        self.originalFileID = self.value("fileID")
         self.originalProjectID = self.value("projectID")
         self.newProjectID = -1
         self.newFileID = -1
@@ -77,7 +78,8 @@ class File():
         if self.newFileID == -1:
             print(f"Adding file with ID {self.originalFileID} in FROM database")
             self.saveFile()
-            self.saveAnalysis()
+            # Don't bother calling this right now
+            # self.saveAnalysis() 
             print(f"File with {self.originalFileID} in FROM database saved as {self.newFileID} in TO database")
         else:
             print(f"Found existing file with ID {self.newFileID} in TO database")
@@ -88,7 +90,7 @@ class File():
         with File.toDB.cursor() as cursor:
             sql = "INSERT INTO projects (`gh_id`, `owner`, `name`, `url`, `source`, `date_added`) VALUES (%s, %s, %s, %s, %s, %s);"
             v = self.value
-            vals = (v("gh_id"), v("owner"), v("name"), v("url"), v("source"), v("projectAdded"))
+            vals = (v("gh_id"), v("owner"), v("name"), v("projectURL"), v("source"), v("projectAdded"))
             cursor.execute(sql, vals)
             self.newProjectID = cursor.lastrowid
     
@@ -113,7 +115,7 @@ class File():
             sql = ("INSERT INTO files (`project`, `filename`, `lang`, `path`, `url`, `hash`, "
                    "`fileSize`, `date_added`, `commit_date`, `commit`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
             v = self.value
-            vals = (self.newProjectID, v("filename"), v("lang"), v("path"), v("url"), v("hash"),
+            vals = (self.newProjectID, v("filename"), v("lang"), v("path"), v("fileURL"), v("hash"),
                     v("fileSize"), v("fileAdded"), v("commit_date"), v("commit"))
             cursor.execute(sql, vals)
             self.newFileID = cursor.lastrowid
@@ -165,14 +167,11 @@ class File():
 def get100Files(dbConnection, offset=0):
     with dbConnection.cursor() as cursor:
         print(f"Pulling 100 files at offset {offset}")
-        sql = """SELECT f.id as fileID, f.project as projectID, f.filename, f.lang, f.path, f.url, f.hash, f.fileSize, f.date_added as fileAdded, f.commit_date, f.commit, 
-                p.gh_id, p.owner, p.name, p.url, p.source, p.date_added as projectAdded, 
-                a.id as analysisID, a.analysis_date, a.sql_usage, a.is_parameterized, a.api_type, a.sql_usage_lower, a.order_group_usage, a.like_usage, a.column_usage, a.table_usage, 
-                    a.table_usage_lower, a.view_usage, a.proc_usage, a.fun_usage, a.event_usage, a.trig_usage, a.index_usage, a.db_usage, a.server_usage, a.tspace_usage, 
+        sql = """SELECT f.id as fileID, f.project as projectID, f.filename, f.lang, f.path, f.url as fileURL, f.hash, f.fileSize, f.date_added as fileAdded, f.commit_date, f.commit, 
+                p.gh_id, p.owner, p.name, p.url as projectURL, p.source, p.date_added as projectAdded, 
                 r.project as repoProject, r.description, r.releasesCount, r.LRName, r.LRCreated, r.LRUpdated, r.stargazerCount, r.forkCount, r.watchersCount, r.createdAt, r.updatedAt, r.pushedAt, r.date_added as repoDate 
                 FROM files f
                 LEFT JOIN projects p ON f.project = p.id 
-                LEFT JOIN analyses a ON f.id = a.file
                 LEFT JOIN repo_info r ON p.id = r.project
                 ORDER BY f.id
                 LIMIT 100 OFFSET %s;"""
@@ -191,7 +190,10 @@ if __name__ == '__main__':
     File.toDB = toDB
     File.fromDB = fromDB
 
-    offset = 500
+    offset = 0
+    with open("resume.txt", "r") as f:
+            data = json.load(f)
+            offset = data["offset"]
 
     files = get100Files(fromDB, offset)
     while len(files) > 0:
@@ -200,7 +202,10 @@ if __name__ == '__main__':
             file.process(toDB, fromDB)
         offset += 100
         toDB.commit()
-        print(f"100 files in {time.time() - start}")
+        with open("resume.txt", "w") as f:
+            json.dump({"offset": offset}, f)
+        
+        print(f"------ 100 files in {time.time() - start}")
         files = get100Files(fromDB, offset)
 
     fromDB.close()

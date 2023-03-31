@@ -13,13 +13,15 @@ def getFixTime(logFile: LogFile.LogFile, vals: List[str]) -> str:
 
 
 def replaceTime(vals: List[str], toFix: datetime.datetime, correctTime: datetime.datetime, file, line):
-    if (toFix.year == correctTime.year and toFix.month == correctTime.month
+    if toFix.hour == correctTime.hour:
+        return vals  # Nothing to fix
+    elif (toFix.year == correctTime.year and toFix.month == correctTime.month
             and toFix.day == correctTime.day and toFix.minute == correctTime.minute
             and toFix.second == correctTime.second and toFix.microsecond == correctTime.microsecond):
         # Check if everything but the hour is the same; in that case, just use correctTime
         toFix = datetime.datetime(toFix.year, toFix.month, toFix.day, correctTime.hour, toFix.minute, toFix.second, toFix.microsecond, toFix.tzinfo)
         vals[0] = correctTime.strftime(f"%Y-%m-%dT%H:%M:%S.{correctTime.microsecond//1000:03d}%z")
-    elif correctTime.hour > 12:
+    elif correctTime.hour > 12 and toFix.hour <= 12:
         hour = (toFix.hour+12) % 24
         toFix = datetime.datetime(toFix.year, toFix.month, toFix.day, hour, toFix.minute, toFix.second, toFix.microsecond, toFix.tzinfo)
         vals[0] = toFix.strftime(f"%Y-%m-%dT%H:%M:%S.{toFix.microsecond//1000:03d}%z")

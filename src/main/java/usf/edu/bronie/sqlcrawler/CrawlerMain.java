@@ -20,6 +20,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.io.DBConnection;
@@ -78,6 +79,9 @@ class Analyze implements Runnable {
     private static final Logger log = LogManager.getLogger(Analyze.class);
     private static final Logger fileLog = LogManager.getLogger("FileLogger");
 
+    @Option(names = { "--config-file" }, description = "Config file to load", arity = "1", defaultValue = "./config.json")
+    String configFile;
+
     @Override
     public void run() {
         // Runs when no sub-command is provided
@@ -93,6 +97,7 @@ class Analyze implements Runnable {
     @Command(name = "new", description = "Analyze any new, non-analyzed files in the database")
     void analyzeNew() {
         log.info("Running the classifier on all files without an entry in the analysis database");
+        CredentialConstants.loadConfigFile(configFile);
 
         try {
             CodeAnalysisManager cam = new CodeAnalysisManager();
@@ -156,12 +161,17 @@ class Repo implements Runnable {
     @Option(names = { "--batch-size" }, description = "Query N projects at once", arity = "1", defaultValue = "100")
     int batchSize;
 
+    @Option(names = { "--config-file" }, description = "Config file to load", arity = "1", defaultValue = "./config.json")
+    String configFile;
+
     @Option(names = { "--all-projects" }, description = "Pull and update stats for all projects in the database")
     boolean allProjects;
 
     @Override
     public void run() {
         log.info("Pulling repository data");
+
+        CredentialConstants.loadConfigFile(configFile);
 
         Set<Project> projectsToScan = new HashSet<Project>();
 
@@ -248,6 +258,9 @@ class Optimize implements Runnable {
             "--early" }, description = "Continue to next frame after obtaining a certain amount of records", arity = "1", defaultValue = "9999")
     int earlyContinue; // Default 9999; max is only 1000, so this translates to reading all possible
                        // values
+    
+    @Option(names = { "--config-file" }, description = "Config file to load", arity = "1", defaultValue = "./config.json")
+    String configFile;
 
     private Set<Project> projectsToScan = new HashSet<Project>();
 
@@ -261,6 +274,7 @@ class Optimize implements Runnable {
 
     @Override
     public void run() {
+        CredentialConstants.loadConfigFile(configFile);
         long startTime = System.currentTimeMillis();
 
         // int startSize = minSize;
@@ -454,6 +468,7 @@ class Optimize implements Runnable {
 }
 
 // Optimize command
+//TODO: Get rid of this in place of unit tests
 @Command(name = "test", description = "Tests a dummy file using the analyzer. Specify the type of dummy file")
 class TestDummyFile implements Runnable {
 

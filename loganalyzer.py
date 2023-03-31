@@ -52,16 +52,23 @@ if __name__ == '__main__':
     # f.print()
 
     i = 0
-    files = sorted(glob.glob("logs/GithubAPI*"))
+    files = sorted(glob.glob("/mnt/c/Users/kevin/Desktop/java-executeQuery-3-15-2023/logs/GithubT*"))
+    files = sorted(glob.glob("logs/GithubT*"))
     # files = files[0:len(files)-2]
     for f in files:
-        if i > 2:
-            break
         i += 1
-        a = GithubAPILog.GithubAPILog(f)
+        a = LogFile.LogFile(f)
         a.analyze()
-        a.print()
-    print("\n--GLOBAL LOGFILE--")
+        # a.print()
     LogFile.LogFile.print()
-    print("\n--GLOBAL GITHUBAPI--")
-    GithubAPILog.GithubAPILog.print()
+    files = sorted(glob.glob("/mnt/c/Users/kevin/Desktop/java-executeQuery-3-15-2023/logs/Frame*"))
+    files = sorted(glob.glob("logs/Frame*"))
+    # files = files[0:len(files)-2]
+    for f in files:
+        i += 1
+        a = TimedLogFile.TimedLogFile(f)
+        a.analyze()
+        # a.print()
+    TimedLogFile.TimedLogFile.print()
+    # print("\n--GLOBAL LOGFILE--")
+    # print("\n--GLOBAL GITHUBAPI--")
