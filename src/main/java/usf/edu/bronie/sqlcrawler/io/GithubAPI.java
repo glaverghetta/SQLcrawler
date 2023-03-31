@@ -200,13 +200,13 @@ public class GithubAPI {
     private Response getURL(String endpoint, Map<String, String> params) {
 
         // Create the cache
-        Cache cache = new Cache(new java.io.File(CredentialConstants.GITHUB_CACHE_FILE),
-                CredentialConstants.GITHUB_CACHE_SIZE);
+        Cache cache = new Cache(new java.io.File(CredentialConstants.GITHUB_CACHE_FILE()),
+                CredentialConstants.GITHUB_CACHE_SIZE());
 
         // Setup the headers
         Map<String, String> headers = Map.of(
                 "Accept", "application/vnd.github+json",
-                "Authorization", "token " + CredentialConstants.GITHUB_TOKEN);
+                "Authorization", "token " + CredentialConstants.GITHUB_TOKEN());
 
         // Create the url and add params
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
@@ -263,13 +263,13 @@ public class GithubAPI {
     private Response postURL(String endpoint, String bodyString) {
 
         // Create the cache
-        Cache cache = new Cache(new java.io.File(CredentialConstants.GITHUB_CACHE_FILE),
-                CredentialConstants.GITHUB_CACHE_SIZE);
+        Cache cache = new Cache(new java.io.File(CredentialConstants.GITHUB_CACHE_FILE()),
+                CredentialConstants.GITHUB_CACHE_SIZE());
 
         // Setup the headers
         Map<String, String> headers = Map.of(
                 "Accept", "application/vnd.github+json",
-                "Authorization", "token " + CredentialConstants.GITHUB_TOKEN);
+                "Authorization", "token " + CredentialConstants.GITHUB_TOKEN());
 
         // Create the url and add params
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder()

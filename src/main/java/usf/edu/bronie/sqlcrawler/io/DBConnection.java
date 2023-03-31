@@ -14,9 +14,9 @@ public class DBConnection {
     private static HikariDataSource ds;
 
     static {
-        config.setJdbcUrl( CredentialConstants.DB_URL );
-        config.setUsername( CredentialConstants.DB_USER );
-        config.setPassword( CredentialConstants.DB_PASS );
+        config.setJdbcUrl( CredentialConstants.DB_URL() );
+        config.setUsername( CredentialConstants.DB_USER() );
+        config.setPassword( CredentialConstants.DB_PASS() );
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
         config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
         config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );

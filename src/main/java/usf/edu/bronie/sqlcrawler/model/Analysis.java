@@ -13,12 +13,20 @@ import usf.edu.bronie.sqlcrawler.io.DBConnection;
 
 public class Analysis {
     Map<String, SQLType> results = new HashMap<String, SQLType>();
+    public Map<String, SQLType> getResults() {
+        return results;
+    }
+
     int projectID;
     int fileID;
     SQLType sql_usage;
     ApiType api_type;
     boolean parameterized;
     
+    public boolean isParameterized() {
+        return parameterized;
+    }
+
     public void printResults() {
     	for (Map.Entry<String,SQLType> entry : results.entrySet()) 
             System.out.println("Key = " + entry.getKey() +
