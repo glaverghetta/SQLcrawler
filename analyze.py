@@ -104,6 +104,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Please provide a tag/name for the subject line as the first argument!")
         exit(-1)
-    
+        
+    mvn_package()
     runWithEmailRestore(sys.argv[1], analyze)
     
