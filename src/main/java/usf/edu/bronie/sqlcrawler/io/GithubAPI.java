@@ -326,7 +326,7 @@ public class GithubAPI {
     }
 
     private void updateRateLimit(Response r) {
-        if (r.header("x-ratelimit-resource").equals("search")) {
+        if (r.header("x-ratelimit-resource").equals("code_search")) {
             this.searchLimit = Integer.parseInt(r.header("x-ratelimit-remaining"));
             this.searchReset = Long.parseLong(r.header("x-ratelimit-reset"));
         } else if (r.header("x-ratelimit-resource").equals("core")) {

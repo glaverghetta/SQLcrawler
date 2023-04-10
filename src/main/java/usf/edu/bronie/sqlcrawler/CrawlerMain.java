@@ -104,7 +104,7 @@ class Analyze implements Runnable {
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
             // Switch XXX and YYY to ranges. We will remove those entirely when we are done fixing
-            statement = mConnection.prepareStatement("SELECT id from files WHERE id NOT IN (SELECT file FROM analyses) AND id >= XXX AND id < YYY");
+            statement = mConnection.prepareStatement("SELECT id from files WHERE id NOT IN (SELECT file FROM analyses)");
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -119,6 +119,7 @@ class Analyze implements Runnable {
             }
             statement.close();
             mConnection.close();
+            log.info("Finished running the classifier on all files without an analyses entry");
         } catch (SQLException e) {
             // Todo: For now, just print error and quit. Might want to add more complicated
             // solution in the future
@@ -209,6 +210,7 @@ class Repo implements Runnable {
         while (projectsToScan.size() > 0) {
             gh.projectSleep(projectsToScan, batchSize);
         }
+        log.info("Finished updating repository information");
     }
 }
 
@@ -464,6 +466,7 @@ class Optimize implements Runnable {
         long endTime = System.currentTimeMillis();
         finalLog.info("Total files: {} ~ Total pages: {} ~ Start: {} ~ End: {} ~ Time in MS: {}", total,
                 totalNumPages, new Date(startTime), new Date(endTime), endTime - startTime);
+        log.info("Finished");
     }
 }
 
