@@ -83,7 +83,7 @@ public class RegexConstants {
     public static final String JS_VARIABLE_STRING_INTERPOLATION = "\\$\\{[_a-zA-Z][_a-zA-Z0-9]*\\}"; // ${var}
     public static final String PHP_VARIABLE_STRING_INTERPOLATION =  "(\\{|)\\$[_a-zA-Z][_a-zA-Z0-9]*(\\}|)"; // $var OR {$var}
     public static final String JAVA_VARIABLE_STRING_INTERPOLATION = "\\$?\\{[_a-zA-Z0-9]+\\}"; // ${var} or {var}
-    public static final String CSHARP_VARIABLE_STRING_INTERPOLATION = "\\\\{[_a-zA-Z0-9]+\\\\}"; //{var}
+    public static final String CSHARP_VARIABLE_STRING_INTERPOLATION = "\\{.*\\}"; //{var} or {var()}
     
     // Concatenation with variable has the form " + var_name
     public static final String CONCAT_VAR = WHITESPACE + QUOTE + "(?=" + WHITESPACE + "%s" + WHITESPACE + "%s" + ")";

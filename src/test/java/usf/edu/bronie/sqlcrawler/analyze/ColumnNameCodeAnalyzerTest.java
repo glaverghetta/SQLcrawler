@@ -40,6 +40,7 @@ public class ColumnNameCodeAnalyzerTest {
     @ParameterizedTest
     @CsvSource(value={
         "   main{'SELECT ' + a + ' FROM table'}   %     true",
+        "   main{'SELECT ' + abc() + ' FROM table'}   %     true",
         "   main{'SELECT * FROM table;'}    %     false",
         "   main{'SELECT column FROM table;'}    %     false",
         "   main{'SELECT colA, colB FROM table;'}    %     false",
@@ -54,6 +55,29 @@ public class ColumnNameCodeAnalyzerTest {
         List<String> stringLiterals = RegexUtils.findAllStringLiteral(code);
 
         SQLType result = testA.analyzeCode(code, stringLiterals, Languages.nameToLang("Java"));
+
+        assertEquals(containsHardCoded, result == SQLType.STRING_CONCAT);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value={
+        "   main{'SELECT ' + a + ' FROM table'}   %     true", 
+        "   main{'SELECT ' + abc() + ' FROM table'}   %     true", 
+        "   main{'SELECT * FROM table;'}    %     false",  //Hardcoded
+        "   main{'SELECT column FROM table;'}    %     false",  // Hardcoded
+        "   main{'SELECT colA, colB FROM table;'}    %     false",  //Will be hardcoded
+        "   main{'SELECT * FROM table, ' + a;}    %     false",  //Will be table concat, not column
+        "   main{'SELECT ' + a + ', ' + b + ' FROM table;'}    %     true", 
+        "   main{'SELECT a, ' + b + ' FROM table;'}    %     false",  //Will be list concat
+        "   main{'SELECT ${abc} FROM table;'}    %     false",    //Will be string interp
+        "   main{'SELECT ${abc()} FROM table;'}    %     false",  //Will be string interp
+    }, delimiter='%')
+    void testCSharpConcat(String code, boolean containsHardCoded) {
+        ColumnNameCodeAnalyzer testA = new ColumnNameCodeAnalyzer();
+
+        List<String> stringLiterals = RegexUtils.findAllStringLiteral(code);
+
+        SQLType result = testA.analyzeCode(code, stringLiterals, Languages.nameToLang("C#"));
 
         assertEquals(containsHardCoded, result == SQLType.STRING_CONCAT);
     }
@@ -99,6 +123,35 @@ public class ColumnNameCodeAnalyzerTest {
         List<String> stringLiterals = RegexUtils.findAllStringLiteral(code);
 
         SQLType result = testA.analyzeCode(code, stringLiterals, Languages.nameToLang("Java"));
+
+        assertEquals(containsHardCoded, result == SQLType.STRING_INTERP);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value={
+        "   main{'SELECT ' + a + ' FROM table'}   %     false",
+        "   main{'SELECT * FROM table;'}    %     false",
+        "   main{'SELECT column FROM table;'}    %     false",
+        "   main{'SELECT colA, colB FROM table;'}    %     false",
+        "   main{'SELECT * FROM table, ' + a;}    %     false",
+        "   main{'SELECT ' + a + ', ' + b + ' FROM table;'}    %     false",
+        "   main{'SELECT a, ' + b + ' FROM table;'}    %     false",
+        "   main{'SELECT ${abc} FROM table;'}    %     false",
+        "   main{'SELECT ${0} FROM table;'}    %     false",
+        "   main{'SELECT {abc} FROM table;'}    %     true",
+        "   main{'SELECT {0} FROM table;'}    %     true",
+        "   main{'SELECT {abc()} FROM table;'}    %     true",
+        "   main{'SELECT {abc(a)} FROM table;'}    %     true",
+        "   main{'SELECT {abc(b,c,d,e)} FROM table;'}    %     true",
+        "   main{'SELECT {abc(1+1,abc(),a.abc(),eggs)} FROM table;'}    %     true",
+        "   main{'SELECT {1+1} FROM table;'}    %     true",
+    }, delimiter='%')
+    void testCSharpInterp(String code, boolean containsHardCoded) {
+        ColumnNameCodeAnalyzer testA = new ColumnNameCodeAnalyzer();
+
+        List<String> stringLiterals = RegexUtils.findAllStringLiteral(code);
+
+        SQLType result = testA.analyzeCode(code, stringLiterals, Languages.nameToLang("C#"));
 
         assertEquals(containsHardCoded, result == SQLType.STRING_INTERP);
     }

@@ -95,7 +95,7 @@ def runWithEmailRestore(tag, func, *args):
 
 
 def analyze():
-    command = ["java", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "analyze", "new"]
+    command = ["java", "-Xss8M", "-jar", "target/sqlcrawler-1.0-jar-with-dependencies.jar", "analyze", "new"]
     print(f"Starting new Analysis run")
     return runCrawler(command)
 
