@@ -50,18 +50,20 @@ def check_for_reply_from_self(subject):
         traceback.print_exc()
         print(str(e))
 
-
+firstRun = True
 def nextFile():
+    global firstRun
     files = sorted(glob.glob("logs/GithubAPI*.log"))
 
-    try:
-        with open("resume.txt", "r") as f:
-            data = json.load(f)
-            
-            return data["file"], data["completed"]
-    except IOError:
-        # No resume, ignore
-        pass
+    if firstRun:
+        try:
+            with open("resume.txt", "r") as f:
+                data = json.load(f)
+                return data["file"], data["completed"]
+        except IOError:
+            # No resume, ignore
+            pass
+        firstRun = False
 
     try:
         with open("ignore.txt", "r") as file:
