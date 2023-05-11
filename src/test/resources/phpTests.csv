@@ -1,0 +1,3 @@
+# File Name,sql_usage,is_parameterized,api_type,sql_usage_lower~order_group_usage~like_usage~column_usage~table_usage~table_usage_lower~view_usage~proc_usage~fun_usage~event_usage~trig_usage~index_usage~db_usage~server_usage~tspace_usage
+# Name of the file containing code to test with,1 if file uses parameterized query, else 0,~-delmiited string with expected results in above order
+simpleLike.php,STRING_INTERP,0,NONE,STRING_INTERP~NONE~STRING_INTERP~STRING_INTERP~HARDCODED~HARDCODED~NONE~NONE~NONE~NONE~NONE~NONE~NONE~NONE~NONE

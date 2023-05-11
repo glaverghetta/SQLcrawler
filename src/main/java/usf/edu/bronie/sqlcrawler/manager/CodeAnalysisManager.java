@@ -5,6 +5,7 @@ import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
+import usf.edu.bronie.sqlcrawler.model.File.rawGitHubLinkInvalid;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 import usf.edu.bronie.sqlcrawler.utils.RegexUtils;
 
@@ -61,7 +62,7 @@ public class CodeAnalysisManager {
     // }
     // }
 
-    public Analysis processFile(File f) {
+    public Analysis processFile(File f) throws rawGitHubLinkInvalid {
 
         // SQLUsage
         // LikeUsage

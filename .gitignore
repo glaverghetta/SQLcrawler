@@ -14,3 +14,5 @@ __pycache__
 ignore.txt
 resume.txt
 config.json
+*.pgf
+*.xlsx

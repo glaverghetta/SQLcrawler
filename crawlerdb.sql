@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `date_added` DATETIME NULL DEFAULT NULL,
   `commit_date` DATETIME NULL DEFAULT NULL,
   `commit` VARCHAR(45) NULL DEFAULT NULL,
+  `unavailable` TINYINT NULL DEFAULT NULL,
   PRIMARY KEY (`id`, `project`),
   INDEX `fk_files_projects_idx` (`project` ASC) VISIBLE,
   CONSTRAINT `fk_files_projects`
