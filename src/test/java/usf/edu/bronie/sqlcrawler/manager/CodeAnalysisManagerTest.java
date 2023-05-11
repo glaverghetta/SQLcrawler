@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -16,17 +18,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import usf.edu.bronie.sqlcrawler.constants.CredentialConstants;
+import usf.edu.bronie.sqlcrawler.constants.RegexConstants;
 import usf.edu.bronie.sqlcrawler.constants.RegexConstants.Languages;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.ApiType;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.SQLType;
+import usf.edu.bronie.sqlcrawler.model.File.rawGitHubLinkInvalid;
 
 public class CodeAnalysisManagerTest {
 
-    private final static String TESTCSV = "/javaTests.csv";
+    private final static String TESTJAVACSV = "/javaTests.csv";
+    private final static String TESTPHPCSV = "/phpTests.csv";
     private static String csvHeaderKey;
     private final static int csvHeaderKeyIndex = 4;
+    private static final Logger log = LogManager.getLogger(CodeAnalysisManagerTest.class);
 
     private static HashMap<String, SQLType> splitAnswers(String key, String headerKey){
         HashMap<String, SQLType> ret = new HashMap<>();
@@ -46,7 +52,12 @@ public class CodeAnalysisManagerTest {
                 "haaaaaash", "haaaaash again", lang);
         dummyFile.setCode(code);
 
-        dummyFile.save();  //Saves to test database
+        try{
+            dummyFile.save();  //Saves to test database
+        }
+        catch(rawGitHubLinkInvalid e){
+            log.info(e);
+        }
     
         return dummyFile;
     }
@@ -56,7 +67,7 @@ public class CodeAnalysisManagerTest {
 
         CredentialConstants.loadConfigResource("/testConfig.json");
 
-        InputStream in = CodeAnalysisManagerTest.class.getResourceAsStream(CodeAnalysisManagerTest.TESTCSV);
+        InputStream in = CodeAnalysisManagerTest.class.getResourceAsStream(CodeAnalysisManagerTest.TESTJAVACSV);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
         String headerLine = br.readLine();
@@ -66,7 +77,39 @@ public class CodeAnalysisManagerTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources=CodeAnalysisManagerTest.TESTCSV)
+    @CsvFileSource(resources=CodeAnalysisManagerTest.TESTPHPCSV)
+    void testProcessFilePHP(String fileName, String sql_usage, Boolean is_parameterized, String api_type, String key) throws IOException {
+        CodeAnalysisManager cam = new CodeAnalysisManager();
+
+        HashMap<String, SQLType> expectedResults = splitAnswers(key, CodeAnalysisManagerTest.csvHeaderKey);
+
+        String code = new String(CodeAnalysisManagerTest.class.getResourceAsStream("/php/" + fileName).readAllBytes());
+
+        Analysis results = null;
+        try{
+            results = cam.processFile(createDummyFile(code, Languages.PHP));
+        }
+        catch(rawGitHubLinkInvalid e){
+            log.info(e);
+            System.exit(-1);
+        }
+
+        SQLType got = results.getSql_usage();
+        SQLType expected = SQLType.valueOf(sql_usage);
+
+        assertTrue(expected == got);
+        assertTrue(is_parameterized == results.isParameterized());
+        assertTrue(ApiType.valueOf(api_type) == results.getApi_type());
+
+        for (var entry : results.getResults().entrySet()) {
+            got = entry.getValue();
+            expected = expectedResults.get(entry.getKey());
+            assertTrue(got == expected);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources=CodeAnalysisManagerTest.TESTJAVACSV)
     void testProcessFileJava(String fileName, String sql_usage, Boolean is_parameterized, String api_type, String key) throws IOException {
         CodeAnalysisManager cam = new CodeAnalysisManager();
 
@@ -74,7 +117,14 @@ public class CodeAnalysisManagerTest {
 
         String code = new String(CodeAnalysisManagerTest.class.getResourceAsStream("/java/" + fileName).readAllBytes());
 
-        Analysis results = cam.processFile(createDummyFile(code, Languages.JAVA));
+        Analysis results = null;
+        try{
+            results = cam.processFile(createDummyFile(code, Languages.JAVA));
+        }
+        catch(rawGitHubLinkInvalid e){
+            log.info(e);
+            System.exit(-1);
+        }
 
         assertTrue(SQLType.valueOf(sql_usage) == results.getSql_usage());
         assertTrue(is_parameterized == results.isParameterized());

@@ -78,6 +78,46 @@ public class HttpConnection {
         return null;
     }
 
+    public static Response getRequest(String url) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        log.debug("Getting {}", url);
+
+        Response r = null;
+        try {
+
+            Call c = client.newCall(request); 
+            long start = System.currentTimeMillis();
+            r = c.execute();
+            long end = System.currentTimeMillis();
+
+            timingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+            return r;
+        } catch (SocketTimeoutException e) {
+            log.debug("Socket timeout.  Trying a second time.");
+
+            try {
+                Call c = client.newCall(request); 
+                long start = System.currentTimeMillis();
+                r = c.execute();
+                long end = System.currentTimeMillis();
+    
+                timingLog.info("{} ~ {} ~ {} ~ {} ~ {}", new Date(start), new Date(end), end - start, url, r.code());
+                return r;
+            } catch (IOException e2) {
+                log.error("Error retrieving {}", url, e2);
+                System.exit(-1);
+            }
+        } catch (IOException e) {
+            log.error("Error retrieving {}", url, e);
+            System.exit(-1);
+        }
+
+        return null;
+    }
+
     /**
      * Sends an HTTP GET request to the provided URL and returns the resulting data.
      * Allows for additional headers to be added to the request.

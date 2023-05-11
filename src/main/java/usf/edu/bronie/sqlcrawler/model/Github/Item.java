@@ -113,6 +113,6 @@ public class Item {
 
         // Replace the correct blob with
         strb.replace(index, "/blob/".length() + index, "/raw/");
-        return strb.toString();
+        return strb.toString().replaceAll("^https://api.github.com/", "https://github.com/");
     }
 }

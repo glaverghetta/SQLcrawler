@@ -1,7 +1,8 @@
+from crawlerLogAnalyzer import TimedLogFile
 import crawlerLogAnalyzer.LogFile as LogFile
 import dateutil
 
-class GithubThrottlingLog(LogFile.LogFile):
+class PageLog(TimedLogFile.TimedLogFile):
     
     def analyzeLine(self, line):
         vals = super().analyzeLine(line)

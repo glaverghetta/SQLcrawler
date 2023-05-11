@@ -11,9 +11,9 @@ def fromDbConnection():
     try:
         mydb = pymysql.connect(
             host="127.0.0.1",
-            user="crawlerReadOnly",
+            user="csharpCrawler",
             password="Super1Pass",
-            database="crawlerOther"
+            database="crawler-reader"
         )
     except Error as e:
         print(e)
@@ -25,9 +25,9 @@ def toDbConnection():
     try:
         mydb = pymysql.connect(
             host="127.0.0.1",
-            user="kevin",
-            password="Super1Password",
-            database="crawler"
+            user="csharpCrawler",
+            password="Super1Pass",
+            database="crawlernq"
         )
     except Error as e:
         print(e)
@@ -78,8 +78,7 @@ class File():
         if self.newFileID == -1:
             print(f"Adding file with ID {self.originalFileID} in FROM database")
             self.saveFile()
-            # Don't bother calling this right now
-            # self.saveAnalysis() 
+            self.saveAnalysis() 
             print(f"File with {self.originalFileID} in FROM database saved as {self.newFileID} in TO database")
         else:
             print(f"Found existing file with ID {self.newFileID} in TO database")
@@ -167,12 +166,21 @@ class File():
 def get100Files(dbConnection, offset=0):
     with dbConnection.cursor() as cursor:
         print(f"Pulling 100 files at offset {offset}")
-        sql = """SELECT f.id as fileID, f.project as projectID, f.filename, f.lang, f.path, f.url as fileURL, f.hash, f.fileSize, f.date_added as fileAdded, f.commit_date, f.commit, 
+        sql = """SELECT f.id as fileID, f.project as projectID, f.filename, f.lang, f.path, f.url as fileURL, f.hash, f.fileSize, 
+                f.date_added as fileAdded, f.commit_date, f.commit, 
+                
                 p.gh_id, p.owner, p.name, p.url as projectURL, p.source, p.date_added as projectAdded, 
-                r.project as repoProject, r.description, r.releasesCount, r.LRName, r.LRCreated, r.LRUpdated, r.stargazerCount, r.forkCount, r.watchersCount, r.createdAt, r.updatedAt, r.pushedAt, r.date_added as repoDate 
+                
+                r.project as repoProject, r.description, r.releasesCount, r.LRName, r.LRCreated, r.LRUpdated, r.stargazerCount, 
+                r.forkCount, r.watchersCount, r.createdAt, r.updatedAt, r.pushedAt, r.date_added as repoDate, 
+                
+                a.id as analysisID, a.analysis_date, a.sql_usage, a.is_parameterized, a.api_type, a.sql_usage_lower, a.order_group_usage, a.like_usage, a.column_usage, a.table_usage, a.table_usage_lower,
+                a.view_usage, a.proc_usage, a.fun_usage, a.event_usage, a.trig_usage, a.index_usage, a.db_usage, a.server_usage, a.tspace_usage
+                
                 FROM files f
                 LEFT JOIN projects p ON f.project = p.id 
                 LEFT JOIN repo_info r ON p.id = r.project
+                LEFT JOIN analyses a ON f.project = a.project AND f.id = a.file
                 ORDER BY f.id
                 LIMIT 100 OFFSET %s;"""
         cursor.execute(sql, (offset,))

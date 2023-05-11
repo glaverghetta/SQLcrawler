@@ -5,12 +5,17 @@ import usf.edu.bronie.sqlcrawler.io.DBConnection;
 import usf.edu.bronie.sqlcrawler.io.HttpConnection;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import okhttp3.Headers;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Represents an individual file from a project to be analzyed as stored in the
@@ -149,7 +154,7 @@ public class File {
 
     // Saves the project to the database, if it does not already exist
     // Returns true if saved, false if already exists
-    public boolean save() {
+    public boolean save() throws rawGitHubLinkInvalid {
 
         String repo = this.repo();
         // Check that the corresponding project exists
@@ -211,6 +216,25 @@ public class File {
         }
 
         return true;
+    }
+
+    private void setUnavailable(){
+        try {
+            PreparedStatement statement;
+            Connection mConnection = DBConnection.getConnection();
+            statement = mConnection.prepareStatement("UPDATE files SET unavailable = 1 WHERE id = ?;");
+            
+            statement.setInt(1, this.id);
+            statement.executeUpdate();
+
+            statement.close();
+            mConnection.close();
+        } catch (SQLException e) {
+            // Todo: For now, just print error and quit. Might want to add more complicated
+            // solution in the future
+            log.error(e);
+            System.exit(-1);
+        }
     }
 
     // Returns the repo url from the raw url
@@ -298,15 +322,31 @@ public class File {
         this.commit = commit;
     }
 
-    public String getCode() {
+    public String getCode() throws rawGitHubLinkInvalid {
         if (this.code != null) {
             return this.code;
         }
 
-        return this.code = HttpConnection.get(this.url);
+        try{
+            Response r = HttpConnection.getRequest(this.url);
+
+            String contentType = r.headers().get("Content-Type");
+            if(!contentType.startsWith("text/plain;")){
+                this.setUnavailable();
+                throw new rawGitHubLinkInvalid(this.url, this.id);
+            }
+
+            return this.code = r.body().string(); 
+        }
+        catch(IOException e){
+            log.error("Error retrieving {}", url, e);
+            System.exit(-1);
+        }
+
+        return null;
     }
 
-    public int getCodeSize() {
+    public int getCodeSize() throws rawGitHubLinkInvalid {
         return this.getCode().length();
     }
 
@@ -322,4 +362,19 @@ public class File {
     	this.languageType = languageType;
     }
 
+    public static class rawGitHubLinkInvalid extends Exception {
+        private String url;
+        private int fileID;
+
+        public rawGitHubLinkInvalid(String url, int fileID) {
+            this.url = url;
+            this.fileID = fileID;
+        }
+
+        @Override
+        public String toString() {
+            return "The following raw GitHub url is no longer accessible: " + url + " (file ID " + fileID + ")";
+        }
+
+    }
 }

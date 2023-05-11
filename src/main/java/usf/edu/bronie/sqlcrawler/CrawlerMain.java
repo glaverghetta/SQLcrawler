@@ -30,6 +30,7 @@ import usf.edu.bronie.sqlcrawler.manager.CodeAnalysisManager;
 import usf.edu.bronie.sqlcrawler.model.Analysis;
 import usf.edu.bronie.sqlcrawler.model.File;
 import usf.edu.bronie.sqlcrawler.model.Project;
+import usf.edu.bronie.sqlcrawler.model.File.rawGitHubLinkInvalid;
 import usf.edu.bronie.sqlcrawler.model.Project.noProjectFound;
 
 @Command(name = "SQLCrawler", subcommands = { CommandLine.HelpCommand.class, Pull.class, Repo.class, Analyze.class,
@@ -103,19 +104,23 @@ class Analyze implements Runnable {
             CodeAnalysisManager cam = new CodeAnalysisManager();
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            // Switch XXX and YYY to ranges. We will remove those entirely when we are done fixing
-            statement = mConnection.prepareStatement("SELECT id from files WHERE id NOT IN (SELECT file FROM analyses)");
+            statement = mConnection.prepareStatement("SELECT f1.id FROM files f1 WHERE NOT EXISTS (SELECT file FROM analyses a LEFT JOIN files f ON a.file=f.id WHERE f.hash=f1.hash) AND (f1.unavailable IS NULL);");
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                File result = new File(resultSet.getInt("id"));
-
-                long fileStart = System.currentTimeMillis();
-                Analysis a = cam.processFile(result);
-                long fileEnd = System.currentTimeMillis();
-                fileLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(fileStart),
-                        new Date(fileEnd), fileEnd - fileStart, result.getId(), result.getCodeSize(), 0, 0, 0);
-                a.save();
+                try{
+                    File result = new File(resultSet.getInt("id"));
+    
+                    long fileStart = System.currentTimeMillis();
+                    Analysis a = cam.processFile(result);
+                    long fileEnd = System.currentTimeMillis();
+                    fileLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(fileStart),
+                            new Date(fileEnd), fileEnd - fileStart, result.getId(), result.getCodeSize(), 0, 0, 0);
+                    a.save();
+                }
+                catch (rawGitHubLinkInvalid e){
+                    log.info(e);
+                }
             }
             statement.close();
             mConnection.close();
@@ -336,19 +341,25 @@ class Optimize implements Runnable {
                     File result = results.poll();
                     // Only analyze if this is a new file (may be some repeats when shrinking window
                     // size)
-                    if (result.save()) {
-                        updated++;
-                        recordsInFrame++;
-                        long fileStart = System.currentTimeMillis();
-                        Analysis a = cam.processFile(result);
-                        long fileEnd = System.currentTimeMillis();
-                        fileLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(fileStart),
-                                new Date(fileEnd),
-                                fileEnd - fileStart, result.getId(), result.getCodeSize(),
-                                gh.lastPagePulled(), minSize,
-                                maxSize);
-                        a.save();
+                    try{
+                        if (result.save()) {
+                            updated++;
+                            recordsInFrame++;
+                            long fileStart = System.currentTimeMillis();
+                            Analysis a = cam.processFile(result);
+                            long fileEnd = System.currentTimeMillis();
+                            fileLog.info("{} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", new Date(fileStart),
+                                    new Date(fileEnd),
+                                    fileEnd - fileStart, result.getId(), result.getCodeSize(),
+                                    gh.lastPagePulled(), minSize,
+                                    maxSize);
+                            a.save();
+                        }
                     }
+                    catch(rawGitHubLinkInvalid e){
+                        log.info(e);
+                    }
+
                     try {
                         addProjectToScan(new Project(result.getProject()));
                     } catch (noProjectFound e) {
@@ -489,7 +500,13 @@ class TestDummyFile implements Runnable {
                 "https://github.com/dummy/dummyRepo/raw/not_a_real_raw_url",
                 "haaaaaash", "haaaaash again", Languages.nameToLang(typeOfFile));
 
-        dummyFile.save(); // Creates a project as well
+        try{
+            dummyFile.save(); // Creates a project as well
+        }
+        catch(rawGitHubLinkInvalid e){
+            log.info(e);
+            System.exit(-1);
+        }
 
         Path filePath;
         switch (typeOfFile.toLowerCase()) {
@@ -529,10 +546,16 @@ class TestDummyFile implements Runnable {
         // Now for the actual analysis!
         CodeAnalysisManager cam = new CodeAnalysisManager();
 
-        Analysis a = cam.processFile(dummyFile);
+        try {
+            Analysis a = cam.processFile(dummyFile);
+            a.save();
+            a.printResults();
+        }
+        catch(rawGitHubLinkInvalid e){
+            log.info(e);
+            System.exit(-1);
+        }
 
-        a.save();
-        a.printResults();
         log.info("Successfully analyzed the dummy file");
         return;
     }

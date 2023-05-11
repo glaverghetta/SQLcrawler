@@ -51,14 +51,11 @@ def fix(logFile: LogFile.LogFile):
 if __name__ == '__main__':
     fileTypes = ["logs/Analyzer*", "logs/File*", "logs/Frame*", "logs/GithubAPI*", "logs/Network*", "logs/Page*"]
     
-    LIMIT = 2
 
     for fileType in fileTypes:
         files = sorted(glob.glob(fileType))
         i = 0
         for file in files:
-            if i > LIMIT:
-                break
             log = TimedLogFile.TimedLogFile(file)
             fix(log)
             i += 1
@@ -67,8 +64,6 @@ if __name__ == '__main__':
     files = sorted(glob.glob("logs/GithubThrottling*"))
     i = 0
     for file in files:
-        if i > LIMIT:
-            break
         log = GithubThrottlingLog.GithubThrottlingLog(file)
         fix(log)
         i += 1

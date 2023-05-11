@@ -1,5 +1,6 @@
 import datetime 
 import dateutil.parser
+import os
 
 def biggestTimeUnit(ms : int):
     """Takes a time in milliseconds (ms) and converts to the best largest unit (ms, seconds, minutes, hours)
@@ -70,7 +71,7 @@ class LogFile():
         """The last log time recorded in the file"""
 
         # dateutil parser doesn't actually get our format, so do it manually
-        datestring = filename.split("_")[1].split(".")[0]
+        datestring = os.path.basename(filename).split("_")[1].split(".")[0]
         date = [ int(i) for i in datestring.split("-")]
         self.date = datetime.datetime(date[0], date[1], date[2], date[3], date[4], date[5])
         """The date string for the current log file"""
@@ -101,7 +102,9 @@ class LogFile():
         items = []
         with open(self.getFilename()) as file:
             while (line := file.readline().rstrip()):
-                items.append(method(self, self.splitLine(line)))
+                x = method(self, self.splitLine(line))
+                if x is not None:
+                    items.append(x)
         return items
 
     def splitLine(self, line):
