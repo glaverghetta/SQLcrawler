@@ -332,6 +332,7 @@ public class File {
 
             String contentType = r.headers().get("Content-Type");
             if(!contentType.startsWith("text/plain;")){
+                r.close();
                 this.setUnavailable();
                 throw new rawGitHubLinkInvalid(this.url, this.id);
             }
