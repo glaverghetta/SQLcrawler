@@ -335,8 +335,9 @@ public class File {
                 this.setUnavailable();
                 throw new rawGitHubLinkInvalid(this.url, this.id);
             }
-
-            return this.code = r.body().string(); 
+            this.code = r.body().string();
+            r.close();
+            return  this.code;
         }
         catch(IOException e){
             log.error("Error retrieving {}", url, e);

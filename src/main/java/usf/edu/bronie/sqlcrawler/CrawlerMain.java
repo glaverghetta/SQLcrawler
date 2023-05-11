@@ -104,7 +104,7 @@ class Analyze implements Runnable {
             CodeAnalysisManager cam = new CodeAnalysisManager();
             Connection mConnection = DBConnection.getConnection();
             PreparedStatement statement;
-            statement = mConnection.prepareStatement("SELECT f1.id FROM files f1 WHERE NOT EXISTS (SELECT file FROM analyses a LEFT JOIN files f ON a.file=f.id WHERE f.hash=f1.hash) AND (f1.unavailable IS NULL);");
+            statement = mConnection.prepareStatement("SELECT f1.id FROM files f1 WHERE NOT EXISTS (SELECT file FROM analyses a LEFT JOIN files f ON a.file=f.id WHERE f.hash=f1.hash) AND (f1.unavailable IS NULL) AND id >= 837674 AND id < 1234674;");
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
