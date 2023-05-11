@@ -18,10 +18,11 @@ public class LikeCodeAnalyzerTest {
 
     @ParameterizedTest
     @CsvSource(value={
-        "   main{'SELECT abc FROM table WHERE abc LIKE \'123\''}   %     true",
-        "   main{'SELECT abc FROM table WHERE abc LIKE \'%$abc%\''}   %     true",
-        "   main{'SELECT abc FROM table WHERE $abc LIKE \'abc\''}   %     false",
-    }, delimiter='%')
+        "   main{'SELECT abc FROM table WHERE abc LIKE \'123\''}   ~     true",
+        " $data = \"SELECT abc FROM table WHERE abc LIKE \'%$abc%\'\";   ~     false",
+        "   main{'SELECT abc FROM table WHERE abc LIKE \'%$abc%\''}   ~     false",
+        "   main{'SELECT abc FROM table WHERE $abc LIKE \'abc\''}   ~     true",
+    }, delimiter='~')
     void testPHPHardCode(String code, boolean containsHardCoded) {
         LikeCodeAnalyzer testA = new LikeCodeAnalyzer();
 
@@ -32,5 +33,21 @@ public class LikeCodeAnalyzerTest {
         assertEquals(containsHardCoded, result == SQLType.HARDCODED);
     }
 
+    @ParameterizedTest
+    @CsvSource(value={
+        " $data = \"SELECT abc FROM table WHERE abc LIKE $abc\";   %     true",
+        " $data = \"SELECT abc FROM table WHERE abc LIKE '%$abc%'\";   %     true",
+        " $data = \"SELECT abc FROM table WHERE abc LIKE '$abc'\";   %     true",
+        " $data = \"SELECT abc FROM table WHERE abc LIKE '{$abc}'\";   %     true",
+        " $data = \"SELECT abc FROM table WHERE abc LIKE '%{$abc}%'\";   %     true",
+    }, delimiter='%')
+    void testPHPInterp(String code, boolean constainsInterp) {
+        LikeCodeAnalyzer testA = new LikeCodeAnalyzer();
 
+        List<String> stringLiterals = RegexUtils.findAllStringLiteral(code);
+
+        SQLType result = testA.analyzeCode(code, stringLiterals, Languages.nameToLang("PHP"));
+
+        assertEquals(constainsInterp, result == SQLType.STRING_INTERP);
+    }
 }

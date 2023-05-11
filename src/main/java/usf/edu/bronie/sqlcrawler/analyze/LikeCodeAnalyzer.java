@@ -89,14 +89,14 @@ public class LikeCodeAnalyzer implements CodeAnalyzer {
     private boolean isLikeInterp(String code, RegexConstants.Languages language) {
         String interpolationVariable = RegexConstants.getStringInterpolationTerm(language);
         
-    	if(language != CompiledLang){
+    	if(language != CompiledLang || mStringLitPatternInterpolationCompiled == null){
             CompiledLang = language;
             mStringLitPatternInterpolationCompiled = Pattern.compile(
             		String.format(mStringLitPatternInterpolation, interpolationVariable), 
             		Pattern.CASE_INSENSITIVE);
   
         }
-        Matcher stringLitWithOrderByMatcherInterpolation = stringLiteralLikePatternCompiled.matcher(code);
+        Matcher stringLitWithOrderByMatcherInterpolation = mStringLitPatternInterpolationCompiled.matcher(code);
         while (stringLitWithOrderByMatcherInterpolation.find()) {
             String keyword = stringLitWithOrderByMatcherInterpolation.group();
             if (RegexUtils.isSQLCode(keyword)) {
